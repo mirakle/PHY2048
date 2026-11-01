@@ -1,0 +1,1839 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Motion along a line: one-dimensional kinematics (PHY2048)</title>
+<meta name="description" content="Notes, simulations and practice questions on one-dimensional kinematics: constant velocity, constant acceleration and variable acceleration.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;600&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;0,800;1,400&display=swap" rel="stylesheet">
+<style>
+:root{
+  color-scheme: light;
+  --bg:#F5F6F8; --surface:#FFFFFF; --surface-2:#EEF1F5; --ink:#172033; --muted:#4B5568; --rule:#CBD2DC;
+  --accent:#7A2E6E; --accent-ink:#FFFFFF; --focus:#7A2E6E;
+  --x:#0B5FA5; --v:#A84A00; --a:#17784F;
+  --x-fill:rgba(11,95,165,.16); --v-fill:rgba(168,74,0,.16); --a-fill:rgba(23,120,79,.16);
+  --good:#17603F; --bad:#9B2226; --good-bg:#E5F3EC; --bad-bg:#FBEAEA;
+  --grid:#E1E6EC;
+  --body:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Verdana,"Segoe UI",system-ui,sans-serif;
+  --mono:"Atkinson Hyperlegible Mono",ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#10141A; --surface:#171C24; --surface-2:#1E2530; --ink:#E8ECF2; --muted:#A9B3C1; --rule:#344051;
+    --accent:#E3A6D6; --accent-ink:#1A0F18; --focus:#F1C6E8;
+    --x:#7DBCF5; --v:#F5A55B; --a:#6FD3A0;
+    --x-fill:rgba(125,188,245,.20); --v-fill:rgba(245,165,91,.20); --a-fill:rgba(111,211,160,.20);
+    --good:#8EE3B5; --bad:#FFA3A3; --good-bg:#14301F; --bad-bg:#3A1A1C;
+    --grid:#232B36;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#10141A; --surface:#171C24; --surface-2:#1E2530; --ink:#E8ECF2; --muted:#A9B3C1; --rule:#344051;
+  --accent:#E3A6D6; --accent-ink:#1A0F18; --focus:#F1C6E8;
+  --x:#7DBCF5; --v:#F5A55B; --a:#6FD3A0;
+  --x-fill:rgba(125,188,245,.20); --v-fill:rgba(245,165,91,.20); --a-fill:rgba(111,211,160,.20);
+  --good:#8EE3B5; --bad:#FFA3A3; --good-bg:#14301F; --bad-bg:#3A1A1C;
+  --grid:#232B36;
+}
+*,*::before,*::after{box-sizing:inherit;}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 1rem);-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.6;}
+img,svg{max-width:100%;}
+a{color:var(--accent);text-underline-offset:.18em;}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:3px;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+.skip{position:absolute;left:1rem;top:-4rem;background:var(--accent);color:var(--accent-ink);padding:.6rem 1rem;border-radius:6px;z-index:20;font-weight:700;}
+.skip:focus{top:calc(env(safe-area-inset-top,0px) + .75rem);}
+
+/* quantity colour code — always paired with a line style or a label */
+.qx{color:var(--x);font-weight:700;} .qv{color:var(--v);font-weight:700;} .qa{color:var(--a);font-weight:700;}
+
+/* ---------- hero ---------- */
+.hero{padding:2.5rem 1.25rem 1.25rem;border-bottom:1px solid var(--rule);background:var(--surface);}
+.hero-inner{max-width:72rem;margin:0 auto;}
+.hero h1{font-size:clamp(2.3rem,6vw,4rem);line-height:1.02;margin:0 0 .6rem;letter-spacing:-.02em;font-weight:800;max-width:14ch;}
+.hero .lede{font-size:1.15rem;color:var(--muted);max-width:60ch;margin:0 0 1rem;}
+.hero-strip{margin-top:1rem;}
+.hero-strip figcaption{font-size:.95rem;color:var(--muted);}
+.theme-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;font-size:.95rem;color:var(--muted);margin-top:.5rem;}
+
+/* ---------- layout ---------- */
+.layout{max-width:72rem;margin:0 auto;padding:0 1.25rem 4rem;display:grid;grid-template-columns:15rem minmax(0,1fr);gap:2.5rem;}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 1rem);align-self:start;max-height:calc(100vh - 2rem);overflow:auto;padding-top:2rem;font-size:.95rem;}
+nav.toc h2{font-size:1rem;margin:0 0 .5rem;}
+nav.toc ol{list-style:none;margin:0;padding:0;}
+nav.toc li{margin:.15rem 0;}
+nav.toc ol ol{padding-left:.9rem;border-left:2px solid var(--rule);margin:.2rem 0 .6rem .2rem;}
+nav.toc a{color:var(--ink);text-decoration:none;display:block;padding:.15rem .3rem;border-radius:4px;}
+nav.toc a:hover{background:var(--surface-2);text-decoration:underline;}
+nav.toc details summary{display:none;}
+main{min-width:0;padding-top:1.5rem;}
+.prose{max-width:68ch;}
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr;gap:0;}
+  nav.toc{position:static;max-height:none;padding-top:1rem;}
+  nav.toc details summary{display:list-item;cursor:pointer;font-weight:700;padding:.4rem 0;}
+}
+
+/* ---------- headings & text ---------- */
+.part{border-top:3px solid var(--ink);margin-top:3.5rem;padding-top:.8rem;}
+.part-num{font-size:1rem;font-weight:700;color:var(--muted);margin:0;}
+main h1{font-size:clamp(1.8rem,3.6vw,2.5rem);line-height:1.12;margin:.1rem 0 1rem;letter-spacing:-.01em;}
+h2{font-size:1.35rem;line-height:1.25;margin:2.4rem 0 .6rem;}
+h3{font-size:1.1rem;margin:1.6rem 0 .4rem;}
+.part > h2{font-size:clamp(1.6rem,3.2vw,2.1rem);line-height:1.15;margin:.1rem 0 1rem;letter-spacing:-.01em;}
+main h1:focus,main h1:focus-visible{outline-offset:6px;}
+p{margin:0 0 1rem;}
+ul,ol{padding-left:1.4rem;margin:0 0 1rem;} li{margin:.25rem 0;}
+.goals{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:1rem 1.25rem;margin:0 0 1.5rem;}
+.goals h2{margin:0 0 .4rem;font-size:1.05rem;}
+.goals ul{margin:0;}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:.25rem 0;}
+code,.num{font-family:var(--mono);}
+
+/* callouts: label + border style, never colour alone */
+.callout{border-left:6px solid var(--ink);background:var(--surface);padding:.8rem 1.1rem;margin:1.2rem 0;border-radius:0 8px 8px 0;}
+.callout > :last-child{margin-bottom:0;}
+.callout .tag{display:block;font-weight:800;margin-bottom:.25rem;}
+.callout.key{border-left-style:solid;}
+.callout.trap{border-left-style:double;border-left-width:8px;border-left-color:var(--bad);}
+.callout.think{border-left-style:dashed;border-left-color:var(--accent);}
+details.deeper{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:.6rem 1rem;margin:1rem 0;}
+details.deeper summary{cursor:pointer;font-weight:700;}
+details.deeper[open] summary{margin-bottom:.5rem;}
+
+/* tables */
+.table-wrap{overflow-x:auto;margin:1rem 0;}
+table{border-collapse:collapse;min-width:100%;font-size:.98rem;background:var(--surface);}
+caption{text-align:left;font-weight:700;padding:.4rem 0;}
+th,td{border:1px solid var(--rule);padding:.45rem .7rem;text-align:left;vertical-align:top;}
+th{background:var(--surface-2);}
+td.num,th.num{text-align:right;white-space:nowrap;font-family:var(--mono);}
+
+/* figures */
+figure{margin:1.4rem 0;}
+figure.fig{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:.8rem 1rem;}
+figure.fig figcaption{font-size:.96rem;color:var(--muted);margin-top:.5rem;}
+figure.fig figcaption b{color:var(--ink);}
+.svgfig{display:block;width:100%;height:auto;}
+.svgfig text{font-family:var(--body);fill:var(--ink);}
+.svgfig .muted{fill:var(--muted);}
+.svgfig .axis{stroke:var(--ink);stroke-width:1.5;fill:none;}
+.svgfig .gridl{stroke:var(--grid);stroke-width:1;}
+.svgfig .dot{fill:var(--ink);}
+.svgfig .ghost{fill:var(--muted);opacity:.75;}
+.c-x{stroke:var(--x);} .f-x{fill:var(--x);} .c-v{stroke:var(--v);} .f-v{fill:var(--v);} .c-a{stroke:var(--a);} .f-a{fill:var(--a);}
+.c-ink{stroke:var(--ink);} .f-ink{fill:var(--ink);}
+.ls-x{stroke-width:2.6;fill:none;}
+.ls-v{stroke-width:2.6;fill:none;stroke-dasharray:9 5;}
+.ls-a{stroke-width:2.6;fill:none;stroke-dasharray:2 4 9 4;}
+.area-v{fill:var(--v-fill);} .area-a{fill:var(--a-fill);} .area-x{fill:var(--x-fill);}
+.txt-x{fill:var(--x)!important;font-weight:700;} .txt-v{fill:var(--v)!important;font-weight:700;} .txt-a{fill:var(--a)!important;font-weight:700;}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;font-size:.95rem;margin:.4rem 0;}
+.legend span{display:inline-flex;align-items:center;gap:.4rem;}
+.legend svg{width:34px;height:10px;}
+
+/* ---------- labs ---------- */
+.lab{background:var(--surface);border:2px solid var(--ink);border-radius:12px;padding:1rem 1.1rem 1.1rem;margin:2rem 0;}
+.lab > h2{margin-top:.2rem;}
+.lab-intro{max-width:68ch;}
+.lab-grid{display:grid;grid-template-columns:minmax(0,1fr) 17rem;gap:1.2rem;align-items:start;}
+.lab-grid.vertical .viewport{display:grid;grid-template-columns:9rem minmax(0,1fr);gap:.8rem;align-items:start;}
+@media (max-width:760px){ .lab-grid{grid-template-columns:1fr;} .lab-grid.vertical .viewport{grid-template-columns:6.5rem minmax(0,1fr);} }
+.track-wrap svg, .plots svg{display:block;width:100%;}
+.plots{display:flex;flex-direction:column;gap:.2rem;}
+.ctrls{display:flex;flex-direction:column;gap:.9rem;}
+.ctrl label{display:flex;justify-content:space-between;gap:.5rem;font-size:.95rem;font-weight:700;}
+.ctrl output{font-family:var(--mono);font-weight:400;white-space:nowrap;}
+input[type=range]{width:100%;accent-color:var(--accent);min-height:28px;}
+select,input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--muted);border-radius:6px;padding:.4rem .5rem;}
+select{width:100%;}
+.btns{display:flex;flex-wrap:wrap;gap:.45rem;}
+button{font:inherit;font-weight:700;font-size:.95rem;cursor:pointer;border-radius:6px;padding:.5rem .85rem;min-height:44px;border:2px solid var(--ink);background:var(--surface);color:var(--ink);}
+button:hover{background:var(--surface-2);}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+button.primary:hover{filter:brightness(1.08);}
+button[disabled]{opacity:.5;cursor:not-allowed;}
+.readout{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.4rem;margin:.6rem 0 .2rem;}
+.readout div{background:var(--surface-2);border-radius:6px;padding:.35rem .5rem;}
+.readout span{display:block;font-size:.85rem;color:var(--muted);}
+.readout b{font-family:var(--mono);font-size:1.05rem;font-weight:600;white-space:nowrap;}
+@media (max-width:520px){ .readout{grid-template-columns:repeat(2,minmax(0,1fr));} }
+.lab-status{font-size:.95rem;color:var(--muted);min-height:1.5em;margin:.3rem 0 0;}
+.predict{background:var(--surface-2);border-radius:8px;padding:.7rem .9rem;margin:.6rem 0 1rem;}
+.predict p{margin:0;}
+
+/* ---------- practice ---------- */
+.practice{margin-top:2.5rem;}
+.practice > h2{margin-top:0;}
+.q{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:1rem 1.15rem;margin:1.1rem 0;}
+.q-head{display:flex;flex-wrap:wrap;gap:.3rem .8rem;align-items:baseline;margin:0 0 .5rem;}
+.q-head h3{margin:0;font-size:1.1rem;}
+.q-kind{font-size:.9rem;border:1.5px solid var(--muted);border-radius:999px;padding:.05rem .6rem;color:var(--muted);}
+.q fieldset{border:0;padding:0;margin:0;min-width:0;}
+.q legend{padding:0;margin-bottom:.6rem;max-width:68ch;}
+.opt{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem .6rem;border:1.5px solid var(--rule);border-radius:8px;margin:.4rem 0;cursor:pointer;}
+.opt:hover{border-color:var(--muted);}
+.opt input{margin-top:.35rem;width:1.15rem;height:1.15rem;accent-color:var(--accent);flex:none;}
+.opt:has(input:checked){border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);}
+.opt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.5rem;}
+.opt-grid .opt{flex-direction:column;}
+.opt-grid .opt .row{display:flex;gap:.5rem;align-items:center;}
+.num-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.4rem 0;}
+.num-row input{width:9rem;font-family:var(--mono);}
+.q-actions{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.7rem;}
+.feedback{margin-top:.7rem;}
+.feedback:empty{display:none;}
+.fb{border-radius:8px;padding:.6rem .8rem;border:2px solid;}
+.fb.good{background:var(--good-bg);border-color:var(--good);}
+.fb.bad{background:var(--bad-bg);border-color:var(--bad);}
+.fb strong{display:block;}
+.hints{margin-top:.6rem;}
+.hints:empty{display:none;}
+.hint{background:var(--surface-2);border-radius:8px;padding:.5rem .8rem;margin:.35rem 0;}
+.reason{margin-top:.7rem;}
+.reason label{display:block;font-size:.95rem;font-weight:700;margin-bottom:.25rem;}
+.reason textarea{width:100%;min-height:3.2rem;resize:vertical;}
+details.solution{margin-top:.7rem;border-top:1px dashed var(--rule);padding-top:.5rem;}
+details.solution summary{cursor:pointer;font-weight:700;}
+details.solution[hidden]{display:none;}
+.progress{font-size:.95rem;color:var(--muted);}
+
+/* small widgets */
+.widget{background:var(--surface);border:2px solid var(--ink);border-radius:12px;padding:1rem 1.1rem;margin:1.6rem 0;}
+.widget-grid{display:grid;grid-template-columns:minmax(0,1fr) 16rem;gap:1rem;align-items:start;}
+@media (max-width:760px){ .widget-grid{grid-template-columns:1fr;} }
+
+footer{border-top:1px solid var(--rule);padding:2rem 1.25rem;color:var(--muted);font-size:.95rem;}
+footer .inner{max-width:72rem;margin:0 auto;}
+
+@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto!important;animation:none!important;transition:none!important;} }
+@media print{ nav.toc,.btns,.q-actions,.theme-row{display:none;} .layout{display:block;} .lab,.widget{break-inside:avoid;} }
+
+.prompt{max-width:68ch;}
+.pop{animation:pop .45s ease-out both;transform-box:fill-box;transform-origin:center;}
+@keyframes pop{from{opacity:0;transform:scale(.2);}to{opacity:1;transform:none;}}
+@media (max-width:900px){ nav.toc h2{display:none;} }
+.svgfig.narrow{max-width:560px;margin:0 auto;}
+
+[hidden]{display:none!important;}
+.sitebar{background:var(--surface);border-bottom:1px solid var(--rule);}
+.sitebar-inner{max-width:72rem;margin:0 auto;padding:.7rem 1.25rem;display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1.5rem;}
+.site-title{margin:0;font-weight:800;font-size:1.1rem;}
+.site-title a{color:var(--ink);text-decoration:none;}
+.site-title a:hover{text-decoration:underline;}
+.sitebar .theme-row{margin:0 0 0 auto;}
+nav.pages ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.3rem;}
+nav.pages li{margin:0;}
+nav.pages a{display:block;padding:.45rem .75rem;border-radius:6px;color:var(--ink);text-decoration:none;border:2px solid transparent;font-weight:700;font-size:.97rem;min-height:44px;display:flex;align-items:center;}
+nav.pages a:hover{background:var(--surface-2);text-decoration:underline;}
+nav.pages a[aria-current="page"]{border-color:var(--ink);background:var(--surface-2);text-decoration:underline;text-decoration-thickness:2px;}
+.hero{border-bottom:1px solid var(--rule);}
+.layout.single{grid-template-columns:minmax(0,1fr);}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:3.5rem;padding-top:1.2rem;border-top:3px solid var(--ink);}
+.pager a{display:block;padding:.8rem 1rem;border:2px solid var(--ink);border-radius:10px;text-decoration:none;color:var(--ink);font-weight:700;background:var(--surface);}
+.pager a:hover{background:var(--surface-2);}
+.pager a span{display:block;font-weight:400;font-size:.92rem;color:var(--muted);}
+.pager a.next{text-align:right;grid-column:2;}
+@media (max-width:560px){ .pager{grid-template-columns:1fr;} .pager a.next{grid-column:1;} .sitebar .theme-row{margin-left:0;} }
+@media (max-width:560px){ nav.pages .long{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;} nav.pages a{padding:.4rem .6rem;} }
+
+</style>
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  svg: { fontCache: 'global' },
+  startup: { typeset: false },
+  options: { enableMenu: true }
+};
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js" id="MathJax-script" async></script>
+</head>
+<body>
+<a class="skip" id="skipLink" href="#main-start">Skip to the notes</a>
+<header class="sitebar">
+  <div class="sitebar-inner">
+    <p class="site-title"><a href="#start">Motion along a line</a></p>
+    <nav class="pages" aria-label="Pages of these notes">
+      <ol>
+        <li><a href="#start" data-pg="start">Start here</a></li>
+        <li><a href="#part1" data-pg="part1">Part 1<span class="long">: Constant velocity</span></a></li>
+        <li><a href="#part2" data-pg="part2">Part 2<span class="long">: Constant acceleration</span></a></li>
+        <li><a href="#part3" data-pg="part3">Part 3<span class="long">: Variable acceleration</span></a></li>
+      </ol>
+    </nav>
+    <div class="theme-row">
+      <label for="themeSel">Colour theme</label>
+      <select id="themeSel" style="width:auto">
+        <option value="auto">Match my device</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </div>
+  </div>
+</header>
+
+<div class="page" data-page="start">
+<section class="hero" aria-labelledby="h-start">
+  <div class="hero-inner">
+    <p class="part-num">PHY2048 notes: start here</p>
+    <h1 id="h-start" tabindex="-1">Motion along a&nbsp;line</h1>
+    <p class="lede">One-dimensional kinematics: how to describe where something is, how fast it moves, and how its motion changes. Read a short chunk, try the simulation, then test yourself.</p>
+    <figure class="hero-strip">
+      <div data-fig="hero"></div>
+      <figcaption>A motion diagram of a car braking from 15&nbsp;m/s to a stop at a red light 30&nbsp;m ahead. Each dot is the car’s position, one dot every 0.5&nbsp;s. The dots bunch together as the car slows.</figcaption>
+    </figure>
+  </div>
+</section>
+<div class="layout single">
+  <main id="main-start" tabindex="-1">
+
+    <section id="before" class="prose" aria-label="Before you start">
+            <h2 id="how">Before you start: how to use these notes</h2>
+      <p>Each part is broken into short chunks. After each chunk, pause and ask yourself: “Could I explain this to a classmate?” If not, reread it before moving on.</p>
+      <p>When you see a <strong>Predict</strong> box, write down your prediction <em>before</em> you run the simulation. Being surprised by a wrong prediction is one of the fastest ways to learn. Being right without committing first teaches much less.</p>
+      <p>The notes are split into pages. This page sets the ground rules; then each part has its own page:</p>
+      <ul>
+        <li><a href="#part1">Part 1: Describing motion and constant velocity</a></li>
+        <li><a href="#part2">Part 2<span class="long">: Constant acceleration</span></a></li>
+        <li><a href="#part3">Part 3: Variable acceleration</a> (ends with a summary of all three parts)</li>
+      </ul>
+      <p>Each part ends with six practice questions: three about ideas and three with calculations. Try each one honestly first. Hints come one at a time, and the full explanation opens after your first attempt.</p>
+
+      <h2 id="rules">Ground rules</h2>
+      <ul>
+        <li>Horizontal motion: the positive direction is <strong>to the right</strong>. We call the position <span class="qx">\(x\)</span>.</li>
+        <li>Vertical motion: the positive direction is <strong>up</strong>. We call the position <span class="qx">\(y\)</span>.</li>
+        <li>Velocity is <span class="qv">\(v\)</span> and acceleration is <span class="qa">\(a\)</span>. In one dimension, the <strong>sign</strong> (+ or −) tells the direction, so we do not need arrows over the symbols.</li>
+        <li>Near Earth’s surface, the size of the free-fall acceleration is \(g = 9.80\ \text{m/s}^2\).</li>
+        <li>Time \(t\) starts at 0 when we start watching, unless a problem says otherwise.</li>
+      </ul>
+      <div class="callout key">
+        <span class="tag">Colour and line code used everywhere</span>
+        <p>Position is <span class="qx">blue with a solid line</span>, velocity is <span class="qv">orange with a dashed line</span>, and acceleration is <span class="qa">green with a dash-dot line</span>. Every graph also labels its axis in words, so you never need colour to tell them apart.</p>
+        <div class="legend" aria-hidden="true">
+          <span><svg viewBox="0 0 34 10"><line x1="1" y1="5" x2="33" y2="5" class="c-x ls-x"/></svg>position</span>
+          <span><svg viewBox="0 0 34 10"><line x1="1" y1="5" x2="33" y2="5" class="c-v ls-v"/></svg>velocity</span>
+          <span><svg viewBox="0 0 34 10"><line x1="1" y1="5" x2="33" y2="5" class="c-a ls-a"/></svg>acceleration</span>
+        </div>
+      </div>
+
+      <h2 id="reps">Four ways to describe the same motion</h2>
+      <p>Physicists switch between four <em>representations</em> of motion. Each one shows something the others hide, and translating between them is a big part of what you will practise.</p>
+      <div class="table-wrap">
+        <table>
+          <caption>The four representations</caption>
+          <thead><tr><th scope="col">Representation</th><th scope="col">Example</th><th scope="col">Good for</th></tr></thead>
+          <tbody>
+            <tr><th scope="row">Words</th><td>“The car slows down and stops at the light.”</td><td>Everyday meaning; easy to be vague.</td></tr>
+            <tr><th scope="row">Motion diagram</th><td>Dots at equal time steps, with arrows</td><td>Seeing direction and speeding up or slowing down at a glance.</td></tr>
+            <tr><th scope="row">Graphs</th><td>\(x\) vs. \(t\), \(v\) vs. \(t\), \(a\) vs. \(t\)</td><td>The whole story over time; slopes and areas.</td></tr>
+            <tr><th scope="row">Equations</th><td>\(x = x_0 + v t\)</td><td>Exact numbers and predictions.</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </section>
+
+
+    <nav class="pager" aria-label="Previous and next page"><span></span><a class="next" href="#part1"><span>Next page</span>Part 1: Describing motion and constant velocity</a></nav>
+  </main>
+</div>
+</div>
+
+<div class="page" data-page="part1" hidden>
+<div class="layout">
+  <nav class="toc" aria-label="On this page">
+    <details class="toc-details" open>
+      <summary>On this page</summary>
+      <h2>On this page</h2>
+      <ol><li><a href="#s1-1">1.1 Position</a></li><li><a href="#s1-2">1.2 Displacement and distance</a></li><li><a href="#s1-3">1.3 Motion diagrams</a></li><li><a href="#s1-4">1.4 Velocity and speed</a></li><li><a href="#s1-5">1.5 Constant velocity: graphs and equation</a></li><li><a href="#lab1">Simulation 1</a></li><li><a href="#practice1">Practice 1</a></li></ol>
+    </details>
+  </nav>
+  <main id="main-part1" tabindex="-1">
+
+    <section aria-labelledby="part1-h">
+      <p class="part-num">Part 1</p>
+      <h1 id="part1-h" tabindex="-1">Describing motion and constant velocity</h1>
+      <div class="goals prose">
+        <h2>By the end of Part 1 you should be able to</h2>
+        <ul>
+          <li>tell position, displacement, and distance apart;</li>
+          <li>draw and read a motion diagram;</li>
+          <li>find velocity as the slope of an \(x\)–\(t\) graph, and displacement as the area under a \(v\)–\(t\) graph;</li>
+          <li>use \(x = x_0 + v t\) to solve problems.</li>
+        </ul>
+      </div>
+
+      <section id="s1-1" aria-labelledby="s1-1h" class="prose">
+        <h2 id="s1-1h">1.1 Position: where is it?</h2>
+        <p>To say where something is, you need three choices: an <strong>origin</strong> (the zero), a <strong>positive direction</strong>, and a <strong>unit</strong> (we use metres). These choices make a coordinate axis, like a number line.</p>
+        <p>The <strong>position</strong> <span class="qx">\(x\)</span> is the reading on that number line where the object is.</p>
+        <figure class="fig">
+          <div data-fig="axis"></div>
+          <figcaption><b>Figure 1.1.</b> A coordinate axis. The origin is at \(x = 0\), right is positive. The cart sits at \(x = -3\ \text{m}\) and the tree at \(x = +4\ \text{m}\).</figcaption>
+        </figure>
+        <div class="callout trap">
+          <span class="tag">Watch out</span>
+          <p>A negative position only means “on the negative side of the origin”. It tells you nothing about which way the object is moving, or how fast.</p>
+        </div>
+      </section>
+
+      <section id="s1-2" aria-labelledby="s1-2h" class="prose">
+        <h2 id="s1-2h">1.2 Displacement and distance</h2>
+        <p><strong>Displacement</strong> is the change in position: where you ended minus where you started.</p>
+        \[ \Delta x = x_\text{f} - x_\text{i} \]
+        <p>Displacement has a sign. A positive \(\Delta x\) means the object ended up to the right of where it started. A negative \(\Delta x\) means it ended up to the left.</p>
+        <p><strong>Distance travelled</strong> is the total length of the path. It counts every metre you walked, in either direction, so it is never negative.</p>
+        <figure class="fig">
+          <div data-fig="dispdist"></div>
+          <figcaption><b>Figure 1.2.</b> A student walks from \(x = 2\ \text{m}\) to \(x = 8\ \text{m}\), then turns and walks back to \(x = 5\ \text{m}\). Displacement: \(\Delta x = 5 - 2 = +3\ \text{m}\). Distance travelled: \(6 + 3 = 9\ \text{m}\).</figcaption>
+        </figure>
+        <div class="callout key">
+          <span class="tag">Key idea</span>
+          <p>Displacement only cares about the start and the end. Distance cares about the whole trip. They are equal only when the object never turns around.</p>
+        </div>
+      </section>
+
+      <section id="s1-3" aria-labelledby="s1-3h" class="prose">
+        <h2 id="s1-3h">1.3 Motion diagrams</h2>
+        <p>Imagine taking a photo of a moving object at equal time steps (say every 1&nbsp;s) and stacking all the photos on top of each other. Now replace the object with a dot. That is a <strong>motion diagram</strong>.</p>
+        <p>An arrow from one dot to the next shows the <span class="qv">velocity</span> during that time step. A longer arrow means the object covered more ground in the same time, so it was moving faster.</p>
+        <figure class="fig">
+          <div data-fig="md-const"></div>
+          <figcaption><b>Figure 1.3.</b> Three motion diagrams, one dot per second. (A) Equal spacing, moving right: constant velocity, positive. (B) Equal but larger spacing, moving left: constant velocity, negative and faster than A. (C) Spacing grows to the right: the object is speeding up, so its velocity is <em>not</em> constant. We will study case C in Part 2.</figcaption>
+        </figure>
+        <div class="callout think">
+          <span class="tag">Stop and think</span>
+          <p>In diagram B, the dots are evenly spaced and the arrows point left. Is the velocity changing? (No: same size and same direction every second, so velocity is constant. “Negative” is not the same as “changing”.)</p>
+        </div>
+      </section>
+
+      <section id="s1-4" aria-labelledby="s1-4h" class="prose">
+        <h2 id="s1-4h">1.4 Velocity and speed</h2>
+        <p><strong>Average velocity</strong> is displacement divided by the time it took:</p>
+        \[ v_\text{avg} = \frac{\Delta x}{\Delta t} = \frac{x_\text{f} - x_\text{i}}{t_\text{f} - t_\text{i}} \]
+        <p>Its unit is m/s. Its sign tells you the direction of the overall motion: positive means net motion to the right, negative means net motion to the left.</p>
+        <p><strong>Average speed</strong> uses distance instead of displacement, so it is never negative:</p>
+        \[ \text{average speed} = \frac{\text{distance travelled}}{\Delta t} \]
+        <p>For the walk in Figure 1.2, if it took 6.0&nbsp;s: average velocity is \(+3\ \text{m} / 6.0\ \text{s} = +0.50\ \text{m/s}\), but average speed is \(9\ \text{m} / 6.0\ \text{s} = 1.5\ \text{m/s}\). Same trip, different questions.</p>
+        <p>The <strong>instantaneous velocity</strong> is the velocity at one moment, which is what a speedometer (plus a direction) would show. When velocity is constant, the instantaneous and average velocities are the same number. Part 2 shows how to find instantaneous velocity when they differ.</p>
+      </section>
+
+      <section id="s1-5" aria-labelledby="s1-5h" class="prose">
+        <h2 id="s1-5h">1.5 Constant velocity: graphs and equation</h2>
+        <p>If the velocity never changes, the object covers equal displacements in equal times. That gives two simple graphs.</p>
+        <h3>Position vs. time is a straight line</h3>
+        <p>The <strong>slope</strong> of an \(x\)–\(t\) graph is the velocity: rise (\(\Delta x\)) over run (\(\Delta t\)). A steeper line means a faster object. A line sloping down means a negative velocity.</p>
+        <h3>Velocity vs. time is a flat line</h3>
+        <p>The <strong>area</strong> between a \(v\)–\(t\) graph and the time axis is the displacement. For a flat line, that area is a rectangle: height \(v\) times width \(t\). Area below the axis counts as negative.</p>
+        <figure class="fig">
+          <div data-fig="cv-graphs"></div>
+          <figcaption><b>Figure 1.4.</b> A cart starts at \(x_0 = 2\ \text{m}\) and moves right at a constant \(v = 1.5\ \text{m/s}\). Top: the \(x\)–\(t\) graph is a straight line with slope 1.5&nbsp;m/s. Bottom: the \(v\)–\(t\) graph is flat at 1.5&nbsp;m/s; the shaded rectangle from 0 to 4&nbsp;s has area \(1.5 \times 4 = 6\ \text{m}\), the displacement.</figcaption>
+        </figure>
+        <h3>The equation</h3>
+        <p>Rearranging \(v = \Delta x / \Delta t\) with a start time of zero gives the position at any time:</p>
+        \[ x(t) = x_0 + v\,t \qquad (\text{constant } v) \]
+        <p>Here \(x_0\) is the position at \(t = 0\). This is the equation of the straight line in Figure 1.4: intercept \(x_0\), slope \(v\).</p>
+        <div class="callout trap">
+          <span class="tag">Two classic traps with graphs</span>
+          <p><strong>A graph is not a picture of the path.</strong> An \(x\)–\(t\) line that goes “uphill” does not mean the object is moving up a hill. It means \(x\) is increasing: the object moves right.</p>
+          <p><strong>Height is not slope.</strong> On an \(x\)–\(t\) graph, the height of the line is <em>where</em> the object is. The steepness is <em>how fast</em> it moves. Two objects at the same position at the same instant (where their lines cross) can have very different velocities.</p>
+        </div>
+      </section>
+
+      <section class="lab" id="lab1" aria-labelledby="lab1-h">
+        <h2 id="lab1-h">Simulation 1: cart at constant velocity</h2>
+        <div class="lab-intro">
+          <p>Set the starting position and the velocity, then press Play. The track shows the cart with a motion diagram (grey dots, one every 0.5&nbsp;s). The graphs fill in as time passes. Every control works with the keyboard; the readout and the data table give the same information in text.</p>
+          <div class="predict"><p><strong>Predict.</strong> Set \(x_0 = +8\ \text{m}\) and \(v = -3\ \text{m/s}\). Before you press Play, sketch the \(x\)–\(t\) graph and decide: at what time does the cart pass the origin? Then run it and compare.</p></div>
+        </div>
+        <div data-lab="lab1"></div>
+      </section>
+
+      <section class="practice" id="practice1" aria-labelledby="practice1-h">
+        <h2 id="practice1-h">Practice 1: describing motion and constant velocity</h2>
+        <div data-practice="p1"></div>
+      </section>
+    </section>
+
+
+
+    <nav class="pager" aria-label="Previous and next page"><a class="prev" href="#start"><span>Previous page</span>Start here: ground rules</a><a class="next" href="#part2"><span>Next page</span>Part 2<span class="long">: Constant acceleration</span></a></nav>
+  </main>
+</div>
+</div>
+
+<div class="page" data-page="part2" hidden>
+<div class="layout">
+  <nav class="toc" aria-label="On this page">
+    <details class="toc-details" open>
+      <summary>On this page</summary>
+      <h2>On this page</h2>
+      <ol><li><a href="#s2-1">2.1 Instantaneous velocity</a></li><li><a href="#s2-2">2.2 Acceleration</a></li><li><a href="#s2-3">2.3 Graphs of constant acceleration</a></li><li><a href="#s2-4">2.4 The four equations</a></li><li><a href="#s2-5">2.5 Free fall</a></li><li><a href="#s2-6">2.6 A problem-solving routine</a></li><li><a href="#lab2">Simulation 2</a></li><li><a href="#practice2">Practice 2</a></li></ol>
+    </details>
+  </nav>
+  <main id="main-part2" tabindex="-1">
+
+    <section aria-labelledby="part2-h">
+      <p class="part-num">Part 2</p>
+      <h1 id="part2-h" tabindex="-1">Constant acceleration</h1>
+      <div class="goals prose">
+        <h2>By the end of Part 2 you should be able to</h2>
+        <ul>
+          <li>find instantaneous velocity as the slope of a tangent line;</li>
+          <li>decide the sign of acceleration from a motion diagram, and tell whether an object speeds up or slows down;</li>
+          <li>move between \(x\)–\(t\), \(v\)–\(t\) and \(a\)–\(t\) graphs using slopes and areas;</li>
+          <li>choose and use the right constant-acceleration equation, including for free fall.</li>
+        </ul>
+      </div>
+
+      <section id="s2-1" aria-labelledby="s2-1h" class="prose">
+        <h2 id="s2-1h">2.1 When velocity changes: instantaneous velocity</h2>
+        <p>When an object speeds up, its \(x\)–\(t\) graph curves. A curve has no single slope, so which “slope” is the velocity?</p>
+        <p>Pick a moment \(t_1\). Draw a straight line (a <em>secant</em>) from the graph at \(t_1\) to the graph a little later, at \(t_1 + \Delta t\). Its slope is the average velocity over that interval. Now shrink \(\Delta t\). The secant swings around and settles onto the <strong>tangent line</strong>, the line that just touches the curve at \(t_1\).</p>
+        \[ v = \lim_{\Delta t \to 0} \frac{\Delta x}{\Delta t} = \frac{dx}{dt} \]
+        <p>The instantaneous velocity is the slope of the tangent line: the derivative of position with respect to time.</p>
+      </section>
+
+      <div class="widget" id="secantWidget" aria-labelledby="sec-h">
+        <h3 id="sec-h" style="margin-top:0">Explore: from average to instantaneous velocity</h3>
+        <p class="prose">The cart’s position is \(x(t) = (1.00\ \text{m/s}^2)\,t^2\). Shrink \(\Delta t\) and watch the secant slope approach the tangent slope.</p>
+        <div data-widget="secant"></div>
+      </div>
+
+      <section id="s2-2" aria-labelledby="s2-2h" class="prose">
+        <h2 id="s2-2h">2.2 Acceleration</h2>
+        <p><strong>Acceleration</strong> tells you how quickly the <em>velocity</em> changes. It is not about how fast the object moves.</p>
+        \[ a_\text{avg} = \frac{\Delta v}{\Delta t} \qquad\qquad a = \frac{dv}{dt} \]
+        <p>The unit is (m/s)/s, written m/s². An acceleration of \(+2\ \text{m/s}^2\) means the velocity goes up by 2&nbsp;m/s every second.</p>
+        <h3>Finding acceleration on a motion diagram</h3>
+        <p>Take two velocity arrows in a row. Ask: “What arrow would I add to the first one to get the second?” That change, \(\Delta v\), points the same way as the acceleration.</p>
+        <figure class="fig">
+          <div data-fig="md-accel"></div>
+          <figcaption><b>Figure 2.1.</b> Four motion diagrams (dots every 1&nbsp;s) with their <span class="qv">velocity</span> arrows (orange, solid head) and <span class="qa">acceleration</span> arrow (green, open head, labelled a). (A) moving right, speeding up: \(a\) points right (+). (B) moving right, slowing down: \(a\) points left (−). (C) moving left, speeding up: \(a\) points left (−). (D) moving left, slowing down: \(a\) points right (+).</figcaption>
+        </figure>
+        <div class="callout key">
+          <span class="tag">Key idea: speeding up or slowing down?</span>
+          <p>Compare the signs of \(v\) and \(a\). <strong>Same sign: speeding up.</strong> <strong>Opposite signs: slowing down.</strong> A negative acceleration does not automatically mean “slowing down”. Diagram C has negative acceleration and is speeding up.</p>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <caption>Signs of velocity and acceleration</caption>
+            <thead><tr><th scope="col">Motion</th><th scope="col">Sign of \(v\)</th><th scope="col">Sign of \(a\)</th><th scope="col">Speed is</th></tr></thead>
+            <tbody>
+              <tr><td>Moving right, speeding up</td><td>+</td><td>+</td><td>increasing</td></tr>
+              <tr><td>Moving right, slowing down</td><td>+</td><td>−</td><td>decreasing</td></tr>
+              <tr><td>Moving left, speeding up</td><td>−</td><td>−</td><td>increasing</td></tr>
+              <tr><td>Moving left, slowing down</td><td>−</td><td>+</td><td>decreasing</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout trap">
+          <span class="tag">Watch out</span>
+          <p>Zero velocity does <strong>not</strong> mean zero acceleration. A ball thrown straight up has \(v = 0\) for an instant at the top, but its velocity is still changing (from up to down), so \(a = -9.80\ \text{m/s}^2\) right there.</p>
+        </div>
+      </section>
+
+      <section id="s2-3" aria-labelledby="s2-3h" class="prose">
+        <h2 id="s2-3h">2.3 Graphs of constant acceleration</h2>
+        <p>If \(a\) is constant, the velocity changes by the same amount every second, so the \(v\)–\(t\) graph is a straight line with slope \(a\). The \(x\)–\(t\) graph is then a parabola: its slope (the velocity) changes steadily.</p>
+        <figure class="fig">
+          <div data-fig="ca-graphs"></div>
+          <figcaption><b>Figure 2.2.</b> A ball rolls up a ramp with \(x_0 = 0\), \(v_0 = +6\ \text{m/s}\) and \(a = -2\ \text{m/s}^2\). Top: \(x\)–\(t\) is a downward-opening parabola that peaks at \(t = 3\ \text{s}\), where the tangent is flat. Middle: \(v\)–\(t\) is a straight line crossing zero at \(t = 3\ \text{s}\). Bottom: \(a\)–\(t\) is flat at \(-2\ \text{m/s}^2\).</figcaption>
+        </figure>
+        <div class="callout key">
+          <span class="tag">Key idea: slopes go down, areas go up</span>
+          <p>Slope of \(x\)–\(t\) = \(v\). Slope of \(v\)–\(t\) = \(a\). Going the other way: area under \(a\)–\(t\) = change in velocity \(\Delta v\). Area under \(v\)–\(t\) = displacement \(\Delta x\).</p>
+        </div>
+        <p>Check it on Figure 2.2. From 0 to 3&nbsp;s, the area under the \(v\)–\(t\) line is a triangle: \(\tfrac12 (3\ \text{s})(6\ \text{m/s}) = 9\ \text{m}\). That matches the top of the parabola, \(x = 9\ \text{m}\). From 3 to 6&nbsp;s, the triangle is below the axis (−9&nbsp;m), so the ball is back at \(x = 0\) at 6&nbsp;s.</p>
+      </section>
+
+      <section id="s2-4" aria-labelledby="s2-4h" class="prose">
+        <h2 id="s2-4h">2.4 The four constant-acceleration equations</h2>
+        <p>Start from the \(v\)–\(t\) graph, a straight line from \(v_0\) at \(t = 0\) to \(v\) at time \(t\).</p>
+        <p><strong>Slope.</strong> The slope is \(a\), so \(v - v_0 = a t\):</p>
+        \[ v = v_0 + a t \tag{1} \]
+        <p><strong>Area.</strong> The area under the line is a rectangle (\(v_0 t\)) plus a triangle (\(\tfrac12 \cdot t \cdot a t\)):</p>
+        \[ x = x_0 + v_0 t + \tfrac12 a t^2 \tag{2} \]
+        <figure class="fig">
+          <div data-fig="trapezoid"></div>
+          <figcaption><b>Figure 2.3.</b> Under a straight \(v\)–\(t\) line, the displacement is the area of a rectangle of height \(v_0\) and width \(t\), plus a triangle of height \(a t\) and width \(t\). That is equation (2).</figcaption>
+        </figure>
+        <p><strong>No time.</strong> Solve (1) for \(t\) and put it into (2):</p>
+        \[ v^2 = v_0^2 + 2a\,(x - x_0) \tag{3} \]
+        <p><strong>Average velocity.</strong> For a straight-line \(v\)–\(t\) graph, the average velocity is halfway between start and end:</p>
+        \[ x - x_0 = \tfrac12 (v_0 + v)\,t \tag{4} \]
+        <div class="table-wrap">
+          <table>
+            <caption>Pick the equation that leaves out the quantity you neither know nor want</caption>
+            <thead><tr><th scope="col">Equation</th><th scope="col">Leaves out</th></tr></thead>
+            <tbody>
+              <tr><td>(1) \(v = v_0 + a t\)</td><td>\(x - x_0\)</td></tr>
+              <tr><td>(2) \(x = x_0 + v_0 t + \tfrac12 a t^2\)</td><td>\(v\)</td></tr>
+              <tr><td>(3) \(v^2 = v_0^2 + 2a(x - x_0)\)</td><td>\(t\)</td></tr>
+              <tr><td>(4) \(x - x_0 = \tfrac12 (v_0 + v)\,t\)</td><td>\(a\)</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <div class="callout trap">
+          <span class="tag">Use only when \(a\) is constant</span>
+          <p>All four equations come from a <em>straight</em> \(v\)–\(t\) line. If the acceleration changes during the motion, they give wrong answers. Part 3 shows what to do instead.</p>
+        </div>
+      </section>
+
+      <section id="s2-5" aria-labelledby="s2-5h" class="prose">
+        <h2 id="s2-5h">2.5 Free fall</h2>
+        <p>When air resistance is small, every object near Earth’s surface falls with the same constant acceleration, whatever its mass. With up as positive:</p>
+        \[ a = -g = -9.80\ \text{m/s}^2 \]
+        <p>This is true on the way up, at the top, and on the way down. “Free fall” means “only gravity acts”, so a ball thrown upward is in free fall as soon as it leaves your hand.</p>
+        <figure class="fig">
+          <div data-fig="toss"></div>
+          <figcaption><b>Figure 2.4.</b> Motion diagram of a ball thrown straight up at 14.7&nbsp;m/s, one dot every 0.25&nbsp;s. The way up is drawn on the left and the way down on the right so the dots do not overlap. Velocity arrows shrink to zero at the top (at 1.5&nbsp;s and 11.0&nbsp;m), then grow pointing down. The <span class="qa">acceleration</span> arrow points down the whole time.</figcaption>
+        </figure>
+        <p>Two useful results follow from the equations with \(a = -g\), for a ball launched upward at speed \(v_0\):</p>
+        <ul>
+          <li>Time to reach the top (set \(v = 0\) in equation 1): \(t_\text{top} = v_0 / g\).</li>
+          <li>Maximum rise (set \(v = 0\) in equation 3): \(h = v_0^2 / (2g)\).</li>
+        </ul>
+        <p>If it lands at the launch height, the trip down takes the same time as the trip up, and it arrives with the same speed it left with, now pointing down.</p>
+      </section>
+
+      <section id="s2-6" aria-labelledby="s2-6h" class="prose">
+        <h2 id="s2-6h">2.6 A problem-solving routine</h2>
+        <p>Experts rarely start by hunting for an equation. They first build a picture of the motion. Try these steps, in order:</p>
+        <ol>
+          <li><strong>Sketch</strong> the situation. Mark the origin and the positive direction.</li>
+          <li><strong>Draw a motion diagram.</strong> Decide the signs of \(v\) and \(a\) from it.</li>
+          <li><strong>List knowns and unknowns</strong> in a table, with signs: \(x_0, x, v_0, v, a, t\).</li>
+          <li><strong>Choose an equation</strong> that leaves out the quantity you don’t know and don’t need.</li>
+          <li><strong>Solve with symbols first</strong>, then put in numbers with units.</li>
+          <li><strong>Check</strong>: right units? Sensible sign? Reasonable size?</li>
+        </ol>
+        <div class="callout key">
+          <span class="tag">Worked example</span>
+          <p>A car moving at 15&nbsp;m/s sees a red light 30&nbsp;m ahead and brakes steadily, stopping right at the line. Find its acceleration and the braking time.</p>
+          <p><strong>Picture:</strong> origin where braking starts, right is positive. A motion diagram (like the one on the opening page) shows dots getting closer, moving right: \(v &gt; 0\) and slowing, so \(a &lt; 0\).</p>
+          <p><strong>Knowns:</strong> \(x_0 = 0\), \(x = 30\ \text{m}\), \(v_0 = +15\ \text{m/s}\), \(v = 0\). Unknowns: \(a\), \(t\).</p>
+          <p><strong>Acceleration:</strong> no \(t\) given, so use (3): \(a = \dfrac{v^2 - v_0^2}{2(x - x_0)} = \dfrac{0 - 225}{60}\ \text{m/s}^2 = -3.75\ \text{m/s}^2\).</p>
+          <p><strong>Time:</strong> use (4), which avoids the \(a\) we just calculated, so a slip there cannot spread: \(t = \dfrac{2(x - x_0)}{v_0 + v} = \dfrac{60}{15}\ \text{s} = 4.00\ \text{s}\).</p>
+          <p><strong>Check:</strong> \(a\) is negative, as the motion diagram said. Units work. Average speed 7.5&nbsp;m/s for 4&nbsp;s gives 30&nbsp;m. ✓</p>
+        </div>
+      </section>
+
+      <section class="lab" id="lab2" aria-labelledby="lab2-h">
+        <h2 id="lab2-h">Simulation 2: constant acceleration</h2>
+        <div class="lab-intro">
+          <p>Choose a cart on a level track or a ball thrown straight up. The <span class="qv">velocity</span> arrow (orange, solid head) and <span class="qa">acceleration</span> arrow (green, open head) ride along with the object. The shaded area under the \(v\)–\(t\) graph grows as the displacement builds up.</p>
+          <div class="predict"><p><strong>Predict.</strong> Cart mode: \(v_0 = +6\ \text{m/s}\), \(a = -2\ \text{m/s}^2\). Where is the cart when its velocity is zero, and what is its acceleration at that instant? Ball mode: does the acceleration arrow change direction at the top?</p></div>
+        </div>
+        <div data-lab="lab2"></div>
+      </section>
+
+      <section class="practice" id="practice2" aria-labelledby="practice2-h">
+        <h2 id="practice2-h">Practice 2: constant acceleration</h2>
+        <div data-practice="p2"></div>
+      </section>
+    </section>
+
+
+
+    <nav class="pager" aria-label="Previous and next page"><a class="prev" href="#part1"><span>Previous page</span>Part 1: Describing motion and constant velocity</a><a class="next" href="#part3"><span>Next page</span>Part 3: Variable acceleration</a></nav>
+  </main>
+</div>
+</div>
+
+<div class="page" data-page="part3" hidden>
+<div class="layout">
+  <nav class="toc" aria-label="On this page">
+    <details class="toc-details" open>
+      <summary>On this page</summary>
+      <h2>On this page</h2>
+      <ol><li><a href="#s3-1">3.1 When the equations fail</a></li><li><a href="#s3-2">3.2 Going down: derivatives</a></li><li><a href="#s3-3">3.3 Going up: integrals</a></li><li><a href="#s3-4">3.4 Acceleration that depends on x or v</a></li><li><a href="#lab3">Simulation 3</a></li><li><a href="#practice3">Practice 3</a></li><li><a href="#summary">Summary of all three parts</a></li><li><a href="#sources">Sources and research</a></li></ol>
+    </details>
+  </nav>
+  <main id="main-part3" tabindex="-1">
+
+    <section aria-labelledby="part3-h">
+      <p class="part-num">Part 3</p>
+      <h1 id="part3-h" tabindex="-1">Variable acceleration</h1>
+      <div class="goals prose">
+        <h2>By the end of Part 3 you should be able to</h2>
+        <ul>
+          <li>explain why the constant-acceleration equations fail when \(a\) changes;</li>
+          <li>find \(v(t)\) and \(a(t)\) from \(x(t)\) by taking derivatives;</li>
+          <li>find \(v(t)\) and \(x(t)\) from \(a(t)\) by integrating, using initial conditions;</li>
+          <li>read the same relationships from graphs as slopes, curvature, and areas.</li>
+        </ul>
+      </div>
+
+      <section id="s3-1" aria-labelledby="s3-1h" class="prose">
+        <h2 id="s3-1h">3.1 When the constant-acceleration equations fail</h2>
+        <p>Real accelerations change all the time: you ease off the gas pedal, a rocket burns its fuel, a spring stretches, air drag grows with speed.</p>
+        <p>Here is a test. An e-bike starts from rest. Its acceleration fades steadily as the motor eases off:</p>
+        \[ a(t) = 2.0\ \text{m/s}^2 - (0.50\ \text{m/s}^3)\,t \qquad (0 \le t \le 4.0\ \text{s}) \]
+        <p>What is its velocity at \(t = 4.0\ \text{s}\)? Two tempting shortcuts:</p>
+        <ul>
+          <li>Use the starting acceleration in \(v = v_0 + a t\): \(v = 0 + (2.0)(4.0) = 8.0\ \text{m/s}\). <strong>Wrong:</strong> the acceleration does not stay at 2.0&nbsp;m/s².</li>
+          <li>Use the final acceleration: \(a(4.0) = 0\), so \(v = 0\). <strong>Wrong:</strong> the bike clearly sped up.</li>
+        </ul>
+        <p>The correct answer is 4.0&nbsp;m/s. Section 3.3 shows how to get it. The lesson for now: <strong>with changing acceleration, you must account for the acceleration at every instant</strong>, not plug one value into a formula built for a constant.</p>
+      </section>
+
+      <section id="s3-2" aria-labelledby="s3-2h" class="prose">
+        <h2 id="s3-2h">3.2 Going down: derivatives</h2>
+        <p>The definitions from Part 2 work for any motion, constant or not:</p>
+        \[ v(t) = \frac{dx}{dt} \qquad\qquad a(t) = \frac{dv}{dt} = \frac{d^2x}{dt^2} \]
+        <p>If you know the position as a function of time, differentiate once for velocity and twice for acceleration.</p>
+        <h3>Example</h3>
+        <p>A particle moves with \(x(t) = (1.0)\,t^3 - (6.0)\,t^2 + (9.0)\,t\), with \(x\) in metres and \(t\) in seconds. Then</p>
+        \[ v(t) = 3.0\,t^2 - 12\,t + 9.0 = 3.0\,(t - 1)(t - 3) \qquad a(t) = 6.0\,t - 12 \]
+        <ul>
+          <li>The particle stops momentarily (\(v = 0\)) at \(t = 1.0\ \text{s}\) and \(t = 3.0\ \text{s}\). These are the peak and valley of the \(x\)–\(t\) graph.</li>
+          <li>The acceleration is zero at \(t = 2.0\ \text{s}\). There the \(x\)–\(t\) graph switches from bending down to bending up, and the velocity is at its most negative.</li>
+        </ul>
+        <figure class="fig">
+          <div data-fig="cubic"></div>
+          <figcaption><b>Figure 3.1.</b> Position, velocity, and acceleration for \(x(t) = t^3 - 6t^2 + 9t\), from 0 to 4&nbsp;s. Vertical guides at \(t = 1, 2, 3\ \text{s}\). Where \(x\)–\(t\) has a flat tangent (1&nbsp;s, 3&nbsp;s), \(v = 0\). Where \(v\)–\(t\) has a flat tangent (2&nbsp;s), \(a = 0\).</figcaption>
+        </figure>
+        <div class="callout key">
+          <span class="tag">Reading curvature</span>
+          <p>The way an \(x\)–\(t\) graph <strong>bends</strong> tells you the sign of \(a\). Bending upward (like a cup that holds water): \(a &gt; 0\). Bending downward (like an upside-down cup): \(a &lt; 0\). A straight piece: \(a = 0\).</p>
+        </div>
+      </section>
+
+      <section id="s3-3" aria-labelledby="s3-3h" class="prose">
+        <h2 id="s3-3h">3.3 Going up: integrals</h2>
+        <p>Often we know the acceleration (from forces, or an accelerometer) and want the velocity and position. Run the derivatives backwards: integrate. The area under \(a\)–\(t\) from 0 to \(t\) is the change in velocity, and the area under \(v\)–\(t\) is the change in position:</p>
+        \[ v(t) = v_0 + \int_0^t a(t')\,dt' \qquad\qquad x(t) = x_0 + \int_0^t v(t')\,dt' \]
+        <p>The starting values \(v_0\) and \(x_0\) are the <strong>initial conditions</strong>. Integrating only tells you how much something <em>changed</em>, so you always need to know where you started.</p>
+        <figure class="fig">
+          <div data-fig="ladder"></div>
+          <figcaption><b>Figure 3.2.</b> The ladder of motion. Going down (from position to velocity to acceleration), take the slope or derivative. Going up (from acceleration to velocity to position), take the area or integral and add the initial value.</figcaption>
+        </figure>
+        <div class="callout key">
+          <span class="tag">Worked example: the e-bike, done right</span>
+          <p>\(a(t) = 2.0 - 0.50\,t\), starting from rest at \(x_0 = 0\).</p>
+          <p><strong>Velocity:</strong> \(v(t) = 0 + \int_0^t (2.0 - 0.50\,t')\,dt' = 2.0\,t - 0.25\,t^2\). At \(t = 4.0\ \text{s}\): \(v = 8.0 - 4.0 = 4.0\ \text{m/s}\).</p>
+          <p><strong>Position:</strong> \(x(t) = 0 + \int_0^t (2.0\,t' - 0.25\,t'^2)\,dt' = 1.0\,t^2 - 0.0833\,t^3\). At \(t = 4.0\ \text{s}\): \(x = 16 - 5.3 = 10.7\ \text{m}\).</p>
+          <p><strong>Check with a graph:</strong> \(a\)–\(t\) is a straight line from 2.0 down to 0 over 4.0&nbsp;s. The area under it is a triangle, \(\tfrac12 (4.0)(2.0) = 4.0\ \text{m/s}\). ✓</p>
+        </div>
+        <details class="deeper">
+          <summary>Where the constant-acceleration equations come from</summary>
+          <p>Put \(a(t) = a\) (a constant) into the integrals:</p>
+          \[ v(t) = v_0 + \int_0^t a\,dt' = v_0 + a t \]
+          \[ x(t) = x_0 + \int_0^t (v_0 + a t')\,dt' = x_0 + v_0 t + \tfrac12 a t^2 \]
+          <p>These are equations (1) and (2) from Part 2. The constant-acceleration equations are just one special case of the general integrals.</p>
+        </details>
+      </section>
+
+      <section id="s3-4" aria-labelledby="s3-4h" class="prose">
+        <h2 id="s3-4h">3.4 Acceleration that depends on position or velocity</h2>
+        <p>Sometimes the acceleration is given in terms of \(x\) or \(v\), not \(t\):</p>
+        <ul>
+          <li>A glider on a spring: \(a = -(k/m)\,x\). The farther it is stretched, the harder it is pulled back.</li>
+          <li>A ball with air drag: the drag grows with speed, for example \(a = -c\,v\,|v|\) for a coasting object.</li>
+        </ul>
+        <p>You cannot integrate “\(a\,dt\)” directly, because you don’t yet know \(x(t)\) or \(v(t)\). A computer gets around this by taking tiny time steps \(\Delta t\):</p>
+        \[ v_\text{new} = v + a\,\Delta t \qquad\qquad x_\text{new} = x + v\,\Delta t \]
+        <p>Recompute \(a\) from the new \(x\) and \(v\), and repeat. Each step is a small piece of the area under a graph. Simulation 3 uses a more careful version of this idea (called fourth-order Runge–Kutta), the same method behind the course’s <a href="https://claude.ai/code/artifact/9ab3f31c-2ca6-4698-a249-11c848380498">drop tower simulator</a> with air drag.</p>
+      </section>
+
+      <section class="lab" id="lab3" aria-labelledby="lab3-h">
+        <h2 id="lab3-h">Simulation 3: variable acceleration</h2>
+        <div class="lab-intro">
+          <p>Pick a situation. On the \(x\)–\(t\) graph, a short line shows the <strong>tangent</strong> at the current time: its slope is the velocity in the readout. On the \(v\)–\(t\) and \(a\)–\(t\) graphs, the shaded <strong>area</strong> from 0 to now is the displacement and the change in velocity.</p>
+          <div class="predict"><p><strong>Predict.</strong> Spring glider, released from rest at \(x_0 = +6\ \text{m}\): where is the glider when its speed is largest? What is its acceleration there? Train trip: during the cruise, is the acceleration zero? Is the velocity zero?</p></div>
+        </div>
+        <div data-lab="lab3"></div>
+      </section>
+
+      <section class="practice" id="practice3" aria-labelledby="practice3-h">
+        <h2 id="practice3-h">Practice 3: variable acceleration</h2>
+        <div data-practice="p3"></div>
+      </section>
+    </section>
+
+
+
+    <section id="summary" class="part" aria-labelledby="summary-h">
+      <p class="part-num">Wrap-up</p>
+      <h2 id="summary-h">Summary</h2>
+      <div class="prose">
+        <div class="table-wrap">
+          <table>
+            <caption>Three kinds of motion in one table</caption>
+            <thead><tr><th scope="col"><span class="sr-only">Representation</span></th><th scope="col">Constant velocity</th><th scope="col">Constant acceleration</th><th scope="col">Variable acceleration</th></tr></thead>
+            <tbody>
+              <tr><th scope="row">Motion diagram</th><td>Equal spacing</td><td>Spacing changes by the same amount each step</td><td>Spacing changes unevenly</td></tr>
+              <tr><th scope="row">\(x\)–\(t\) graph</th><td>Straight line</td><td>Parabola</td><td>Any smooth curve</td></tr>
+              <tr><th scope="row">\(v\)–\(t\) graph</th><td>Flat line</td><td>Straight sloped line</td><td>Any curve</td></tr>
+              <tr><th scope="row">\(a\)–\(t\) graph</th><td>Zero</td><td>Flat line</td><td>Any curve</td></tr>
+              <tr><th scope="row">Equations</th><td>\(x = x_0 + v t\)</td><td>The four equations (1)–(4)</td><td>\(v = \dfrac{dx}{dt},\ a = \dfrac{dv}{dt}\); integrals with initial conditions</td></tr>
+            </tbody>
+          </table>
+        </div>
+        <h3>Big ideas to carry forward</h3>
+        <ul>
+          <li>Position, velocity, and acceleration are different quantities. Knowing one does not tell you the others at the same instant.</li>
+          <li>Signs carry direction. Speeding up means \(v\) and \(a\) have the same sign.</li>
+          <li>Slopes take you down the ladder (\(x \to v \to a\)); areas take you up (\(a \to v \to x\)).</li>
+          <li>The four constant-acceleration equations are a special case. Check that \(a\) is constant before you use them.</li>
+        </ul>
+      </div>
+    </section>
+
+    <section id="sources" class="part" aria-labelledby="sources-h">
+      <p class="part-num">Further reading</p>
+      <h2 id="sources-h">Sources and research</h2>
+      <div class="prose">
+        <h3>Textbooks these notes draw on</h3>
+        <ul>
+          <li>OpenStax, <cite>University Physics Volume 1</cite>, Chapter 3: Motion Along a Straight Line (sections 3.1–3.6, including finding velocity and displacement from acceleration).</li>
+          <li><cite>Spiral Mechanics (Calculus-Based)</cite>, section 2.2: Kinematics. The motion-diagram method and the braking-car example come from here.</li>
+          <li>J. Schnick, <cite>Calculus-Based Physics</cite>, chapters on one-dimensional motion and freefall, including the warning against using constant-acceleration equations when acceleration varies.</li>
+          <li><cite>Principles of Mechanics</cite>, Chapter 2: Kinematics (displacement, velocity, acceleration, and free fall).</li>
+        </ul>
+        <details class="deeper">
+          <summary>For instructors: how physics education research shaped these notes</summary>
+          <ul>
+            <li><strong>Targeted difficulties.</strong> Many questions probe confusions documented by Trowbridge and McDermott: mixing up position and velocity (“same position means same speed”) and velocity and acceleration (“zero velocity means zero acceleration”).</li>
+            <li><strong>Graph interpretation.</strong> The slope-versus-height and graph-as-picture traps come from McDermott, Rosenquist and van Zee, and from Beichner’s Test of Understanding Graphs in Kinematics.</li>
+            <li><strong>Predict, observe, explain.</strong> Prediction prompts before each simulation follow the Interactive Lecture Demonstration approach of Sokoloff and Thornton, and the elicit–confront–resolve cycle.</li>
+            <li><strong>Multiple representations.</strong> Every idea appears in words, motion diagrams, graphs and equations, following Van Heuvelen. The problem routine asks for a qualitative picture before any equation.</li>
+            <li><strong>Feedback on reasoning.</strong> Each wrong answer gets feedback aimed at the specific idea behind it, and conceptual questions include a space to write reasoning, which suits peer discussion (Mazur’s Peer Instruction). Hake’s survey showed large gains from this kind of interactive engagement.</li>
+            <li><strong>Accessibility.</strong> Colour is always paired with line style, arrowhead shape or a text label; every graphic has a text description; simulations have keyboard controls, text readouts and data tables.</li>
+          </ul>
+          <p>References: D. E. Trowbridge and L. C. McDermott, <cite>Am. J. Phys.</cite> 48, 1020 (1980) and 49, 242 (1981); L. C. McDermott, M. L. Rosenquist and E. H. van Zee, <cite>Am. J. Phys.</cite> 55, 503 (1987); R. J. Beichner, <cite>Am. J. Phys.</cite> 62, 750 (1994); R. K. Thornton and D. R. Sokoloff, <cite>Am. J. Phys.</cite> 58, 858 (1990); A. Van Heuvelen, <cite>Am. J. Phys.</cite> 59, 891 (1991); R. R. Hake, <cite>Am. J. Phys.</cite> 66, 64 (1998); E. Mazur, <cite>Peer Instruction</cite> (1997).</p>
+        </details>
+      </div>
+    </section>
+
+    <nav class="pager" aria-label="Previous and next page"><a class="prev" href="#part2"><span>Previous page</span>Part 2<span class="long">: Constant acceleration</span></a><a class="next" href="#start"><span>Back to the beginning</span>Start here: ground rules</a></nav>
+  </main>
+</div>
+</div>
+
+<footer>
+  <div class="inner">
+    <p>PHY2048: one-dimensional kinematics. Conventions: right and up are positive; \(g = 9.80\ \text{m/s}^2\).</p>
+  </div>
+</footer>
+
+<script>
+/* ===================== utilities ===================== */
+const R = String.raw;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+let UID = 0;
+const uid = p => `${p}${++UID}`;
+const MINUS = '\u2212';
+function fmt(n, d = 1, plus = false) {
+  if (!isFinite(n)) return '–';
+  let s = n.toFixed(d);
+  if (parseFloat(s) === 0) s = (0).toFixed(d);
+  if (s.startsWith('-')) return MINUS + s.slice(1);
+  return (plus && parseFloat(s) > 0 ? '+' : '') + s;
+}
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+function niceStep(span, target) {
+  const raw = span / Math.max(1, target);
+  const p = Math.pow(10, Math.floor(Math.log10(raw)));
+  const f = raw / p;
+  return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p;
+}
+function niceRange(lo, hi, target = 4, includeZero = true) {
+  if (includeZero) { lo = Math.min(lo, 0); hi = Math.max(hi, 0); }
+  if (hi - lo < 1e-9) { hi += 1; lo -= 1; }
+  const step = niceStep(hi - lo, target);
+  return { lo: Math.floor(lo / step + 1e-9) * step, hi: Math.ceil(hi / step - 1e-9) * step, step };
+}
+function decimalsFor(step) { return step >= 1 ? 0 : step >= 0.1 ? 1 : 2; }
+function ticks(r) { const out = []; for (let v = r.lo; v <= r.hi + r.step * 1e-6; v += r.step) out.push(Math.abs(v) < 1e-9 ? 0 : v); return out; }
+
+/* arrow: solid filled head for velocity, open chevron head for acceleration */
+function arrow(x1, y1, x2, y2, q, open = false, w = 2.6, head = 10) {
+  const dx = x2 - x1, dy = y2 - y1, L = Math.hypot(dx, dy);
+  if (L < 2) return '';
+  const ux = dx / L, uy = dy / L, h = Math.min(head, L * 0.7);
+  const bx = x2 - ux * h, by = y2 - uy * h, px = -uy * h * 0.6, py = ux * h * 0.6;
+  if (open) {
+    return `<line x1="${x1}" y1="${y1}" x2="${x2}" y2="${y2}" class="c-${q}" stroke-width="${w}"/>` +
+      `<polyline points="${bx + px},${by + py} ${x2},${y2} ${bx - px},${by - py}" class="c-${q}" fill="none" stroke-width="${w}" stroke-linejoin="miter"/>`;
+  }
+  return `<line x1="${x1}" y1="${y1}" x2="${bx}" y2="${by}" class="c-${q}" stroke-width="${w}"/>` +
+    `<polygon points="${bx + px},${by + py} ${x2},${y2} ${bx - px},${by - py}" class="f-${q}"/>`;
+}
+function svgOpen(W, H, title, desc, extraClass = '') {
+  const id = uid('g');
+  return `<svg class="svgfig ${extraClass}" viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="${id}t ${id}d" focusable="false">` +
+    `<title id="${id}t">${esc(title)}</title><desc id="${id}d">${esc(desc)}</desc>`;
+}
+const QLABEL = { x: 'position x (m)', y: 'position y (m)', v: 'velocity v (m/s)', a: 'acceleration a (m/s²)' };
+const QCLASS = { x: 'x', y: 'x', v: 'v', a: 'a' };
+
+/* ===================== generic graph ===================== */
+/* o: {w,h,xr,yr,q,series:[{pts,q}],areas:[{pts,q}],vlines:[{t,label}],cursor,tangent:{t,y,slope},markers:[{t,y,label}],extra:(X,Y)=>svg,title,desc,xLabel} */
+function plot(o) {
+  const W = Math.round(o.w), H = o.h || 160;
+  const m = { l: 52, r: 14, t: 24, b: 34 };
+  const pw = W - m.l - m.r, ph = H - m.t - m.b;
+  const xr = o.xr, yr = o.yr;
+  const X = t => m.l + (t - xr.lo) / (xr.hi - xr.lo) * pw;
+  const Y = y => m.t + ph - (y - yr.lo) / (yr.hi - yr.lo) * ph;
+  const qc = QCLASS[o.q] || 'x';
+  let s = svgOpen(W, H, o.title || QLABEL[o.q], o.desc || '', o.cls || '');
+  // grid + tick labels
+  const xd = decimalsFor(xr.step), yd = decimalsFor(yr.step);
+  for (const t of ticks(xr)) {
+    s += `<line class="gridl" x1="${X(t)}" y1="${m.t}" x2="${X(t)}" y2="${m.t + ph}"/>`;
+    s += `<text x="${X(t)}" y="${m.t + ph + 16}" text-anchor="middle" font-size="12.5" class="muted">${fmt(t, xd)}</text>`;
+  }
+  for (const y of ticks(yr)) {
+    s += `<line class="gridl" x1="${m.l}" y1="${Y(y)}" x2="${m.l + pw}" y2="${Y(y)}"/>`;
+    s += `<text x="${m.l - 6}" y="${Y(y) + 4}" text-anchor="end" font-size="12.5" class="muted">${fmt(y, yd)}</text>`;
+  }
+  // axes
+  s += `<line class="axis" x1="${m.l}" y1="${m.t}" x2="${m.l}" y2="${m.t + ph}"/>`;
+  if (yr.lo <= 0 && yr.hi >= 0) s += `<line class="axis" x1="${m.l}" y1="${Y(0)}" x2="${m.l + pw}" y2="${Y(0)}"/>`;
+  else s += `<line class="axis" x1="${m.l}" y1="${m.t + ph}" x2="${m.l + pw}" y2="${m.t + ph}"/>`;
+  s += `<text x="${m.l}" y="15" font-size="13.5" class="txt-${qc}">${esc(o.yLabel || QLABEL[o.q])}</text>`;
+  s += `<text x="${m.l + pw}" y="${H - 3}" text-anchor="end" font-size="12.5" class="muted">${esc(o.xLabel || 'time t (s)')}</text>`;
+  s += `<clipPath id="${o.clip = uid('c')}"><rect x="${m.l}" y="${m.t - 2}" width="${pw}" height="${ph + 4}"/></clipPath><g clip-path="url(#${o.clip})">`;
+  for (const a of (o.areas || [])) {
+    if (a.pts.length < 2) continue;
+    const p0 = a.pts[0], pn = a.pts[a.pts.length - 1];
+    s += `<polygon class="area-${QCLASS[a.q] || qc}" points="${X(p0[0])},${Y(0)} ${a.pts.map(p => `${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(' ')} ${X(pn[0])},${Y(0)}"/>`;
+  }
+  if (o.extraBelow) s += o.extraBelow(X, Y);
+  for (const v of (o.vlines || [])) {
+    s += `<line x1="${X(v.t)}" y1="${m.t}" x2="${X(v.t)}" y2="${m.t + ph}" class="c-ink" stroke-width="1.2" stroke-dasharray="4 4" opacity=".7"/>`;
+  }
+  for (const se of (o.series || [])) {
+    if (!se.pts.length) continue;
+    const q = QCLASS[se.q || o.q];
+    s += `<polyline class="c-${q} ls-${q}" points="${se.pts.map(p => `${X(p[0]).toFixed(1)},${Y(p[1]).toFixed(1)}`).join(' ')}" stroke-linejoin="round"/>`;
+  }
+  if (o.tangent) {
+    const { t, y, slope } = o.tangent, hw = (xr.hi - xr.lo) * 0.08;
+    s += `<line x1="${X(t - hw)}" y1="${Y(y - slope * hw)}" x2="${X(t + hw)}" y2="${Y(y + slope * hw)}" class="c-ink" stroke-width="2.2"/>`;
+  }
+  s += `</g>`;
+  for (const mk of (o.markers || [])) {
+    s += `<circle cx="${X(mk.t)}" cy="${Y(mk.y)}" r="5" class="f-ink"/>`;
+    if (mk.label) s += `<text x="${X(mk.t) + (mk.dx ?? 8)}" y="${Y(mk.y) + (mk.dy ?? -8)}" font-size="13.5" font-weight="700" text-anchor="${mk.anchor || 'start'}">${esc(mk.label)}</text>`;
+  }
+  if (o.extra) s += o.extra(X, Y, m, pw, ph);
+  if (o.cursor != null) s += `<line x1="${X(o.cursor)}" y1="${m.t}" x2="${X(o.cursor)}" y2="${m.t + ph}" class="c-ink" stroke-width="1.5" opacity=".55"/>`;
+  return s + '</svg>';
+}
+function fnPts(f, t0, t1, n = 200) { const p = []; for (let i = 0; i <= n; i++) { const t = t0 + (t1 - t0) * i / n; p.push([t, f(t)]); } return p; }
+
+/* ===================== motion diagrams ===================== */
+/* rows: [{label, pos:[...], accel:'right'|'left'|null}] ; horizontal */
+function motionDiagram(W, rows, o) {
+  const m = { l: o.labelW ?? 34, r: 22 };
+  const rowH = o.rowH || 62, top = 6, axisH = o.axis === false ? 4 : 52;
+  const H = top + rows.length * rowH + axisH;
+  const X = x => m.l + (x - o.range[0]) / (o.range[1] - o.range[0]) * (W - m.l - m.r);
+  let s = svgOpen(W, H, o.title, o.desc, o.cls || '');
+  rows.forEach((r, i) => {
+    const yc = top + i * rowH + rowH - 18;
+    if (r.label) s += `<text x="4" y="${yc + 5}" font-size="15" font-weight="700">${esc(r.label)}</text>`;
+    s += `<line x1="${X(o.range[0])}" y1="${yc}" x2="${X(o.range[1])}" y2="${yc}" class="gridl"/>`;
+    for (let k = 0; k + 1 < r.pos.length; k++) {
+      const a = X(r.pos[k]), b = X(r.pos[k + 1]), dir = Math.sign(b - a);
+      const g = `<g ${o.anim ? `class="pop" style="animation-delay:${0.25 + k * 0.28 + 0.14}s"` : ''}>${arrow(a + dir * 4, yc - 17, b - dir * 4, yc - 17, 'v', false, 2.4, 9)}</g>`;
+      s += g;
+    }
+    r.pos.forEach((p, k) => {
+      s += `<circle cx="${X(p)}" cy="${yc}" r="5.5" class="dot${o.anim ? ' pop' : ''}" ${o.anim ? `style="animation-delay:${0.25 + k * 0.28}s"` : ''}/>`;
+    });
+    if (r.startLabel !== false) s += `<text x="${X(r.pos[0])}" y="${yc + 19}" font-size="12" text-anchor="middle" class="muted">start</text>`;
+    if (r.accel) {
+      const mid = (X(r.pos[0]) + X(r.pos[r.pos.length - 1])) / 2, L = 26, d = r.accel === 'right' ? 1 : -1;
+      s += arrow(mid - d * L, yc + 15, mid + d * L, yc + 15, 'a', true, 2.6, 10);
+      s += `<text x="${mid + d * L + d * 8}" y="${yc + 20}" font-size="14" text-anchor="${d > 0 ? 'start' : 'end'}" class="txt-a">a</text>`;
+    }
+  });
+  if (o.axis !== false) {
+    const ya = H - 34, st = o.tick || niceStep(o.range[1] - o.range[0], 6);
+    s += `<line x1="${X(o.range[0])}" y1="${ya}" x2="${X(o.range[1]) + 10}" y2="${ya}" class="axis"/>`;
+    s += `<polygon points="${X(o.range[1]) + 16},${ya} ${X(o.range[1]) + 6},${ya - 5} ${X(o.range[1]) + 6},${ya + 5}" class="f-ink"/>`;
+    for (let x = Math.ceil(o.range[0] / st) * st; x <= o.range[1] + 1e-9; x += st) {
+      s += `<line x1="${X(x)}" y1="${ya - 5}" x2="${X(x)}" y2="${ya + 5}" class="axis"/>`;
+      s += `<text x="${X(x)}" y="${ya + 20}" font-size="12.5" text-anchor="middle">${fmt(x, 0)}</text>`;
+    }
+    s += `<text x="${X(o.range[1]) + 16}" y="${ya - 9}" font-size="13" text-anchor="end" font-weight="700">+x</text>`;
+    s += `<text x="${X(o.range[0])}" y="${H - 1}" font-size="12" class="muted">position (m)</text>`;
+  }
+  if (o.extra) s += o.extra(X, H);
+  return s + '</svg>';
+}
+
+/* ===================== static figures ===================== */
+const FIGS = {
+  hero(W) {
+    const pos = []; for (let t = 0; t <= 4.0001; t += 0.5) pos.push(15 * t - 1.875 * t * t);
+    return motionDiagram(W, [{ label: '', pos, startLabel: true }], {
+      range: [-2, 34], labelW: 14, anim: true, rowH: 64, tick: 10,
+      title: 'Motion diagram of a braking car',
+      desc: 'Nine dots from x = 0 to x = 30 metres, one every 0.5 seconds. Velocity arrows between dots point right and get shorter, and the dots bunch up near the stop line at 30 metres.',
+      extra: (X, H) => `<line x1="${X(30)}" y1="6" x2="${X(30)}" y2="${H - 34}" class="c-ink" stroke-width="2.5"/>` +
+        `<text x="${X(30) - 6}" y="18" font-size="13" text-anchor="end" font-weight="700">stop line</text>`
+    });
+  },
+  axis(W) {
+    const m = 30, H = 120, lo = -6, hi = 6, X = x => m + (x - lo) / (hi - lo) * (W - 2 * m - 10), ya = 78;
+    let s = svgOpen(W, H, 'Coordinate axis with a cart and a tree', 'A horizontal number line from minus 6 to plus 6 metres with the origin marked 0 and an arrow labelled plus x pointing right. A cart sits at minus 3 metres and a tree at plus 4 metres.');
+    s += `<line x1="${X(lo)}" y1="${ya}" x2="${X(hi) + 10}" y2="${ya}" class="axis"/>`;
+    s += `<polygon points="${X(hi) + 18},${ya} ${X(hi) + 7},${ya - 6} ${X(hi) + 7},${ya + 6}" class="f-ink"/>`;
+    s += `<text x="${X(hi) + 16}" y="${ya - 12}" text-anchor="end" font-size="14" font-weight="700">+x</text>`;
+    for (let x = lo; x <= hi; x++) {
+      s += `<line x1="${X(x)}" y1="${ya - (x === 0 ? 9 : 5)}" x2="${X(x)}" y2="${ya + (x === 0 ? 9 : 5)}" class="axis" ${x === 0 ? 'stroke-width="3"' : ''}/>`;
+      if (x % 2 === 0 || W > 520) s += `<text x="${X(x)}" y="${ya + 24}" text-anchor="middle" font-size="13" ${x === 0 ? 'font-weight="700"' : ''}>${fmt(x, 0)}</text>`;
+    }
+    const cx = X(-3);
+    s += `<rect x="${cx - 18}" y="${ya - 30}" width="36" height="18" rx="3" class="f-ink" opacity=".85"/><circle cx="${cx - 10}" cy="${ya - 9}" r="4.5" class="f-ink"/><circle cx="${cx + 10}" cy="${ya - 9}" r="4.5" class="f-ink"/>`;
+    s += `<text x="${cx}" y="${ya - 38}" text-anchor="middle" font-size="13">cart, x = ${MINUS}3 m</text>`;
+    const tx = X(4);
+    s += `<rect x="${tx - 3}" y="${ya - 20}" width="6" height="20" class="f-ink"/><polygon points="${tx - 15},${ya - 18} ${tx},${ya - 52} ${tx + 15},${ya - 18}" class="f-a" opacity=".85"/>`;
+    s += `<text x="${tx + 20}" y="${ya - 30}" font-size="13">tree, x = +4 m</text>`;
+    return s + '</svg>';
+  },
+  dispdist(W) {
+    const m = 30, H = 170, lo = 0, hi = 10, X = x => m + (x - lo) / (hi - lo) * (W - 2 * m - 10), ya = 136;
+    let s = svgOpen(W, H, 'Displacement versus distance', 'A walk drawn above a number line from 0 to 10 metres. First leg: an arrow from 2 to 8 metres, labelled 6 metres. Second leg: an arrow back from 8 to 5 metres, labelled 3 metres. Below them, a thick blue arrow from 2 to 5 metres is labelled displacement plus 3 metres.');
+    s += `<line x1="${X(lo)}" y1="${ya}" x2="${X(hi) + 10}" y2="${ya}" class="axis"/><polygon points="${X(hi) + 18},${ya} ${X(hi) + 7},${ya - 6} ${X(hi) + 7},${ya + 6}" class="f-ink"/>`;
+    s += `<text x="${X(hi) + 16}" y="${ya - 10}" text-anchor="end" font-size="14" font-weight="700">+x</text>`;
+    for (let x = lo; x <= hi; x++) { s += `<line x1="${X(x)}" y1="${ya - 5}" x2="${X(x)}" y2="${ya + 5}" class="axis"/><text x="${X(x)}" y="${ya + 22}" text-anchor="middle" font-size="12.5">${x}</text>`; }
+    s += arrow(X(2), 30, X(8), 30, 'ink', false, 2.2) + `<text x="${X(5)}" y="22" text-anchor="middle" font-size="13">leg 1: 6 m</text>`;
+    s += arrow(X(8), 62, X(5), 62, 'ink', false, 2.2) + `<text x="${X(6.5)}" y="54" text-anchor="middle" font-size="13">leg 2: 3 m</text>`;
+    s += `<line x1="${X(8)}" y1="30" x2="${X(8)}" y2="62" class="c-ink" stroke-dasharray="3 3"/>`;
+    s += arrow(X(2), 98, X(5), 98, 'x', false, 4.5, 13) + `<text x="${X(5) + 10}" y="103" font-size="13.5" class="txt-x">Δx = +3 m</text>`;
+    s += `<circle cx="${X(2)}" cy="98" r="5" class="f-ink"/><text x="${X(2) - 8}" y="103" text-anchor="end" font-size="12.5">start</text>`;
+    return s + '</svg>';
+  },
+  'md-const'(W) {
+    const A = [], B = [], C = [];
+    for (let t = 0; t <= 5; t++) { A.push(1 + 1.5 * t); C.push(1 + 0.4 * t * t); }
+    for (let t = 0; t <= 4; t++) B.push(12 - 2.5 * t);
+    return motionDiagram(W, [{ label: 'A', pos: A }, { label: 'B', pos: B }, { label: 'C', pos: C }], {
+      range: [0, 13], tick: 1,
+      title: 'Three motion diagrams', desc: 'Row A: six evenly spaced dots moving right, 1.5 metres apart. Row B: five evenly spaced dots moving left, 2.5 metres apart. Row C: six dots moving right with gaps that grow each second.'
+    });
+  },
+  'md-accel'(W) {
+    const A = [], B = [], C = [], D = [];
+    for (let t = 0; t <= 4; t++) { A.push(1 + 0.5 * t + 0.4 * t * t); B.push(1 + 3 * t - 0.35 * t * t); C.push(12 - 0.5 * t - 0.4 * t * t); D.push(12 - 3 * t + 0.35 * t * t); }
+    return motionDiagram(W, [{ label: 'A', pos: A, accel: 'right' }, { label: 'B', pos: B, accel: 'left' }, { label: 'C', pos: C, accel: 'left' }, { label: 'D', pos: D, accel: 'right' }], {
+      range: [0, 13], tick: 1, rowH: 70,
+      title: 'Motion diagrams with acceleration', desc: 'A: moving right with growing gaps, acceleration arrow points right. B: moving right with shrinking gaps, acceleration arrow points left. C: moving left with growing gaps, acceleration arrow points left. D: moving left with shrinking gaps, acceleration arrow points right.'
+    });
+  },
+  'cv-graphs'(W) {
+    const xr = { lo: 0, hi: 6, step: 1 };
+    const a = plot({ w: W, h: 190, q: 'x', xr, yr: { lo: 0, hi: 12, step: 2 }, series: [{ pts: fnPts(t => 2 + 1.5 * t, 0, 6, 2) }],
+      title: 'Position versus time at constant velocity', desc: 'Straight line starting at 2 metres and rising to 11 metres at 6 seconds. A slope triangle from 0 to 4 seconds shows a rise of 6 metres over a run of 4 seconds.',
+      extra: (X, Y) => `<line x1="${X(0)}" y1="${Y(2)}" x2="${X(4)}" y2="${Y(2)}" class="c-ink" stroke-dasharray="5 4"/><line x1="${X(4)}" y1="${Y(2)}" x2="${X(4)}" y2="${Y(8)}" class="c-ink" stroke-dasharray="5 4"/>` +
+        `<text x="${X(2)}" y="${Y(2) + 17}" text-anchor="middle" font-size="13">Δt = 4 s</text><text x="${X(4) + 6}" y="${Y(5) + 4}" font-size="13">Δx = 6 m</text>` +
+        `<text x="${X(5)}" y="${Y(2) + 17}" text-anchor="middle" font-size="13" font-weight="700">slope = 1.5 m/s</text>` });
+    const b = plot({ w: W, h: 170, q: 'v', xr, yr: { lo: 0, hi: 2, step: 0.5 }, series: [{ pts: [[0, 1.5], [6, 1.5]] }], areas: [{ pts: [[0, 1.5], [4, 1.5]] }],
+      title: 'Velocity versus time at constant velocity', desc: 'Flat line at 1.5 metres per second. The rectangle under it from 0 to 4 seconds is shaded and labelled area equals 6 metres.',
+      extra: (X, Y) => `<text x="${X(2)}" y="${Y(0.7)}" text-anchor="middle" font-size="14" font-weight="700">area = 6 m</text>` });
+    return a + b;
+  },
+  'ca-graphs'(W) {
+    const xr = { lo: 0, hi: 6, step: 1 };
+    return plot({ w: W, h: 180, q: 'x', xr, yr: { lo: 0, hi: 10, step: 2 }, series: [{ pts: fnPts(t => 6 * t - t * t, 0, 6) }], tangent: { t: 3, y: 9, slope: 0 },
+        markers: [{ t: 3, y: 9, label: 'flat tangent: v = 0', dy: -9, anchor: 'middle', dx: 0 }],
+        title: 'Position versus time', desc: 'Downward-opening parabola from 0 metres at 0 seconds up to 9 metres at 3 seconds and back to 0 at 6 seconds. At the peak the tangent line is flat.' }) +
+      plot({ w: W, h: 170, q: 'v', xr, yr: { lo: -6, hi: 6, step: 3 }, series: [{ pts: [[0, 6], [6, -6]] }],
+        title: 'Velocity versus time', desc: 'Straight line from plus 6 metres per second at 0 seconds to minus 6 at 6 seconds, crossing zero at 3 seconds. Slope is minus 2 metres per second squared.' }) +
+      plot({ w: W, h: 150, q: 'a', xr, yr: { lo: -3, hi: 1, step: 1 }, series: [{ pts: [[0, -2], [6, -2]] }],
+        title: 'Acceleration versus time', desc: 'Flat line at minus 2 metres per second squared for the whole 6 seconds.' });
+  },
+  trapezoid(W) {
+    const v0 = 2, a = 1.5, T = 4, v1 = v0 + a * T;
+    const pat = uid('h');
+    return plot({ w: W, h: 230, q: 'v', xr: { lo: 0, hi: 5, step: 1 }, yr: { lo: 0, hi: 10, step: 2 }, series: [{ pts: [[0, v0], [5, v0 + 5 * a]] }],
+      title: 'Area under a straight velocity line', desc: 'Velocity rises in a straight line from v zero equals 2 metres per second. Under it, from 0 to t equals 4 seconds, a shaded rectangle of height v zero is labelled v zero t, and a hatched triangle above it, of height a t, is labelled one half a t squared.',
+      extraBelow: (X, Y) => `<defs><pattern id="${pat}" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="7" class="c-v" stroke-width="2"/></pattern></defs>` +
+        `<rect x="${X(0)}" y="${Y(v0)}" width="${X(T) - X(0)}" height="${Y(0) - Y(v0)}" class="area-v"/>` +
+        `<polygon points="${X(0)},${Y(v0)} ${X(T)},${Y(v1)} ${X(T)},${Y(v0)}" fill="url(#${pat})" opacity=".55"/>`,
+      extra: (X, Y) => `<text x="${X(2)}" y="${Y(v0 / 2) + 5}" text-anchor="middle" font-size="14" font-weight="700">v₀t</text>` +
+        `<text x="${X(3.0)}" y="${Y(v0 + 1.1)}" text-anchor="middle" font-size="14" font-weight="700" style="paint-order:stroke" stroke="var(--surface)" stroke-width="5">½at²</text>` +
+        `<line x1="${X(T)}" y1="${Y(0)}" x2="${X(T)}" y2="${Y(v1)}" class="c-ink" stroke-dasharray="4 3"/>` +
+        `<text x="${X(T) + 6}" y="${Y((v0 + v1) / 2) + 4}" font-size="13">at</text><text x="${X(T) + 6}" y="${Y(v1) + 4}" font-size="13">v</text>` +
+        `<text x="${X(0) + 6}" y="${Y(v0) - 6}" font-size="13">v₀</text><text x="${X(T)}" y="${Y(0) - 6}" text-anchor="end" font-size="13">t</text>`
+    });
+  },
+  toss(W) {
+    W = Math.min(W, 540);
+    const H = 470, g = 9.8, v0 = 14.7, top = 30, bot = H - 50, ymax = 12;
+    const Y = y => bot - y / ymax * (bot - top);
+    const ax = 46, upX = Math.max(ax + 80, W * 0.34), dnX = upX + Math.max(64, W * 0.15), vs = 3.0;
+    let s = svgOpen(W, H, 'Motion diagram of a ball thrown straight up', 'Vertical axis from 0 to 12 metres. On the left, dots for the way up get closer together toward the top, with upward velocity arrows that shrink. At the top, 11.0 metres at 1.5 seconds, velocity is zero. On the right, dots for the way down spread apart with downward velocity arrows that grow. A large acceleration arrow points down, labelled a equals minus 9.80 metres per second squared at every dot.', 'narrow');
+    s += `<line x1="${ax}" y1="${Y(0)}" x2="${ax}" y2="${top - 14}" class="axis"/><polygon points="${ax},${top - 22} ${ax - 5},${top - 11} ${ax + 5},${top - 11}" class="f-ink"/>`;
+    s += `<text x="${ax + 8}" y="${top - 12}" font-size="13" font-weight="700">+y</text>`;
+    for (let y = 0; y <= 12; y += 2) s += `<line x1="${ax - 5}" y1="${Y(y)}" x2="${ax + 5}" y2="${Y(y)}" class="axis"/><text x="${ax - 9}" y="${Y(y) + 4}" font-size="12.5" text-anchor="end">${y}</text>`;
+    s += `<text x="4" y="${H - 8}" font-size="12" class="muted">y (m)</text>`;
+    s += `<line x1="${ax}" y1="${Y(0)}" x2="${W - 10}" y2="${Y(0)}" class="c-ink" stroke-width="2"/><text x="${W - 10}" y="${Y(0) + 18}" text-anchor="end" font-size="12.5">launch height, y = 0</text>`;
+    for (let i = 0; i <= 12; i++) {
+      const t = i * 0.25, y = v0 * t - 0.5 * g * t * t, v = v0 - g * t;
+      const atTop = i === 6, cx = atTop ? (upX + dnX) / 2 : (i < 6 ? upX : dnX);
+      if (!atTop) { const ox = i < 6 ? -13 : 13; s += arrow(cx + ox, Y(y), cx + ox, Y(y) - v * vs, 'v', false, 2.4, 8); }
+      s += `<circle cx="${cx}" cy="${Y(y)}" r="5.5" class="dot"/>`;
+      if (i === 0) s += `<text x="${cx + 10}" y="${Y(y) - 4}" font-size="12">t = 0</text>`;
+      if (i === 12) s += `<text x="${cx + 10}" y="${Y(y) - 4}" font-size="12">t = 3.0 s</text>`;
+      if (atTop) s += `<text x="${cx}" y="${Y(y) - 12}" font-size="12.5" text-anchor="middle" font-weight="700">top: v = 0</text>`;
+    }
+    s += `<text x="${upX - 26}" y="${Y(7)}" font-size="13" text-anchor="end" font-weight="700">way up</text><text x="${dnX + 26}" y="${Y(9.6)}" font-size="13" font-weight="700">way down</text>`;
+    const axA = Math.min(W - 60, dnX + 110);
+    s += arrow(axA, Y(9.5), axA, Y(5.5), 'a', true, 3, 13);
+    s += `<text x="${axA}" y="${Y(5.5) + 22}" font-size="13" text-anchor="middle" class="txt-a">a = ${MINUS}9.80 m/s²</text><text x="${axA}" y="${Y(5.5) + 38}" font-size="12" text-anchor="middle">at every dot</text>`;
+    return s + '</svg>';
+  },
+  cubic(W) {
+    const xr = { lo: 0, hi: 4, step: 1 }, vl = [{ t: 1 }, { t: 2 }, { t: 3 }];
+    return plot({ w: W, h: 180, q: 'x', xr, yr: { lo: 0, hi: 5, step: 1 }, vlines: vl, series: [{ pts: fnPts(t => t ** 3 - 6 * t * t + 9 * t, 0, 4) }],
+        markers: [{ t: 1, y: 4, label: 'peak, v = 0', dy: -9 }, { t: 3, y: 0, label: 'valley, v = 0', dy: -9 }],
+        title: 'Position versus time for x = t cubed minus 6 t squared plus 9 t', desc: 'Rises from 0 to a peak of 4 metres at 1 second, falls to 0 at 3 seconds, then rises to 4 metres at 4 seconds. Bends downward before 2 seconds and upward after.' }) +
+      plot({ w: W, h: 170, q: 'v', xr, yr: { lo: -3, hi: 9, step: 3 }, vlines: vl, series: [{ pts: fnPts(t => 3 * t * t - 12 * t + 9, 0, 4) }],
+        markers: [{ t: 2, y: -3, label: 'lowest v, a = 0', dy: 18, dx: 8 }],
+        title: 'Velocity versus time', desc: 'Upward-opening parabola: 9 metres per second at 0, zero at 1 second, minimum of minus 3 at 2 seconds, zero at 3 seconds, 9 at 4 seconds.' }) +
+      plot({ w: W, h: 170, q: 'a', xr, yr: { lo: -12, hi: 12, step: 6 }, vlines: vl, series: [{ pts: [[0, -12], [4, 12]] }],
+        title: 'Acceleration versus time', desc: 'Straight line from minus 12 metres per second squared at 0 to plus 12 at 4 seconds, crossing zero at 2 seconds.' });
+  },
+  ladder(W) {
+    const bw = Math.min(230, W * 0.44), bx = (W - bw) / 2, bh = 54, gap = 56, H = 20 + 3 * bh + 2 * gap + 16;
+    const ys = [20, 20 + bh + gap, 20 + 2 * (bh + gap)];
+    const names = [['Position', 'x(t)', 'x', ''], ['Velocity', 'v(t)', 'v', '9 5'], ['Acceleration', 'a(t)', 'a', '2 4 9 4']];
+    let s = svgOpen(W, H, 'The ladder of motion', 'Three boxes stacked top to bottom: position x of t, velocity v of t, acceleration a of t. Arrows on the left point down, labelled slope, d by d t. Arrows on the right point up, labelled area, integral d t, plus initial value.');
+    names.forEach((n, i) => {
+      s += `<rect x="${bx}" y="${ys[i]}" width="${bw}" height="${bh}" rx="8" fill="var(--surface)" class="c-${n[2]}" stroke-width="3" ${n[3] ? `stroke-dasharray="${n[3]}"` : ''}/>`;
+      s += `<text x="${W / 2}" y="${ys[i] + 33}" text-anchor="middle" font-size="16" font-weight="700" class="txt-${n[2]}">${n[0]} ${n[1]}</text>`;
+    });
+    for (let i = 0; i < 2; i++) {
+      const y1 = ys[i] + bh + 4, y2 = ys[i + 1] - 4, lx = bx - 18, rx = bx + bw + 18;
+      s += arrow(lx, y1, lx, y2, 'ink', false, 2.4, 10) + arrow(rx, y2, rx, y1, 'ink', false, 2.4, 10);
+      s += `<text x="${lx - 8}" y="${(y1 + y2) / 2 - 2}" text-anchor="end" font-size="13" font-weight="700">slope</text><text x="${lx - 8}" y="${(y1 + y2) / 2 + 14}" text-anchor="end" font-size="12.5">d/dt</text>`;
+      s += `<text x="${rx + 8}" y="${(y1 + y2) / 2 - 8}" font-size="13" font-weight="700">area</text><text x="${rx + 8}" y="${(y1 + y2) / 2 + 7}" font-size="12.5">∫ dt</text><text x="${rx + 8}" y="${(y1 + y2) / 2 + 22}" font-size="12.5">+ start value</text>`;
+    }
+    return s + '</svg>';
+  },
+
+  /* ---------- question figures ---------- */
+  'p1q1md'(W) {
+    return motionDiagram(W, [{ label: '', pos: [8, 6, 4, 2, 0] }], { range: [-1, 9], tick: 1, labelW: 14,
+      title: 'Motion diagram of a toy car', desc: 'Five evenly spaced dots, 2 metres apart, from x = 8 metres to x = 0, with velocity arrows pointing left.' });
+  },
+  'p1q1a'(W) { return smallX(W, t => 2 * t, 'Graph A', 'Straight line rising from 0 metres at 0 seconds to 8 metres at 4 seconds.'); },
+  'p1q1b'(W) { return smallX(W, t => 8 - 0.5 * t * t, 'Graph B', 'Curve falling from 8 metres at 0 seconds to 0 at 4 seconds, getting steeper as time goes on.'); },
+  'p1q1c'(W) { return smallX(W, t => 8, 'Graph C', 'Flat line at 8 metres from 0 to 4 seconds.'); },
+  'p1q1d'(W) { return smallX(W, t => 8 - 2 * t, 'Graph D', 'Straight line falling from 8 metres at 0 seconds to 0 at 4 seconds.'); },
+  'p1q2'(W) {
+    return plot({ cls: 'narrow', w: Math.min(W, 560), h: 220, q: 'x', xr: { lo: 0, hi: 6, step: 1 }, yr: { lo: -2, hi: 10, step: 2 },
+      series: [{ pts: [[0, 1], [6, 7]] }, { pts: [[0, -2], [6, 10]] }], vlines: [{ t: 3 }],
+      extra: (X, Y) => `<text x="${X(6) - 6}" y="${Y(7) + 18}" font-size="14" font-weight="700" text-anchor="end">A</text><text x="${X(5.6)}" y="${Y(9.2) - 4}" font-size="14" font-weight="700" text-anchor="end">B</text>`,
+      title: 'Position versus time for carts A and B', desc: 'Line A rises from 1 metre at 0 seconds to 7 metres at 6 seconds. Line B rises more steeply, from minus 2 metres to 10 metres. The lines cross at t = 3 seconds, x = 4 metres, marked by a dashed vertical line.' });
+  },
+  'p1q6'(W) {
+    return plot({ cls: 'narrow', w: Math.min(W, 560), h: 220, q: 'x', xr: { lo: 0, hi: 12, step: 2 }, yr: { lo: 0, hi: 40, step: 10 },
+      series: [{ pts: [[0, 40], [8, 0], [12, 0]] }],
+      title: 'Position versus time for a jogger', desc: 'Straight line from 40 metres at 0 seconds down to 0 metres at 8 seconds, then flat at 0 metres until 12 seconds.' });
+  },
+  'p2q3'(W) {
+    return plot({ cls: 'narrow', w: Math.min(W, 560), h: 220, q: 'v', xr: { lo: 0, hi: 6, step: 1 }, yr: { lo: -8, hi: 4, step: 2 },
+      series: [{ pts: [[0, 4], [6, -8]] }],
+      title: 'Velocity versus time', desc: 'Straight line from plus 4 metres per second at 0 seconds down to minus 8 metres per second at 6 seconds, crossing zero at 2 seconds.' });
+  },
+  'p3q1'(W) {
+    return plot({ cls: 'narrow', w: Math.min(W, 560), h: 200, q: 'a', xr: { lo: 0, hi: 6, step: 1 }, yr: { lo: 0, hi: 4, step: 1 },
+      series: [{ pts: [[0, 3], [4, 0], [6, 0]] }],
+      title: 'Acceleration versus time', desc: 'Straight line from 3 metres per second squared at 0 seconds down to 0 at 4 seconds, then flat at 0 until 6 seconds.' });
+  },
+  'p3q3'(W) {
+    return plot({ cls: 'narrow', w: Math.min(W, 560), h: 210, q: 'x', xr: { lo: 0, hi: 6, step: 1 }, yr: { lo: 0, hi: 20, step: 5 },
+      series: [{ pts: fnPts(t => 8 * t - t * t, 0, 6) }], markers: [{ t: 2, y: 12, label: 'P', dx: -10, dy: -8, anchor: 'end' }],
+      title: 'Position versus time with point P', desc: 'A curve rising from 0 and bending downward, like the left side of a hill, reaching 16 metres at 4 seconds and dropping to 12 metres at 6 seconds. Point P is at 2 seconds on the rising part, before the top.' });
+  },
+  'p3q6'(W) {
+    return plot({ cls: 'narrow', w: Math.min(W, 560), h: 210, q: 'a', xr: { lo: 0, hi: 9, step: 1 }, yr: { lo: -3, hi: 5, step: 1 },
+      series: [{ pts: [[0, 4], [3, 4], [3, 0], [5, 0], [5, -2], [9, -2]] }],
+      title: 'Acceleration versus time in three stages', desc: 'Acceleration is plus 4 metres per second squared from 0 to 3 seconds, zero from 3 to 5 seconds, and minus 2 metres per second squared from 5 to 9 seconds.' });
+  }
+};
+function smallX(W, f, title, desc) {
+  return plot({ w: W, h: 150, q: 'x', xr: { lo: 0, hi: 4, step: 1 }, yr: { lo: 0, hi: 8, step: 4 }, series: [{ pts: fnPts(f, 0, 4, 60) }], title, desc });
+}
+
+function renderFigure(el) {
+  const fn = FIGS[el.dataset.fig]; if (!fn) return;
+  const w = Math.max(260, Math.floor(el.clientWidth || el.parentElement.clientWidth || 600));
+  if (el._w === w) return;
+  el._w = w;
+  el.innerHTML = fn(w);
+}
+
+/* ===================== simulations ===================== */
+const UNIT_SPOKEN = { 'm': 'metres', 'm/s': 'metres per second', 'm/s²': 'metres per second squared', 'm/s³': 'metres per second cubed', 's⁻²': 'per second squared', 's': 'seconds', '1/m': 'per metre' };
+const G = 9.80;
+const LABS = {
+  lab1: { tangent: false, modes: [{
+    id: 'cart', label: 'Cart', orient: 'h', sym: 'x', noun: 'cart', fixedRange: [-20, 20], tMax: () => 8,
+    params: [{ k: 'x0', label: 'Starting position x₀', min: -15, max: 15, step: 1, val: -10, unit: 'm', d: 0 },
+             { k: 'v', label: 'Velocity v', min: -5, max: 5, step: 0.5, val: 3, unit: 'm/s', d: 1 }],
+    init: p => ({ x: p.x0, v: p.v }), acc: () => 0
+  }] },
+  lab2: { tangent: true, modes: [{
+    id: 'cart', label: 'Cart on a level track', orient: 'h', sym: 'x', noun: 'cart', fixedRange: [-25, 25], tMax: () => 8,
+    params: [{ k: 'x0', label: 'Starting position x₀', min: -20, max: 20, step: 1, val: 0, unit: 'm', d: 0 },
+             { k: 'v0', label: 'Initial velocity v₀', min: -8, max: 8, step: 0.5, val: 6, unit: 'm/s', d: 1 },
+             { k: 'a', label: 'Acceleration a', min: -3, max: 3, step: 0.25, val: -2, unit: 'm/s²', d: 2 }],
+    init: p => ({ x: p.x0, v: p.v0 }), acc: (t, x, v, p) => p.a
+  }, {
+    id: 'ball', label: 'Ball thrown straight up', orient: 'v', sym: 'y', noun: 'ball', ground: true, tMax: () => 6,
+    params: [{ k: 'y0', label: 'Release height y₀', min: 0, max: 20, step: 0.5, val: 2, unit: 'm', d: 1 },
+             { k: 'v0', label: 'Initial velocity v₀', min: -5, max: 20, step: 0.5, val: 12, unit: 'm/s', d: 1 }],
+    note: 'Acceleration is fixed at a = −9.80 m/s² (free fall, up is positive).',
+    init: p => ({ x: p.y0, v: p.v0 }), acc: () => -G
+  }] },
+  lab3: { tangent: true, modes: [{
+    id: 'sled', label: 'Rocket sled', orient: 'h', sym: 'x', noun: 'sled', tMax: () => 6,
+    params: [{ k: 'b', label: 'Growth rate b', min: 0.2, max: 2, step: 0.1, val: 1, unit: 'm/s³', d: 1 },
+             { k: 'v0', label: 'Initial velocity v₀', min: -4, max: 4, step: 0.5, val: 0, unit: 'm/s', d: 1 }],
+    note: 'a = b·t. The acceleration grows steadily as the engine throttles up.',
+    init: p => ({ x: 0, v: p.v0 }), acc: (t, x, v, p) => p.b * t
+  }, {
+    id: 'spring', label: 'Glider on a spring', orient: 'h', sym: 'x', noun: 'glider', tMax: () => 10,
+    params: [{ k: 'x0', label: 'Release position x₀', min: -8, max: 8, step: 0.5, val: 6, unit: 'm', d: 1 },
+             { k: 'v0', label: 'Initial velocity v₀', min: -4, max: 4, step: 0.5, val: 0, unit: 'm/s', d: 1 },
+             { k: 'km', label: 'Spring stiffness k/m', min: 0.25, max: 4, step: 0.25, val: 1, unit: 's⁻²', d: 2 }],
+    note: 'a = −(k/m)·x. The acceleration depends on position: the farther from x = 0, the stronger the pull back.',
+    init: p => ({ x: p.x0, v: p.v0 }), acc: (t, x, v, p) => -p.km * x
+  }, {
+    id: 'train', label: 'Train between stations', orient: 'h', sym: 'x', noun: 'train', tMax: p => 5 + p.tc,
+    params: [{ k: 'a1', label: 'Starting acceleration', min: 0.5, max: 3, step: 0.25, val: 2, unit: 'm/s²', d: 2 },
+             { k: 'tc', label: 'Cruise time', min: 0, max: 4, step: 0.5, val: 2, unit: 's', d: 1 }],
+    note: 'Three stages: speeds up for 2 s, cruises with a = 0, then brakes for 2 s with the same size of acceleration.',
+    init: () => ({ x: 0, v: 0 }), acc: (t, x, v, p) => t < 2 ? p.a1 : t < 2 + p.tc ? 0 : t < 4 + p.tc ? -p.a1 : 0
+  }, {
+    id: 'drag', label: 'Coasting with air drag', orient: 'h', sym: 'x', noun: 'cart', tMax: () => 8,
+    params: [{ k: 'v0', label: 'Initial velocity v₀', min: 2, max: 15, step: 0.5, val: 10, unit: 'm/s', d: 1 },
+             { k: 'c', label: 'Drag constant c', min: 0.02, max: 0.3, step: 0.02, val: 0.1, unit: '1/m', d: 2 }],
+    note: 'a = −c·v·|v|. The acceleration depends on velocity: the faster it goes, the harder the air pushes back.',
+    init: p => ({ x: 0, v: p.v0 }), acc: (t, x, v, p) => -p.c * v * Math.abs(v)
+  }] }
+};
+
+function simulate(mode, p) {
+  const dt = 0.002, f = (t, x, v) => mode.acc(t, x, v, p);
+  let t = 0, { x, v } = mode.init(p);
+  const T = [0], X = [x], V = [v], A = [f(0, x, v)];
+  let end = 'time';
+  const tMax = mode.tMax(p), rg = mode.fixedRange;
+  if (mode.ground && x <= 0 && v <= 0) return { T, X, V, A, end: 'ground0', tEnd: 0, dt };
+  while (t < tMax - 1e-9) {
+    const k1x = v, k1v = f(t, x, v);
+    const k2x = v + dt / 2 * k1v, k2v = f(t + dt / 2, x + dt / 2 * k1x, v + dt / 2 * k1v);
+    const k3x = v + dt / 2 * k2v, k3v = f(t + dt / 2, x + dt / 2 * k2x, v + dt / 2 * k2v);
+    const k4x = v + dt * k3v, k4v = f(t + dt, x + dt * k3x, v + dt * k3v);
+    const x2 = x + dt / 6 * (k1x + 2 * k2x + 2 * k3x + k4x), v2 = v + dt / 6 * (k1v + 2 * k2v + 2 * k3v + k4v), t2 = t + dt;
+    if (mode.ground && x2 < 0) {
+      const fr = x / (x - x2); T.push(t + fr * dt); X.push(0); V.push(v + fr * (v2 - v)); A.push(f(t, 0, v)); end = 'ground'; break;
+    }
+    if (rg && (x2 < rg[0] || x2 > rg[1])) {
+      const edge = x2 < rg[0] ? rg[0] : rg[1], fr = (edge - x) / (x2 - x);
+      T.push(t + fr * dt); X.push(edge); V.push(v + fr * (v2 - v)); A.push(f(t, edge, v)); end = 'edge'; break;
+    }
+    t = t2; x = x2; v = v2; T.push(t); X.push(x); V.push(v); A.push(f(t, x, v));
+  }
+  return { T, X, V, A, end, tEnd: T[T.length - 1], dt };
+}
+
+function idxAt(d, t) { if (t >= d.tEnd - 1e-9) return d.T.length - 1; return Math.max(0, Math.min(d.T.length - 1, Math.floor(t / d.dt + 1e-6))); }
+function sampled(d, i1, q) {
+  const arr = q === 'x' ? d.X : q === 'v' ? d.V : d.A, k = Math.max(1, Math.ceil(d.T.length / 450)), out = [];
+  for (let i = 0; i <= i1; i += k) out.push([d.T[i], arr[i]]);
+  if (out.length && out[out.length - 1][0] !== d.T[i1]) out.push([d.T[i1], arr[i1]]);
+  return out;
+}
+function motionWords(mode, v, a) {
+  const eps = 0.02, n = mode.noun;
+  if (Math.abs(v) < eps) return Math.abs(a) < eps ? `The ${n} is at rest.` : `The ${n} is momentarily at rest, but its velocity is still changing.`;
+  const dir = mode.orient === 'v' ? (v > 0 ? 'up' : 'down') : (v > 0 ? 'right' : 'left');
+  const how = Math.abs(a) < eps ? 'at constant speed' : (v * a > 0 ? 'and speeding up' : 'and slowing down');
+  return `The ${n} is moving ${dir} ${how}.`;
+}
+
+function createLab(host) {
+  const cfg = LABS[host.dataset.lab], L = { modeIdx: 0, p: {}, t: 0, playing: false, speed: 1, raf: null };
+  const id = uid('lab');
+  const multi = cfg.modes.length > 1;
+  host.innerHTML = `
+  <div class="lab-grid">
+    <div class="viewport">
+      <div class="track-wrap"></div>
+      <div class="plots"><div data-q="x"></div><div data-q="v"></div><div data-q="a"></div></div>
+    </div>
+    <div class="ctrls">
+      ${multi ? `<div class="ctrl"><label for="${id}m">Situation</label><select id="${id}m">${cfg.modes.map((m, i) => `<option value="${i}">${esc(m.label)}</option>`).join('')}</select></div>` : ''}
+      <p class="mode-note" style="margin:0;font-size:.95rem"></p>
+      <div class="sliders" style="display:flex;flex-direction:column;gap:.9rem"></div>
+      <div class="btns" role="group" aria-label="Playback">
+        <button type="button" class="primary play">Play</button>
+        <button type="button" class="step">Step +0.5 s</button>
+        <button type="button" class="reset">Reset</button>
+        <button type="button" class="whole">Show whole run</button>
+      </div>
+      <div class="ctrl"><label for="${id}s">Playback speed</label><select id="${id}s"><option value="0.25">0.25× (slow motion)</option><option value="0.5">0.5×</option><option value="1" selected>1× (real time)</option></select></div>
+    </div>
+  </div>
+  <div class="readout" aria-label="Current values">
+    <div><span>time t</span><b class="r-t">0.00 s</b></div>
+    <div><span class="r-xl">position x</span><b class="r-x qx"></b></div>
+    <div><span>velocity v</span><b class="r-v qv"></b></div>
+    <div><span>acceleration a</span><b class="r-a qa"></b></div>
+  </div>
+  <p class="lab-status" role="status" aria-live="polite"></p>
+  <details class="deeper data"><summary>Show the data as a table</summary><div class="table-wrap"></div></details>`;
+  const grid = $('.lab-grid', host), track = $('.track-wrap', host), plots = $$('.plots > div', host);
+  const status = $('.lab-status', host), playBtn = $('.play', host);
+  const announce = msg => { status.textContent = ''; requestAnimationFrame(() => { status.textContent = msg; }); };
+
+  function mode() { return cfg.modes[L.modeIdx]; }
+  function buildSliders() {
+    const m = mode(), box = $('.sliders', host);
+    $('.mode-note', host).textContent = m.note || '';
+    $('.mode-note', host).hidden = !m.note;
+    box.innerHTML = '';
+    L.p = {};
+    m.params.forEach(pr => {
+      L.p[pr.k] = pr.val;
+      const sid = uid('sl');
+      const wrap = document.createElement('div'); wrap.className = 'ctrl';
+      wrap.innerHTML = `<label for="${sid}"><span>${esc(pr.label)}</span><output for="${sid}"></output></label>
+        <input type="range" id="${sid}" min="${pr.min}" max="${pr.max}" step="${pr.step}" value="${pr.val}">`;
+      const inp = $('input', wrap), out = $('output', wrap);
+      const show = () => { const val = parseFloat(inp.value); out.textContent = `${fmt(val, pr.d, pr.min < 0)} ${pr.unit}`; inp.setAttribute('aria-valuetext', `${fmt(val, pr.d)} ${UNIT_SPOKEN[pr.unit] || pr.unit}`); };
+      show();
+      inp.addEventListener('input', () => { show(); L.p[pr.k] = parseFloat(inp.value); recompute(); });
+      inp.addEventListener('change', () => announce(`${pr.label} set to ${fmt(L.p[pr.k], pr.d)} ${UNIT_SPOKEN[pr.unit] || pr.unit}. Press Play to run.`));
+      box.appendChild(wrap);
+    });
+    grid.classList.toggle('vertical', m.orient === 'v');
+    $('.r-xl', host).textContent = `position ${m.sym}`;
+  }
+  function recompute() {
+    stop();
+    L.data = simulate(mode(), L.p);
+    L.t = 0;
+    const d = L.data, m = mode();
+    const xs = d.X;
+    L.rx = niceRange(Math.min(...xs), Math.max(...xs), 4, m.orient === 'v');
+    L.rv = niceRange(Math.min(...d.V), Math.max(...d.V), 4);
+    L.ra = niceRange(Math.min(...d.A), Math.max(...d.A), 3);
+    L.rt = { lo: 0, hi: 0, step: 1 };
+    const tSpan = Math.max(d.tEnd, 1);
+    L.rt.step = niceStep(tSpan, 6); L.rt.hi = Math.ceil(tSpan / L.rt.step - 1e-9) * L.rt.step;
+    L.vmax = Math.max(0.5, ...d.V.map(Math.abs));
+    L.amax = Math.max(0.5, ...d.A.map(Math.abs));
+    if (m.fixedRange) L.track = { lo: m.fixedRange[0], hi: m.fixedRange[1] };
+    else if (m.orient === 'v') { const r = niceRange(0, Math.max(...xs), 5); L.track = { lo: 0, hi: r.hi }; }
+    else { const r = niceRange(Math.min(...xs), Math.max(...xs), 6); L.track = { lo: r.lo, hi: r.hi }; }
+    buildTable();
+    draw();
+  }
+  function buildTable() {
+    const d = L.data, m = mode();
+    let rows = '';
+    const times = []; for (let t = 0; t <= d.tEnd + 1e-9; t += 0.5) times.push(t);
+    if (d.tEnd - times[times.length - 1] > 0.02) times.push(d.tEnd);
+    for (const t of times) { const i = idxAt(d, t); rows += `<tr><td class="num">${fmt(d.T[i], 2)}</td><td class="num">${fmt(d.X[i], 2)}</td><td class="num">${fmt(d.V[i], 2)}</td><td class="num">${fmt(d.A[i], 2)}</td></tr>`; }
+    $('.data .table-wrap', host).innerHTML = `<table><caption>${esc(m.label)}: values every 0.5 s</caption><thead><tr><th scope="col" class="num">t (s)</th><th scope="col" class="num">${m.sym} (m)</th><th scope="col" class="num">v (m/s)</th><th scope="col" class="num">a (m/s²)</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+  function drawTrack(i) {
+    const d = L.data, m = mode(), x = d.X[i], v = d.V[i], a = d.A[i];
+    const W = Math.max(m.orient === 'v' ? 96 : 280, Math.floor(track.clientWidth || 600));
+    const ghosts = [];
+    for (let t = 0; t <= d.T[i] + 1e-9; t += 0.5) { const j = idxAt(d, t); ghosts.push([d.X[j], d.V[j]]); }
+    const desc = `${m.noun} at ${m.sym} = ${fmt(x, 1)} m. ${motionWords(m, v, a)} Grey dots mark its position every 0.5 s.`;
+    if (m.orient === 'h') {
+      const H = 140, ml = 26, mr = 30, X = q => ml + (q - L.track.lo) / (L.track.hi - L.track.lo) * (W - ml - mr);
+      const yTrack = 84, step = niceStep(L.track.hi - L.track.lo, Math.max(4, W / 75));
+      let s = svgOpen(W, H, `Track view: ${m.label}`, desc);
+      s += `<line x1="${X(L.track.lo)}" y1="${yTrack}" x2="${X(L.track.hi) + 12}" y2="${yTrack}" class="axis"/><polygon points="${X(L.track.hi) + 20},${yTrack} ${X(L.track.hi) + 9},${yTrack - 5} ${X(L.track.hi) + 9},${yTrack + 5}" class="f-ink"/>`;
+      s += `<text x="${X(L.track.hi) + 20}" y="${yTrack - 8}" font-size="13" text-anchor="end" font-weight="700">+x</text>`;
+      for (let q = Math.ceil(L.track.lo / step) * step; q <= L.track.hi + 1e-9; q += step) {
+        s += `<line x1="${X(q)}" y1="${yTrack - (q === 0 ? 8 : 4)}" x2="${X(q)}" y2="${yTrack + (q === 0 ? 8 : 4)}" class="axis" ${Math.abs(q) < 1e-9 ? 'stroke-width="3"' : ''}/><text x="${X(q)}" y="${yTrack + 19}" font-size="12" text-anchor="middle">${fmt(q, decimalsFor(step))}</text>`;
+      }
+      for (const g of ghosts) s += `<circle cx="${X(g[0])}" cy="${yTrack + 36}" r="4.5" class="ghost"/>`;
+      s += `<text x="4" y="${yTrack + 40}" font-size="11.5" class="muted">dots</text>`;
+      const cx = X(x);
+      s += `<rect x="${cx - 16}" y="${yTrack - 26}" width="32" height="16" rx="3" fill="var(--surface-2)" class="c-ink" stroke-width="2"/><circle cx="${cx - 9}" cy="${yTrack - 6}" r="4" class="f-ink"/><circle cx="${cx + 9}" cy="${yTrack - 6}" r="4" class="f-ink"/>`;
+      const Lv = Math.min(120, W * 0.2) * v / L.vmax, La = Math.min(80, W * 0.14) * a / L.amax;
+      if (Math.abs(Lv) > 3) s += arrow(cx, 18, cx + Lv, 18, 'v', false, 3, 10);
+      s += `<text x="${cx + (Lv >= 0 ? -6 : 6)}" y="${23}" font-size="13" text-anchor="${Lv >= 0 ? 'end' : 'start'}" class="txt-v">v</text>`;
+      if (Math.abs(La) > 3) s += arrow(cx, 42, cx + La, 42, 'a', true, 3, 10);
+      s += `<text x="${cx + (La >= 0 ? -6 : 6)}" y="${47}" font-size="13" text-anchor="${La >= 0 ? 'end' : 'start'}" class="txt-a">${Math.abs(a) < 0.005 ? 'a = 0' : 'a'}</text>`;
+      track.innerHTML = s + '</svg>';
+    } else {
+      const H = 470, top = 24, bot = H - 30, Y = q => bot - (q - L.track.lo) / (L.track.hi - L.track.lo) * (bot - top);
+      const ax = 34, step = niceStep(L.track.hi - L.track.lo, 6);
+      const upX = ax + (W - ax) * 0.33, dnX = ax + (W - ax) * 0.72;
+      let s = svgOpen(W, H, `Tower view: ${m.label}`, desc);
+      s += `<line x1="${ax}" y1="${bot}" x2="${ax}" y2="${top - 12}" class="axis"/><polygon points="${ax},${top - 20} ${ax - 5},${top - 9} ${ax + 5},${top - 9}" class="f-ink"/><text x="${ax + 6}" y="${top - 10}" font-size="13" font-weight="700">+y</text>`;
+      for (let q = 0; q <= L.track.hi + 1e-9; q += step) s += `<line x1="${ax - 4}" y1="${Y(q)}" x2="${ax + 4}" y2="${Y(q)}" class="axis"/><text x="${ax - 7}" y="${Y(q) + 4}" font-size="12" text-anchor="end">${fmt(q, 0)}</text>`;
+      s += `<line x1="${ax}" y1="${bot}" x2="${W - 2}" y2="${bot}" class="c-ink" stroke-width="3"/><text x="${W - 2}" y="${H - 8}" font-size="11.5" text-anchor="end" class="muted">ground</text>`;
+      for (const g of ghosts) s += `<circle cx="${g[1] >= 0 ? upX : dnX}" cy="${Y(g[0])}" r="4.5" class="ghost"/>`;
+      const bx = v >= 0 ? upX : dnX, by = Y(x);
+      s += `<circle cx="${bx}" cy="${by}" r="9" class="f-ink"/>`;
+      const Lv = 80 * v / L.vmax, La = 50 * a / L.amax, side = v >= 0 ? 1 : -1;
+      if (Math.abs(Lv) > 3) s += arrow(bx + side * 15, by, bx + side * 15, by - Lv, 'v', false, 3, 9);
+      s += `<text x="${bx + side * 15}" y="${Lv >= 0 ? by + 16 : by - 6}" font-size="12.5" text-anchor="middle" class="txt-v">v</text>`;
+      s += arrow(bx - side * 15, by, bx - side * 15, by - La, 'a', true, 3, 9);
+      s += `<text x="${bx - side * 15}" y="${by - 6}" font-size="12.5" text-anchor="middle" class="txt-a">a</text>`;
+      track.innerHTML = s + '</svg>';
+    }
+  }
+  function draw() {
+    const d = L.data, m = mode(), i = idxAt(d, L.t);
+    const t = d.T[i];
+    drawTrack(i);
+    const W = Math.max(260, Math.floor(plots[0].clientWidth || 600));
+    const H = m.orient === 'v' ? 160 : 170;
+    const showAll = true;
+    plots[0].innerHTML = plot({ w: W, h: H, q: 'x', yLabel: `position ${m.sym} (m)`, xr: L.rt, yr: L.rx, series: [{ pts: sampled(d, i, 'x') }], cursor: t,
+      tangent: cfg.tangent && i > 0 ? { t, y: d.X[i], slope: d.V[i] } : null,
+      title: `Graph of position ${m.sym} versus time`, desc: `Position graph drawn from 0 to ${fmt(t, 1)} s.${cfg.tangent ? ' A short black tangent line at the current time has slope equal to the velocity.' : ''} Current ${m.sym} = ${fmt(d.X[i], 1)} m.` });
+    plots[1].innerHTML = plot({ w: W, h: H, q: 'v', xr: L.rt, yr: L.rv, series: [{ pts: sampled(d, i, 'v') }], areas: showAll ? [{ pts: sampled(d, i, 'v') }] : [], cursor: t,
+      title: 'Graph of velocity versus time', desc: `Velocity graph drawn from 0 to ${fmt(t, 1)} s. The shaded area between the curve and the time axis equals the displacement, ${fmt(d.X[i] - d.X[0], 1)} m. Current v = ${fmt(d.V[i], 1)} m/s.` });
+    plots[2].innerHTML = plot({ w: W, h: H, q: 'a', xr: L.rt, yr: L.ra, series: [{ pts: sampled(d, i, 'a') }], areas: cfg === LABS.lab1 ? [] : [{ pts: sampled(d, i, 'a') }], cursor: t,
+      title: 'Graph of acceleration versus time', desc: `Acceleration graph drawn from 0 to ${fmt(t, 1)} s.${cfg === LABS.lab1 ? '' : ` The shaded area equals the change in velocity, ${fmt(d.V[i] - d.V[0], 1)} m/s.`} Current a = ${fmt(d.A[i], 2)} m/s².` });
+    $('.r-t', host).textContent = `${fmt(t, 2)} s`;
+    $('.r-x', host).textContent = `${fmt(d.X[i], 2)} m`;
+    $('.r-v', host).textContent = `${fmt(d.V[i], 2, true)} m/s`;
+    $('.r-a', host).textContent = `${fmt(d.A[i], 2, true)} m/s²`;
+  }
+  function summary() {
+    const d = L.data, m = mode(), i = idxAt(d, L.t);
+    let s = `At t = ${fmt(d.T[i], 2)} s: ${m.sym} = ${fmt(d.X[i], 2)} m, v = ${fmt(d.V[i], 2)} m/s, a = ${fmt(d.A[i], 2)} m/s². ${motionWords(m, d.V[i], d.A[i])}`;
+    if (i === d.T.length - 1) {
+      if (d.end === 'edge') s = `The ${m.noun} reached the end of the track. ` + s;
+      if (d.end === 'ground') s = `The ball hit the ground. ` + s;
+      if (d.end === 'ground0') s = `The ball starts on the ground moving down, so there is nothing to show. Raise y₀ or make v₀ positive.`;
+    }
+    return s;
+  }
+  function stop() { L.playing = false; cancelAnimationFrame(L.raf); playBtn.textContent = 'Play'; }
+  function tick(ts) {
+    if (!L.playing) return;
+    if (L.last == null) L.last = ts;
+    const dts = Math.min(0.05, (ts - L.last) / 1000); L.last = ts;
+    L.t += dts * L.speed;
+    if (L.t >= L.data.tEnd) { L.t = L.data.tEnd; draw(); stop(); announce('Run finished. ' + summary()); return; }
+    draw();
+    L.raf = requestAnimationFrame(tick);
+  }
+  playBtn.addEventListener('click', () => {
+    if (L.playing) { stop(); announce('Paused. ' + summary()); return; }
+    if (L.t >= L.data.tEnd - 1e-6) L.t = 0;
+    L.playing = true; L.last = null; playBtn.textContent = 'Pause';
+    L.raf = requestAnimationFrame(tick);
+  });
+  $('.step', host).addEventListener('click', () => { stop(); L.t = Math.min(L.data.tEnd, Math.round((L.t + 0.5) * 1000) / 1000); draw(); announce(summary()); });
+  $('.reset', host).addEventListener('click', () => { stop(); L.t = 0; draw(); announce('Reset to t = 0. ' + summary()); });
+  $('.whole', host).addEventListener('click', () => { stop(); L.t = L.data.tEnd; draw(); announce('Showing the whole run. ' + summary()); });
+  $(`#${id}s`, host).addEventListener('change', e => { L.speed = parseFloat(e.target.value); });
+  if (multi) $(`#${id}m`, host).addEventListener('change', e => { L.modeIdx = +e.target.value; buildSliders(); recompute(); announce(`Situation: ${mode().label}. ${mode().note || ''} Press Play to run.`); });
+  document.addEventListener('kin:pagechange', () => { if (L.playing) stop(); });
+  buildSliders(); recompute();
+  let lw = 0; new ResizeObserver(() => { const w = host.clientWidth; if (w !== lw) { lw = w; if (!L.playing) draw(); } }).observe(host);
+}
+
+/* ===================== secant widget ===================== */
+function createSecant(host) {
+  const id = uid('sec'), DT = [2, 1.5, 1, 0.5, 0.25, 0.1, 0.05, 0.01];
+  const S = { t1: 1, k: 0 };
+  host.innerHTML = `<div class="widget-grid"><div class="sec-plot"></div><div class="ctrls">
+    <div class="ctrl"><label for="${id}a"><span>Moment t₁</span><output></output></label><input type="range" id="${id}a" min="0.5" max="3" step="0.1" value="1"></div>
+    <div class="ctrl"><label for="${id}b"><span>Interval Δt</span><output></output></label><input type="range" id="${id}b" min="0" max="${DT.length - 1}" step="1" value="0"></div>
+    <div class="table-wrap" style="margin:0"><table><caption class="sr-only">Secant and tangent slopes</caption><tbody>
+      <tr><th scope="row">Secant slope (average v)</th><td class="num s-sec"></td></tr>
+      <tr><th scope="row">Tangent slope (instantaneous v)</th><td class="num s-tan"></td></tr>
+      <tr><th scope="row">Difference</th><td class="num s-diff"></td></tr></tbody></table></div>
+  </div></div><p class="lab-status" role="status" aria-live="polite"></p>`;
+  const a = $(`#${id}a`, host), b = $(`#${id}b`, host), st = $('.lab-status', host);
+  function draw(announce) {
+    const t1 = S.t1, dt = DT[S.k], t2 = t1 + dt, x1 = t1 * t1, x2 = t2 * t2, sec = (x2 - x1) / dt, tan = 2 * t1;
+    $('output', a.parentElement).textContent = `${fmt(t1, 1)} s`; a.setAttribute('aria-valuetext', `${fmt(t1, 1)} seconds`);
+    $('output', b.parentElement).textContent = `${dt} s`; b.setAttribute('aria-valuetext', `delta t equals ${dt} seconds`);
+    $('.s-sec', host).textContent = `${fmt(sec, 2)} m/s`; $('.s-tan', host).textContent = `${fmt(tan, 2)} m/s`; $('.s-diff', host).textContent = `${fmt(sec - tan, 2)} m/s`;
+    const el = $('.sec-plot', host), W = Math.max(260, Math.floor(el.clientWidth || 500));
+    el.innerHTML = plot({ w: W, h: 260, q: 'x', xr: { lo: 0, hi: 5, step: 1 }, yr: { lo: 0, hi: 25, step: 5 }, series: [{ pts: fnPts(t => t * t, 0, 5) }],
+      title: 'Secant and tangent lines on x = t squared',
+      desc: `Parabola x = t squared. Points at t1 = ${fmt(t1, 1)} s and t1 + delta t = ${fmt(t2, 2)} s are joined by a solid secant line with slope ${fmt(sec, 2)} metres per second. A dashed tangent line at t1 has slope ${fmt(tan, 2)} metres per second.`,
+      extraBelow: (X, Y) => {
+        const ext = 1.4, l = t => [X(t), Y(x1 + sec * (t - t1))], tl = t => [X(t), Y(x1 + tan * (t - t1))];
+        const [ax1, ay1] = l(t1 - ext), [ax2, ay2] = l(t2 + ext * 0.6), [bx1, by1] = tl(t1 - ext), [bx2, by2] = tl(t1 + ext);
+        return `<line x1="${ax1}" y1="${ay1}" x2="${ax2}" y2="${ay2}" class="c-ink" stroke-width="2.4"/>` +
+          `<line x1="${bx1}" y1="${by1}" x2="${bx2}" y2="${by2}" class="c-v" stroke-width="2.4" stroke-dasharray="7 5"/>` +
+          `<circle cx="${X(t1)}" cy="${Y(x1)}" r="5" class="f-ink"/><circle cx="${X(t2)}" cy="${Y(x2)}" r="5" fill="var(--surface)" class="c-ink" stroke-width="2.5"/>` +
+          `<text x="${X(0.15)}" y="${Y(23)}" font-size="13" font-weight="700">solid: secant</text><text x="${X(0.15)}" y="${Y(20)}" font-size="13" class="txt-v">dashed: tangent</text>`;
+      }
+    });
+    if (announce) { st.textContent = `Secant slope ${fmt(sec, 2)} metres per second; tangent slope ${fmt(tan, 2)}.${dt <= 0.05 ? ' They are now almost equal.' : ''}`; }
+  }
+  a.addEventListener('input', () => { S.t1 = parseFloat(a.value); draw(false); });
+  b.addEventListener('input', () => { S.k = +b.value; draw(false); });
+  a.addEventListener('change', () => draw(true)); b.addEventListener('change', () => draw(true));
+  draw(false);
+  let lw = 0; new ResizeObserver(() => { const w = host.clientWidth; if (w !== lw) { lw = w; draw(false); } }).observe(host);
+}
+
+/* ===================== practice questions ===================== */
+const QUESTIONS = {
+  p1: [
+    { type: 'mc', kind: 'concept', grid: true,
+      prompt: R`<p>The motion diagram shows a toy car, one dot per second. The dots are evenly spaced and the car moves to the left. Which position–time graph matches this motion?</p><figure class="fig" style="margin:.5rem 0"><div data-fig="p1q1md"></div></figure>`,
+      options: [
+        { html: R`<span class="row"><b>Graph A</b></span><div data-fig="p1q1a"></div>`, fb: R`This line rises, so \(x\) increases with time: the car would be moving to the right. Check which way the velocity arrows point.` },
+        { html: R`<span class="row"><b>Graph B</b></span><div data-fig="p1q1b"></div>`, fb: R`A curved \(x\)–\(t\) graph means the slope (the velocity) is changing. Evenly spaced dots mean equal displacements every second, so the slope must be constant.` },
+        { html: R`<span class="row"><b>Graph C</b></span><div data-fig="p1q1c"></div>`, fb: R`A flat \(x\)–\(t\) line means the position never changes: the car would be standing still.` },
+        { html: R`<span class="row"><b>Graph D</b></span><div data-fig="p1q1d"></div>`, correct: true, fb: R`Even spacing means constant velocity, so the graph is a straight line. Moving left means \(x\) decreases, so the slope is negative: \(v = -2\ \text{m/s}\).` }
+      ],
+      hints: [R`Equal spacing between dots tells you something about the <em>slope</em> of the graph. What?`, R`Moving left means the position numbers get smaller as time goes on.`],
+      solution: R`<p>Each second the car moves 2&nbsp;m to the left, so \(x\) goes 8, 6, 4, 2, 0&nbsp;m at \(t =\) 0, 1, 2, 3, 4&nbsp;s. Plotting those points gives a straight line sloping down (graph D), with slope \(\Delta x/\Delta t = (0 - 8)/4 = -2\ \text{m/s}\).</p><p>Notice the graph slopes down even though nothing is moving “down”. The graph is a record of \(x\) over time, not a picture of the path.</p>` },
+
+    { type: 'mc', kind: 'concept',
+      prompt: R`<p>The graph shows the positions of two carts, A and B, on parallel tracks. Their lines cross at \(t = 3\ \text{s}\). At that instant, which statement is true?</p><figure class="fig" style="margin:.5rem 0"><div data-fig="p1q2"></div></figure>`,
+      options: [
+        { html: R`They have the same velocity, because they are at the same position.`, fb: R`Being at the same place is a statement about position (the <em>height</em> of the lines). Velocity is the <em>slope</em>. The lines cross, but they are not equally steep.` },
+        { html: R`Cart A has the greater velocity, because it was ahead of B before 3&nbsp;s.`, fb: R`Being ahead is again about position. Compare how steep the two lines are.` },
+        { html: R`Cart B has the greater velocity.`, correct: true, fb: R`B’s line is steeper: B gains 12&nbsp;m in 6&nbsp;s (\(2\ \text{m/s}\)), while A gains 6&nbsp;m in 6&nbsp;s (\(1\ \text{m/s}\)). B is overtaking A at the crossing.` },
+        { html: R`You can’t tell without knowing the speeds of the carts.`, fb: R`You can: the slope of each line on an \(x\)–\(t\) graph <em>is</em> the velocity, and you can read both slopes from the graph.` }
+      ],
+      hints: [R`On an \(x\)–\(t\) graph, which feature is the velocity: the height of the line, or its steepness?`],
+      solution: R`<p>Slopes: \(v_A = (7 - 1)/6 = 1.0\ \text{m/s}\) and \(v_B = (10 - (-2))/6 = 2.0\ \text{m/s}\). At \(t = 3\ \text{s}\) both carts are at \(x = 4\ \text{m}\) (same position) but B moves twice as fast. In fact, with two straight lines of different slope, the carts <em>never</em> have the same velocity.</p><p>This is one of the best-documented mix-ups in physics learning: treating “same place” as “same speed”.</p>` },
+
+    { type: 'mc', kind: 'concept',
+      prompt: R`<p>At one instant, a ball rolling along the floor is at position \(x = -4\ \text{m}\) and has velocity \(v = +2\ \text{m/s}\). Which statement is correct?</p>`,
+      options: [
+        { html: R`The ball is moving left, because its position is negative.`, fb: R`The sign of the position only tells you which side of the origin the ball is on. The direction of motion comes from the sign of the velocity.` },
+        { html: R`The ball must be slowing down, because \(x\) and \(v\) have opposite signs.`, fb: R`Speeding up or slowing down depends on the signs of \(v\) and \(a\), not \(x\) and \(v\). We are told nothing about the acceleration.` },
+        { html: R`The ball is moving right, away from the origin.`, fb: R`It is moving right, yes. But starting from \(-4\ \text{m}\), moving right takes it to \(-3\), \(-2\), … Is that toward or away from 0?` },
+        { html: R`The ball is moving right, toward the origin.`, correct: true, fb: R`Positive velocity means \(x\) increases: \(-4 \to -3 \to -2\ \text{m}\). The ball moves right and gets closer to the origin.` }
+      ],
+      hints: [R`Imagine the next second. If \(v = +2\ \text{m/s}\), what will \(x\) be one second from now?`],
+      solution: R`<p>One second later, \(x \approx -4 + 2 = -2\ \text{m}\). The ball has moved right and is now closer to 0. Position and velocity are independent pieces of information: a negative position can go with any velocity.</p>` },
+
+    { type: 'num', kind: 'calc', answer: -0.40, tolAbs: 0.011, unit: 'm/s',
+      prompt: R`<p>A student walks along a hallway from \(x = +3.0\ \text{m}\) to \(x = -5.0\ \text{m}\), then turns around and walks to \(x = -1.0\ \text{m}\). The whole trip takes 10.0&nbsp;s. What is the student’s <strong>average velocity</strong>?</p>`,
+      wrong: [
+        { val: 1.2, fb: R`That is the average <em>speed</em>: total distance (8&nbsp;m + 4&nbsp;m = 12&nbsp;m) divided by time. Average velocity uses displacement instead.` },
+        { val: -1.2, fb: R`You used the total distance (12&nbsp;m). Average velocity uses the displacement, which only depends on where the walk started and ended.` },
+        { val: 0.4, fb: R`Right size, wrong sign. Displacement is final minus initial: \(-1.0 - (+3.0)\).` },
+        { val: -0.8, fb: R`That uses only the first leg. Average velocity is for the whole trip: from \(+3.0\ \text{m}\) to the final position \(-1.0\ \text{m}\).` }
+      ],
+      hints: [R`Average velocity \(= \Delta x/\Delta t\). Do you need the turnaround point at all?`, R`\(\Delta x = x_\text{f} - x_\text{i} = (-1.0\ \text{m}) - (+3.0\ \text{m})\).`],
+      solution: R`<p>\(\Delta x = x_\text{f} - x_\text{i} = -1.0 - 3.0 = -4.0\ \text{m}\), so \(v_\text{avg} = \dfrac{-4.0\ \text{m}}{10.0\ \text{s}} = -0.40\ \text{m/s}\).</p><p>The negative sign says the net motion was to the left. For comparison, the average speed is \(12\ \text{m}/10.0\ \text{s} = 1.2\ \text{m/s}\): a different question with a different answer.</p>` },
+
+    { type: 'num', kind: 'calc', answer: 12, tolRel: 0.02, unit: 's',
+      prompt: R`<p>Car A starts at \(x = 0\) and drives right at a steady 15&nbsp;m/s. At the same moment, car B starts at \(x = 300\ \text{m}\) and drives left at a steady 10&nbsp;m/s. At what time do the two cars meet?</p>`,
+      wrong: [
+        { val: 60, fb: R`You divided 300&nbsp;m by \(15 - 10 = 5\ \text{m/s}\). That would be right if both cars moved the same way. Car B moves left, so its velocity is \(-10\ \text{m/s}\).` },
+        { val: 20, fb: R`That is how long car A alone would take to reach \(x = 300\ \text{m}\). But car B is moving toward A at the same time.` },
+        { val: 30, fb: R`That is how long car B alone would take to reach \(x = 0\). Both cars are moving.` }
+      ],
+      hints: [R`Write an equation \(x(t) = x_0 + v t\) for each car. Watch the sign of B’s velocity.`, R`“Meet” means same position at the same time: set \(x_A(t) = x_B(t)\).`],
+      solution: R`<p>\(x_A = 0 + 15\,t\) and \(x_B = 300 - 10\,t\) (B moves left, so \(v_B = -10\ \text{m/s}\)).</p><p>Set them equal: \(15\,t = 300 - 10\,t \Rightarrow 25\,t = 300 \Rightarrow t = 12.0\ \text{s}\). They meet at \(x = 15 \times 12 = 180\ \text{m}\).</p><p>Check with a graph in your head: A’s line rises from 0, B’s falls from 300, and they cross at 12&nbsp;s.</p>` },
+
+    { type: 'num', kind: 'calc', answer: -5.0, tolAbs: 0.06, unit: 'm/s',
+      prompt: R`<p>The graph shows a jogger’s position along a straight path. What is her velocity at \(t = 4\ \text{s}\)?</p><figure class="fig" style="margin:.5rem 0"><div data-fig="p1q6"></div></figure>`,
+      wrong: [
+        { val: 20, fb: R`20&nbsp;m is her <em>position</em> at 4&nbsp;s, the height of the graph. Velocity is the slope.` },
+        { val: 5, fb: R`Right size, wrong sign. The line slopes downward, so \(x\) is decreasing and the velocity is negative.` },
+        { val: 0, fb: R`The velocity is zero only after 8&nbsp;s, where the line is flat. At 4&nbsp;s the line is sloping.` },
+        { val: -10, fb: R`Check your rise and run: the line drops 40&nbsp;m over 8&nbsp;s.` }
+      ],
+      hints: [R`At \(t = 4\ \text{s}\) she is on the straight sloping segment. Its slope is the same everywhere along it.`, R`Slope \(= \dfrac{\Delta x}{\Delta t} = \dfrac{0 - 40\ \text{m}}{8\ \text{s} - 0}\).`],
+      solution: R`<p>From 0 to 8&nbsp;s the graph is a straight line from 40&nbsp;m to 0&nbsp;m, so the velocity is constant: \(v = \dfrac{0 - 40}{8 - 0} = -5.0\ \text{m/s}\). She runs left (toward \(x = 0\)) at 5.0&nbsp;m/s, then stands still after 8&nbsp;s.</p>` }
+  ],
+
+  p2: [
+    { type: 'mc', kind: 'concept',
+      prompt: R`<p>A car is moving to the <strong>left</strong> and <strong>slowing down</strong>. What is the sign of its acceleration?</p>`,
+      options: [
+        { html: R`Negative, because the car is slowing down.`, fb: R`“Slowing down” does not mean “negative acceleration”. The velocity here is negative (moving left). To make a negative number shrink toward zero, you have to add something positive.` },
+        { html: R`Positive.`, correct: true, fb: R`The velocity is negative and getting closer to zero (say \(-10\), then \(-6\), then \(-2\ \text{m/s}\)). Each change \(\Delta v\) is positive, so \(a\) is positive. Opposite signs of \(v\) and \(a\) mean slowing down.` },
+        { html: R`Zero, because it is slowing down rather than speeding up.`, fb: R`The velocity is changing, so the acceleration cannot be zero. Acceleration describes any change in velocity, up or down.` },
+        { html: R`You can’t tell without numbers.`, fb: R`The signs alone settle it. Try making up three velocities for a car moving left and slowing down, then compute \(\Delta v\).` }
+      ],
+      hints: [R`Draw a motion diagram: dots moving left, getting closer together. Which way does the change in velocity arrow point?`],
+      solution: R`<p>Motion diagram: velocity arrows point left and get shorter. The arrow you add to one velocity to get the next points <em>right</em>. Right is positive, so \(a > 0\).</p><p>Rule: \(v\) and \(a\) with the same sign means speeding up; opposite signs means slowing down.</p>` },
+
+    { type: 'mc', kind: 'concept',
+      prompt: R`<p>A ball is thrown straight up. Ignore air resistance. At the very top of its path, what are its velocity and acceleration? (Up is positive.)</p>`,
+      options: [
+        { html: R`\(v = 0\) and \(a = 0\)`, fb: R`If \(a\) were zero at the top, the velocity would stop changing and the ball would hover there forever. It is still being pulled down by gravity.` },
+        { html: R`\(v = 0\) and \(a = +9.80\ \text{m/s}^2\)`, fb: R`The acceleration is caused by gravity, which pulls down. With up as positive, that makes \(a\) negative.` },
+        { html: R`\(v = -9.80\ \text{m/s}\) and \(a = 0\)`, fb: R`At the top the ball is turning around, so it is momentarily neither going up nor down: \(v = 0\). And \(a\) is not zero.` },
+        { html: R`\(v = 0\) and \(a = -9.80\ \text{m/s}^2\)`, correct: true, fb: R`Correct. The velocity is passing through zero (from + to −), and changing at the same rate as everywhere else on the flight.` }
+      ],
+      hints: [R`Look at the velocity a tiny moment before the top and a tiny moment after. Is it changing?`],
+      solution: R`<p>Just before the top, \(v\) is small and positive; just after, small and negative. The velocity is changing, by \(-9.80\ \text{m/s}\) every second, so \(a = -9.80\ \text{m/s}^2\) at the top, just like everywhere else in free fall.</p><p>“Zero velocity means zero acceleration” is one of the most common ideas students bring to this topic. Velocity says how fast position changes; acceleration says how fast <em>velocity</em> changes. One can be zero while the other is not.</p>` },
+
+    { type: 'mc', kind: 'concept',
+      prompt: R`<p>The \(v\)–\(t\) graph below describes a cart. Compared with its position at \(t = 0\), where is the cart at \(t = 6\ \text{s}\)?</p><figure class="fig" style="margin:.5rem 0"><div data-fig="p2q3"></div></figure>`,
+      options: [
+        { html: R`12&nbsp;m to the left of where it started.`, correct: true, fb: R`Area above the axis (0–2&nbsp;s): \(+4\ \text{m}\). Area below (2–6&nbsp;s): \(-16\ \text{m}\). Net displacement: \(-12\ \text{m}\).` },
+        { html: R`Back where it started, because the graph crosses zero.`, fb: R`Crossing zero means the cart turned around at 2&nbsp;s. To return to the start, the area above the axis must equal the area below. Compare the two triangles.` },
+        { html: R`20&nbsp;m to the left of where it started.`, fb: R`20&nbsp;m is the total <em>distance</em> (4&nbsp;m right, then 16&nbsp;m left). Displacement adds the areas with their signs.` },
+        { html: R`12&nbsp;m to the right of where it started.`, fb: R`The bigger triangle is below the time axis, where the velocity is negative (moving left). Check the sign.` }
+      ],
+      hints: [R`Displacement is the area between the \(v\)–\(t\) graph and the time axis. Area below the axis counts as negative.`, R`The line crosses zero at \(t = 2\ \text{s}\). Find the area of each triangle.`],
+      solution: R`<p>Triangle from 0 to 2&nbsp;s: \(\tfrac12 (2\ \text{s})(4\ \text{m/s}) = +4\ \text{m}\). Triangle from 2 to 6&nbsp;s: \(\tfrac12 (4\ \text{s})(-8\ \text{m/s}) = -16\ \text{m}\). Total: \(\Delta x = -12\ \text{m}\).</p><p>Check with equation (2): \(v_0 = 4\ \text{m/s}\), \(a = -2\ \text{m/s}^2\): \(\Delta x = 4(6) + \tfrac12(-2)(36) = 24 - 36 = -12\ \text{m}\). ✓</p>` },
+
+    { type: 'num', kind: 'calc', answer: -6.25, tolRel: 0.02, unit: 'm/s²',
+      prompt: R`<p>A car moving right at 25&nbsp;m/s brakes steadily and stops in 50&nbsp;m. What is its acceleration?</p>`,
+      wrong: [
+        { val: 6.25, fb: R`Right size, wrong sign. The car moves right and slows down, so the acceleration points left.` },
+        { val: -12.5, fb: R`Check the factor of 2 in \(v^2 = v_0^2 + 2a\,\Delta x\).` },
+        { val: 12.5, fb: R`Two things to check: the factor of 2 in \(v^2 = v_0^2 + 2a\,\Delta x\), and the sign.` },
+        { val: -0.5, fb: R`It looks like you divided speed by distance. The units would be 1/s, not m/s². Use an equation that links \(v\), \(v_0\), \(a\) and \(\Delta x\).` }
+      ],
+      hints: [R`You know \(v_0\), \(v\) and \(\Delta x\), but not \(t\). Which equation leaves out \(t\)?`, R`\(v^2 = v_0^2 + 2a\,\Delta x\), with \(v = 0\).`],
+      solution: R`<p>Knowns: \(v_0 = +25\ \text{m/s}\), \(v = 0\), \(\Delta x = +50\ \text{m}\). No time, so use equation (3):</p><p>\(a = \dfrac{v^2 - v_0^2}{2\,\Delta x} = \dfrac{0 - 625}{100}\ \text{m/s}^2 = -6.25\ \text{m/s}^2\).</p><p>Check: negative, as a motion diagram (moving right, slowing) predicts. The stopping time would be \(t = 2\Delta x/(v_0 + v) = 4.0\ \text{s}\).</p>` },
+
+    { type: 'num', kind: 'calc', answer: 8.10, tolRel: 0.015, unit: 'm',
+      prompt: R`<p>A ball is thrown straight up at 12.6&nbsp;m/s. How high above the release point does it rise? Use \(g = 9.80\ \text{m/s}^2\).</p>`,
+      wrong: [
+        { val: 16.2, fb: R`Check the factor of 2: \(v^2 = v_0^2 + 2a\,\Delta y\).` },
+        { val: 1.29, fb: R`That is \(v_0/g\), the time to reach the top in seconds, not the height.` },
+        { val: -8.1, fb: R`The ball rises, so with up positive the displacement is positive. Check your signs: \(a = -9.80\ \text{m/s}^2\) and \(v_0 = +12.6\ \text{m/s}\).` }
+      ],
+      hints: [R`What is the velocity at the highest point?`, R`Use \(v^2 = v_0^2 + 2a\,\Delta y\) with \(v = 0\) and \(a = -9.80\ \text{m/s}^2\).`],
+      solution: R`<p>At the top \(v = 0\). With \(a = -g\): \(0 = v_0^2 - 2g\,\Delta y\), so \(\Delta y = \dfrac{v_0^2}{2g} = \dfrac{(12.6)^2}{2(9.80)}\ \text{m} = \dfrac{158.76}{19.6}\ \text{m} = 8.10\ \text{m}\).</p><p>Check: it takes \(v_0/g = 1.29\ \text{s}\) to get there, at an average velocity of 6.3&nbsp;m/s: \(6.3 \times 1.29 \approx 8.1\ \text{m}\). ✓</p>` },
+
+    { type: 'num', kind: 'calc', answer: 2.10, tolRel: 0.015, unit: 's',
+      prompt: R`<p>From a bridge 30.0&nbsp;m above a river, you throw a rock straight <strong>down</strong> at 4.0&nbsp;m/s. How long does it take to reach the water? Use \(g = 9.80\ \text{m/s}^2\) and ignore air resistance.</p>`,
+      wrong: [
+        { val: 2.92, fb: R`This is what you get with \(v_0 = +4.0\ \text{m/s}\). The rock is thrown <em>down</em>, so with up positive, \(v_0 = -4.0\ \text{m/s}\).` },
+        { val: 2.47, fb: R`That is the time for a rock simply dropped from rest. Throwing it downward should get it there sooner.` },
+        { val: 7.5, fb: R`30&nbsp;m ÷ 4&nbsp;m/s ignores gravity. The rock speeds up as it falls.` }
+      ],
+      hints: [R`Put the origin at the bridge, up positive. Then \(y_0 = 0\), \(y = -30.0\ \text{m}\), \(v_0 = -4.0\ \text{m/s}\), \(a = -9.80\ \text{m/s}^2\).`, R`Equation (2) gives a quadratic in \(t\): \(-30.0 = -4.0\,t - 4.90\,t^2\). Keep the positive root.`],
+      solution: R`<p>With the origin at the bridge and up positive: \(-30.0 = -4.0\,t - 4.90\,t^2\), or \(4.90\,t^2 + 4.0\,t - 30.0 = 0\).</p><p>\(t = \dfrac{-4.0 + \sqrt{4.0^2 + 4(4.90)(30.0)}}{2(4.90)} = \dfrac{-4.0 + 24.58}{9.80}\ \text{s} = 2.10\ \text{s}\).</p><p>The other root is negative and has no physical meaning here. Check: shorter than the 2.47&nbsp;s for a dropped rock, as it should be.</p>` }
+  ],
+
+  p3: [
+    { type: 'mc', kind: 'concept',
+      prompt: R`<p>An object starts from rest. Its acceleration is shown below. What happens to its <strong>velocity</strong>?</p><figure class="fig" style="margin:.5rem 0"><div data-fig="p3q1"></div></figure>`,
+      options: [
+        { html: R`The velocity decreases from 0 to 4&nbsp;s, then stays at zero.`, fb: R`The <em>acceleration</em> decreases, but it stays positive, so the velocity keeps increasing. A shrinking acceleration means the velocity grows more slowly, not that it falls.` },
+        { html: R`The velocity is largest at \(t = 0\), where the acceleration is largest.`, fb: R`At \(t = 0\) the object is at rest, so \(v = 0\). Large acceleration means the velocity is changing quickly, not that it is large.` },
+        { html: R`The velocity increases from 0 to 4&nbsp;s, more and more slowly, then stays constant.`, correct: true, fb: R`Positive acceleration keeps adding to the velocity, but less each second. After 4&nbsp;s nothing is added, so the velocity stays at its maximum value.` },
+        { html: R`The velocity increases steadily from 0 to 4&nbsp;s, then drops to zero.`, fb: R`“Steadily” would need a constant acceleration. And \(a = 0\) after 4&nbsp;s means the velocity stops changing; it does not return to zero.` }
+      ],
+      hints: [R`The area under the \(a\)–\(t\) graph is the change in velocity. Is that area growing between 0 and 4&nbsp;s? After 4&nbsp;s?`],
+      solution: R`<p>The velocity at time \(t\) is the area under the \(a\)–\(t\) graph from 0 to \(t\). That area keeps growing until 4&nbsp;s, but each extra second adds a thinner slice. After 4&nbsp;s no area is added. Final velocity: \(\tfrac12 (4\ \text{s})(3\ \text{m/s}^2) = 6\ \text{m/s}\).</p><p>Also, the \(v\)–\(t\) graph has slope \(a\): steep at first, flattening out, then perfectly flat.</p>` },
+
+    { type: 'mc', kind: 'concept',
+      prompt: R`<p>A cart starts from rest with acceleration \(a(t) = (6.0\ \text{m/s}^3)\,t\). Three students find its velocity at \(t = 2.0\ \text{s}\).</p>
+        <ul><li><strong>Ana:</strong> “\(a(2.0) = 12\ \text{m/s}^2\), so \(v = a t = 12 \times 2.0 = 24\ \text{m/s}\).”</li>
+        <li><strong>Ben:</strong> “I integrated: \(v(t) = \int_0^t 6.0\,t'\,dt' = 3.0\,t^2\), so \(v = 12\ \text{m/s}\).”</li>
+        <li><strong>Chloe:</strong> “The acceleration goes from 0 to 12 in a straight line, so its average is 6.0&nbsp;m/s². Then \(v = 6.0 \times 2.0 = 12\ \text{m/s}\).”</li></ul><p>Who is right?</p>`,
+      options: [
+        { html: R`Only Ana.`, fb: R`Ana used \(v = a t\) with the final acceleration, as if \(a\) had been 12&nbsp;m/s² the whole time. It was smaller earlier, so the cart gained less speed.` },
+        { html: R`Only Ben.`, fb: R`Ben is right. But check Chloe’s method: for a straight-line \(a\)–\(t\) graph, average acceleration times time is exactly the area under the graph.` },
+        { html: R`Ben and Chloe.`, correct: true, fb: R`Both find the area under the \(a\)–\(t\) graph: Ben by integrating, Chloe by using the average of a linearly changing quantity. Chloe’s shortcut only works because \(a(t)\) is a straight line.` },
+        { html: R`Ana and Chloe.`, fb: R`Ana and Chloe get different answers (24 and 12&nbsp;m/s), so they cannot both be right.` }
+      ],
+      hints: [R`Sketch \(a\)–\(t\): a straight line from 0 to 12&nbsp;m/s² over 2.0&nbsp;s. What is the area under it?`],
+      solution: R`<p>The change in velocity is the area under \(a\)–\(t\): a triangle, \(\tfrac12 (2.0\ \text{s})(12\ \text{m/s}^2) = 12\ \text{m/s}\). Ben’s integral gives the same.</p><p>Ana’s answer is double because she treated the final acceleration as if it had acted the whole time. That is exactly the misuse of constant-acceleration formulas that Section 3.1 warns about. Chloe’s idea works here only because the \(a\)–\(t\) graph is a straight line; for a curved \(a(t)\), the simple average would not give the right area.</p>` },
+
+    { type: 'mc', kind: 'concept',
+      prompt: R`<p>On the \(x\)–\(t\) graph below, point P is on a part of the curve that is rising and bending downward. At P, what are the signs of the velocity and acceleration?</p><figure class="fig" style="margin:.5rem 0"><div data-fig="p3q3"></div></figure>`,
+      options: [
+        { html: R`\(v > 0\), \(a > 0\)`, fb: R`\(v > 0\) is right (the curve rises). But the curve bends downward, like an upside-down cup, so the slope is decreasing.` },
+        { html: R`\(v > 0\), \(a < 0\)`, correct: true, fb: R`Rising means positive slope (\(v > 0\)). Bending downward means the slope is getting smaller, so \(a < 0\). The object moves right and slows down.` },
+        { html: R`\(v = 0\), \(a < 0\)`, fb: R`That describes the very top of the curve, where the tangent is flat. P is before the top, where the tangent still slopes upward.` },
+        { html: R`\(v < 0\), \(a < 0\)`, fb: R`The graph is going up at P, so \(x\) is increasing and the velocity is positive. Don’t read the bending as the direction of motion.` }
+      ],
+      hints: [R`Lay a ruler along the curve at P to make a tangent line. Is its slope positive? As you slide the ruler to the right, does the slope grow or shrink?`],
+      solution: R`<p>The tangent at P slopes upward, so \(v > 0\). Moving along the curve, the tangent gets less steep until it is flat at the top, so the velocity is decreasing: \(a < 0\). With \(v\) and \(a\) of opposite signs, the object is slowing down. (For this curve, \(x = 8t - t^2\): \(v(2) = +4\ \text{m/s}\), \(a = -2\ \text{m/s}^2\).)</p>` },
+
+    { type: 'num', kind: 'calc', answer: -6, tolAbs: 0.06, unit: 'm/s²',
+      prompt: R`<p>A particle’s position is \(x(t) = 2.0\,t^3 - 9.0\,t^2 + 12\,t\), with \(x\) in metres and \(t\) in seconds. Find its acceleration at the <strong>first</strong> instant (after \(t = 0\)) when it is momentarily at rest.</p>`,
+      wrong: [
+        { val: 6, fb: R`That is the acceleration at the <em>second</em> stop, \(t = 2.0\ \text{s}\). Which root of \(v(t) = 0\) comes first?` },
+        { val: 0, fb: R`Being at rest means \(v = 0\), not \(a = 0\). The velocity is still changing at that instant.` },
+        { val: -18, fb: R`That is \(a(0)\). First find the time when \(v = 0\), then evaluate \(a\) there.` }
+      ],
+      hints: [R`Differentiate: \(v(t) = dx/dt\). Set \(v = 0\) and solve for \(t\).`, R`\(v = 6.0\,t^2 - 18\,t + 12 = 6.0\,(t - 1)(t - 2)\). Then \(a = dv/dt\).`],
+      solution: R`<p>\(v(t) = 6.0\,t^2 - 18\,t + 12 = 6.0\,(t - 1.0)(t - 2.0)\), so the particle stops at \(t = 1.0\ \text{s}\) and \(t = 2.0\ \text{s}\).</p><p>\(a(t) = 12\,t - 18\), so \(a(1.0) = 12 - 18 = -6.0\ \text{m/s}^2\).</p><p>Interpretation: before 1.0&nbsp;s the particle moves right; at 1.0&nbsp;s it stops while the negative acceleration turns it around. Zero velocity, nonzero acceleration.</p>` },
+
+    { type: 'num', kind: 'calc', answer: 32, tolRel: 0.02, unit: 'm',
+      prompt: R`<p>A cart starts from rest at \(x = 0\) with acceleration \(a(t) = (3.0\ \text{m/s}^3)\,t\). Where is it at \(t = 4.0\ \text{s}\)?</p>`,
+      wrong: [
+        { val: 96, fb: R`It looks like you used \(x = \tfrac12 a t^2\) with \(a = 12\ \text{m/s}^2\) (or \(v t\) with the final velocity). Both treat a changing quantity as constant. Integrate twice instead.` },
+        { val: 24, fb: R`24 is the <em>velocity</em> at 4.0&nbsp;s, in m/s. Integrate once more to get the position.` },
+        { val: 48, fb: R`Check your integration constants: \(\int t^2\,dt = t^3/3\), so \(\int_0^t 1.5\,t'^2\,dt' = 0.50\,t^3\).` }
+      ],
+      hints: [R`First \(v(t) = v_0 + \int_0^t a\,dt'\), with \(v_0 = 0\).`, R`\(v(t) = 1.5\,t^2\). Now \(x(t) = x_0 + \int_0^t v\,dt'\).`],
+      solution: R`<p>\(v(t) = \int_0^t 3.0\,t'\,dt' = 1.5\,t^2\) and \(x(t) = \int_0^t 1.5\,t'^2\,dt' = 0.50\,t^3\).</p><p>At \(t = 4.0\ \text{s}\): \(x = 0.50 \times 64 = 32\ \text{m}\) (and \(v = 24\ \text{m/s}\)).</p><p>Compare the tempting shortcut \(\tfrac12 a(4.0)\,t^2 = \tfrac12 (12)(16) = 96\ \text{m}\): three times too big, because the acceleration was much smaller early on.</p>` },
+
+    { type: 'num', kind: 'calc', answer: 6, tolAbs: 0.06, unit: 'm/s',
+      prompt: R`<p>A cart has velocity \(v_0 = +2.0\ \text{m/s}\) at \(t = 0\). Its acceleration is shown below. What is its velocity at \(t = 9.0\ \text{s}\)?</p><figure class="fig" style="margin:.5rem 0"><div data-fig="p3q6"></div></figure>`,
+      wrong: [
+        { val: 4, fb: R`That is the change in velocity (the net area). You still need to add the starting velocity, \(v_0 = +2.0\ \text{m/s}\).` },
+        { val: 22, fb: R`The area from 5 to 9&nbsp;s is below the time axis, so it counts as negative.` },
+        { val: 20, fb: R`The area from 5 to 9&nbsp;s is below the axis (negative), and you need to add \(v_0\).` },
+        { val: -2, fb: R`The velocity is not just the last acceleration value. Add up the area under the whole \(a\)–\(t\) graph.` }
+      ],
+      hints: [R`\(v(9) = v_0 + {}\) (net area under the \(a\)–\(t\) graph from 0 to 9&nbsp;s).`, R`Areas: \(4 \times 3\), then \(0 \times 2\), then \((-2) \times 4\).`],
+      solution: R`<p>Area 0–3&nbsp;s: \((4)(3) = +12\ \text{m/s}\). Area 3–5&nbsp;s: 0. Area 5–9&nbsp;s: \((-2)(4) = -8\ \text{m/s}\). Net \(\Delta v = +4\ \text{m/s}\).</p><p>\(v(9) = v_0 + \Delta v = 2.0 + 4.0 = 6.0\ \text{m/s}\).</p><p>Along the way: the cart reaches 14&nbsp;m/s at 3&nbsp;s, cruises at 14&nbsp;m/s until 5&nbsp;s, then slows to 6.0&nbsp;m/s.</p>` }
+  ]
+};
+
+function parseNum(s) {
+  s = String(s).trim().replace(/[\u2212\u2013]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+,\d+/.test(s)) s = s.replace(',', '.');
+  const m = s.match(/^[-+]?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+function close(val, target, q) {
+  const tol = q.tolAbs ?? Math.max(Math.abs(target) * (q.tolRel ?? 0.02), 0.01);
+  return Math.abs(val - target) <= tol;
+}
+function typeset(el) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(() => {}); }
+
+function buildPractice(host) {
+  const set = QUESTIONS[host.dataset.practice];
+  const prog = document.createElement('p'); prog.className = 'progress';
+  host.appendChild(prog);
+  const done = new Set();
+  const upd = () => { prog.textContent = `Solved: ${done.size} of ${set.length}. Questions 1–3 check ideas; questions 4–6 need calculations.`; };
+  upd();
+  set.forEach((q, n) => {
+    const id = uid('q'), box = document.createElement('section');
+    box.className = 'q'; box.setAttribute('aria-labelledby', `${id}h`);
+    const kind = q.kind === 'concept' ? 'Concept check' : 'Calculation';
+    let body = '';
+    if (q.type === 'mc') {
+      body = `<div id="${id}l" class="prompt">${q.prompt}</div><div role="radiogroup" aria-labelledby="${id}h ${id}l" class="${q.grid ? 'opt-grid' : ''}">` +
+        q.options.map((o, k) => `<label class="opt"><input type="radio" name="${id}" value="${k}"><span style="flex:1;min-width:0">${o.html}</span></label>`).join('') + `</div>`;
+    } else {
+      body = `<div id="${id}l">${q.prompt}</div><div class="num-row"><label for="${id}i"><strong>Your answer</strong></label><input type="text" inputmode="decimal" autocomplete="off" id="${id}i" aria-describedby="${id}u ${id}l"><span id="${id}u">${esc(q.unit)}</span></div>`;
+    }
+    box.innerHTML = `<div class="q-head"><h3 id="${id}h">Question ${n + 1}</h3><span class="q-kind">${kind}</span></div>${body}
+      ${q.kind === 'concept' ? `<div class="reason"><label for="${id}r">Your reasoning in a sentence (for you or your group; not graded)</label><textarea id="${id}r" rows="2"></textarea></div>` : ''}
+      <div class="q-actions"><button type="button" class="primary chk">Check answer</button><button type="button" class="hintbtn">Show a hint (${q.hints.length} available)</button></div>
+      <div class="hints" aria-live="polite"></div>
+      <div class="feedback" role="status" aria-live="polite"></div>
+      <details class="solution" hidden><summary>Worked explanation</summary>${q.solution}</details>`;
+    host.appendChild(box);
+    let hintN = 0, tries = 0;
+    const fbEl = $('.feedback', box), sol = $('.solution', box), hb = $('.hintbtn', box);
+    hb.addEventListener('click', () => {
+      if (hintN >= q.hints.length) return;
+      const h = document.createElement('p'); h.className = 'hint';
+      h.innerHTML = `<strong>Hint ${hintN + 1}.</strong> ${q.hints[hintN]}`;
+      $('.hints', box).appendChild(h); typeset(h);
+      hintN++;
+      hb.textContent = hintN >= q.hints.length ? 'No more hints' : `Show another hint (${q.hints.length - hintN} left)`;
+      hb.disabled = hintN >= q.hints.length;
+    });
+    $('.chk', box).addEventListener('click', () => {
+      let ok = false, msg = '';
+      if (q.type === 'mc') {
+        const sel = $(`input[name="${id}"]:checked`, box);
+        if (!sel) { fbEl.innerHTML = `<div class="fb bad"><strong>Choose an answer first.</strong>Pick the option you think is best, then select Check answer.</div>`; return; }
+        const o = q.options[+sel.value]; ok = !!o.correct; msg = o.fb;
+      } else {
+        const inp = $(`#${id}i`, box), val = parseNum(inp.value);
+        if (isNaN(val)) { fbEl.innerHTML = `<div class="fb bad"><strong>Enter a number.</strong>Type a number such as −2.5 (the unit, ${esc(q.unit)}, is already given).</div>`; inp.focus(); return; }
+        ok = close(val, q.answer, q);
+        if (ok) msg = `Your answer, ${fmt(val, 2)} ${esc(q.unit)}, is within rounding of ${fmt(q.answer, 2)} ${esc(q.unit)}. Open the worked explanation to compare your method.`;
+        else {
+          const w = (q.wrong || []).find(w => close(val, w.val, { tolRel: 0.03 }));
+          msg = w ? w.fb : `That is not it yet. Check the sign (which way is positive?), the units, and whether your equation fits the situation. A hint may help.`;
+        }
+      }
+      tries++;
+      fbEl.innerHTML = `<div class="fb ${ok ? 'good' : 'bad'}"><strong>${ok ? '✓ Correct.' : '✗ Not yet.'}</strong>${msg}${!ok && tries === 1 ? ' Try again, or open the worked explanation below.' : ''}</div>`;
+      typeset(fbEl);
+      sol.hidden = false;
+      if (ok) { done.add(n); upd(); }
+    });
+  });
+}
+
+/* ===================== pages (hash routing) ===================== */
+const PAGES = ['start', 'part1', 'part2', 'part3'];
+const PAGE_TITLES = { start: 'Start here', part1: 'Part 1: Describing motion and constant velocity', part2: 'Part 2: Constant acceleration', part3: 'Part 3: Variable acceleration' };
+let currentPage = null, routed = false;
+function route() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  let pg = 'start', target = null;
+  if (PAGES.includes(h)) pg = h;
+  else if (h) { const el = document.getElementById(h); const p = el && el.closest('[data-page]'); if (p) { pg = p.dataset.page; target = el; } }
+  const changed = pg !== currentPage;
+  if (changed) {
+    document.dispatchEvent(new Event('kin:pagechange'));
+    $$('[data-page]').forEach(p => { p.hidden = p.dataset.page !== pg; });
+    $$('nav.pages a').forEach(a => { if (a.dataset.pg === pg) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+    document.title = `${PAGE_TITLES[pg]} | Motion along a line (PHY2048)`;
+    $('#skipLink').setAttribute('href', `#main-${pg}`);
+    currentPage = pg;
+  }
+  requestAnimationFrame(() => {
+    if (target) {
+      target.scrollIntoView();
+      if (target.tabIndex >= 0 || target.hasAttribute('tabindex')) target.focus({ preventScroll: true });
+    } else if (changed || PAGES.includes(h)) {
+      window.scrollTo(0, 0);
+      if (routed) { const hd = $(`[data-page="${pg}"] h1`); if (hd) hd.focus({ preventScroll: true }); }
+    }
+    routed = true;
+  });
+}
+function initRouter() { window.addEventListener('hashchange', route); route(); }
+
+/* ===================== init ===================== */
+function initTheme() {
+  const sel = $('#themeSel');
+  let saved = 'auto';
+  try { saved = localStorage.getItem('kin-theme') || 'auto'; } catch (e) {}
+  const apply = v => { if (v === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', v); };
+  sel.value = saved; apply(saved);
+  sel.addEventListener('change', () => { apply(sel.value); try { localStorage.setItem('kin-theme', sel.value); } catch (e) {} });
+}
+function init() {
+  initTheme();
+  $$('[data-practice]').forEach(buildPractice);
+  $$('[data-lab]').forEach(createLab);
+  $$('[data-widget="secant"]').forEach(createSecant);
+  const figs = $$('[data-fig]');
+  figs.forEach(renderFigure);
+  let rq = null;
+  new ResizeObserver(() => { if (rq) return; rq = requestAnimationFrame(() => { rq = null; figs.forEach(renderFigure); }); }).observe(document.body);
+  if (window.matchMedia('(max-width: 900px)').matches) $$('.toc-details').forEach(d => { d.open = false; });
+  initRouter();
+  const mjReady = () => window.MathJax && MathJax.startup && MathJax.startup.promise;
+  const go = () => MathJax.startup.promise.then(() => MathJax.typesetPromise()).catch(() => {});
+  if (mjReady()) go(); else { let n = 0; const iv = setInterval(() => { if (mjReady()) { clearInterval(iv); go(); } else if (++n > 100) clearInterval(iv); }, 100); }
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+
+</script>
+</body>
+</html>
