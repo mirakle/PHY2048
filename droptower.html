@@ -1,0 +1,887 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Drop Tower</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Spectral:wght@500;600;700&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500;600&display=swap">
+<style>
+  :root{
+    --surface:#f7f9fb;
+    --surface-panel:#ffffff;
+    --surface-sunken:#eef2f7;
+    --grid-line:#dbe4ee;
+    --border:#ccd7e2;
+    --ink:#16212c;
+    --ink-soft:#3d4c5c;
+    --ink-muted:#6b7d90;
+    --accent:#2a5cad;
+    --accent-strong:#1e4685;
+    --accent-ink:#ffffff;
+    --series-position:#2a5cad;
+    --series-velocity:#c23b5e;
+    --reference-line:#94a3b3;
+    color-scheme: light dark;
+  }
+  @media (prefers-color-scheme: dark){
+    :root:not([data-theme="light"]){
+      --surface:#111925;
+      --surface-panel:#17212f;
+      --surface-sunken:#0d151f;
+      --grid-line:#243851;
+      --border:#2c3e54;
+      --ink:#eef3f8;
+      --ink-soft:#c3d0dd;
+      --ink-muted:#8fa2b6;
+      --accent:#6fa8ff;
+      --accent-strong:#8fbcff;
+      --accent-ink:#0b1420;
+      --series-position:#5b93e6;
+      --series-velocity:#c96380;
+      --reference-line:#5e7285;
+    }
+  }
+  :root[data-theme="dark"]{
+    --surface:#111925;
+    --surface-panel:#17212f;
+    --surface-sunken:#0d151f;
+    --grid-line:#243851;
+    --border:#2c3e54;
+    --ink:#eef3f8;
+    --ink-soft:#c3d0dd;
+    --ink-muted:#8fa2b6;
+    --accent:#6fa8ff;
+    --accent-strong:#8fbcff;
+    --accent-ink:#0b1420;
+    --series-position:#5b93e6;
+    --series-velocity:#c96380;
+    --reference-line:#5e7285;
+  }
+
+  *{ box-sizing:border-box; }
+  body{
+    margin:0;
+    background:var(--surface);
+    color:var(--ink);
+    font-family:"IBM Plex Sans", system-ui, sans-serif;
+    -webkit-font-smoothing:antialiased;
+  }
+  .num{ font-family:"IBM Plex Mono", ui-monospace, monospace; font-variant-numeric:tabular-nums; }
+  h1,h2,h3{ font-family:"Spectral", Georgia, serif; text-wrap:balance; margin:0; }
+
+  .wrap{
+    max-width:1180px;
+    margin:0 auto;
+    padding:28px 24px 48px;
+  }
+
+  header.top{
+    display:flex;
+    align-items:baseline;
+    justify-content:space-between;
+    gap:16px;
+    flex-wrap:wrap;
+    margin-bottom:22px;
+    padding-bottom:18px;
+    border-bottom:1px solid var(--border);
+  }
+  header.top h1{ font-size:1.7rem; font-weight:600; letter-spacing:-.01em; }
+  header.top .eyebrow{
+    display:block;
+    font-family:"IBM Plex Mono", monospace;
+    font-size:.72rem;
+    letter-spacing:.11em;
+    text-transform:uppercase;
+    color:var(--accent);
+    margin-bottom:6px;
+  }
+  header.top p.sub{ margin:6px 0 0; color:var(--ink-muted); font-size:.94rem; max-width:46ch; }
+  .course-tag{
+    font-family:"IBM Plex Mono", monospace;
+    font-size:.75rem;
+    color:var(--ink-muted);
+    border:1px solid var(--border);
+    border-radius:999px;
+    padding:5px 12px;
+    white-space:nowrap;
+    align-self:flex-start;
+  }
+
+  .layout{
+    display:grid;
+    grid-template-columns: minmax(300px,360px) 1fr;
+    gap:20px;
+    align-items:start;
+  }
+  @media (max-width:860px){
+    .layout{ grid-template-columns:1fr; }
+  }
+
+  .panel{
+    background:var(--surface-panel);
+    border:1px solid var(--border);
+    border-radius:14px;
+    padding:18px;
+  }
+  .panel + .panel{ margin-top:16px; }
+  .panel h2{
+    font-size:.72rem;
+    font-weight:600;
+    letter-spacing:.09em;
+    text-transform:uppercase;
+    color:var(--ink-muted);
+    margin-bottom:14px;
+  }
+
+  /* ---- controls ---- */
+  .field{ margin-bottom:16px; }
+  .field:last-child{ margin-bottom:0; }
+  .field-label{
+    display:flex; justify-content:space-between; align-items:baseline;
+    font-size:.86rem; color:var(--ink-soft); margin-bottom:7px;
+  }
+  .field-label .val{ font-family:"IBM Plex Mono",monospace; color:var(--ink); font-size:.86rem; }
+
+  input[type="range"]{
+    -webkit-appearance:none; appearance:none;
+    width:100%; height:4px; border-radius:99px;
+    background:var(--grid-line);
+    outline:none;
+    cursor:pointer;
+  }
+  input[type="range"]::-webkit-slider-thumb{
+    -webkit-appearance:none; appearance:none;
+    width:16px; height:16px; border-radius:50%;
+    background:var(--accent);
+    border:2px solid var(--surface-panel);
+    box-shadow:0 0 0 1px var(--accent);
+    cursor:pointer;
+  }
+  input[type="range"]::-moz-range-thumb{
+    width:16px; height:16px; border-radius:50%;
+    background:var(--accent); border:2px solid var(--surface-panel);
+    box-shadow:0 0 0 1px var(--accent); cursor:pointer;
+  }
+  input[type="range"]:focus-visible::-webkit-slider-thumb{ outline:2px solid var(--accent); outline-offset:2px; }
+
+  select, .num-input{
+    width:100%;
+    font:inherit;
+    font-family:"IBM Plex Sans", sans-serif;
+    font-size:.88rem;
+    color:var(--ink);
+    background:var(--surface);
+    border:1px solid var(--border);
+    border-radius:8px;
+    padding:8px 10px;
+  }
+  select:focus-visible, .num-input:focus-visible, button:focus-visible{
+    outline:2px solid var(--accent); outline-offset:2px;
+  }
+
+  .g-row{ display:grid; grid-template-columns:1fr auto; gap:8px; align-items:center; }
+  .custom-g{ display:none; margin-top:8px; }
+  .custom-g.show{ display:block; }
+  .custom-g input{ width:100%; }
+
+  .toggle-row{ display:flex; align-items:center; justify-content:space-between; }
+  .toggle-row .lab{ font-size:.86rem; color:var(--ink-soft); }
+  .switch{
+    position:relative; width:40px; height:22px; flex:none;
+    border-radius:99px; background:var(--grid-line); border:1px solid var(--border);
+    cursor:pointer;
+  }
+  .switch .knob{
+    position:absolute; top:2px; left:2px; width:16px; height:16px; border-radius:50%;
+    background:var(--surface-panel); box-shadow:0 1px 2px hsl(220 40% 20% / .3);
+    transition:transform .16s ease;
+  }
+  .switch[aria-checked="true"]{ background:var(--accent); border-color:var(--accent); }
+  .switch[aria-checked="true"] .knob{ transform:translateX(18px); }
+  @media (prefers-reduced-motion:reduce){ .switch .knob{ transition:none; } }
+
+  .drag-fields{ display:none; margin-top:14px; padding-top:14px; border-top:1px dashed var(--border); }
+  .drag-fields.show{ display:block; }
+
+  .transport{ display:flex; gap:8px; margin-top:6px; }
+  button.btn{
+    font:inherit; font-family:"IBM Plex Sans", sans-serif; font-weight:500; font-size:.86rem;
+    padding:10px 14px; border-radius:9px; border:1px solid var(--border);
+    background:var(--surface); color:var(--ink); cursor:pointer;
+    display:flex; align-items:center; justify-content:center; gap:7px;
+    transition:background .12s ease, border-color .12s ease;
+  }
+  @media (prefers-reduced-motion:reduce){ button.btn{ transition:none; } }
+  button.btn:hover{ border-color:var(--accent); }
+  button.btn.primary{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); flex:1 1 auto; }
+  button.btn.primary:hover{ background:var(--accent-strong); border-color:var(--accent-strong); }
+  .speed-row{ display:flex; gap:6px; margin-top:10px; }
+  .speed-row button{
+    flex:1; font-family:"IBM Plex Mono",monospace; font-size:.78rem; padding:7px 4px;
+    border-radius:7px; border:1px solid var(--border); background:var(--surface); color:var(--ink-muted); cursor:pointer;
+  }
+  .speed-row button[aria-pressed="true"]{ background:var(--accent); border-color:var(--accent); color:var(--accent-ink); }
+
+  /* ---- drop tower visual ---- */
+  .tower-wrap{ display:flex; justify-content:center; }
+  svg.tower{ width:100%; height:auto; max-width:230px; }
+  .tower-status{
+    margin-top:12px; text-align:center; font-size:.84rem; color:var(--ink-muted); min-height:1.3em;
+  }
+  .tower-status strong{ color:var(--ink); font-family:"IBM Plex Mono",monospace; font-weight:500; }
+
+  /* ---- readouts ---- */
+  .readouts{ display:grid; grid-template-columns:repeat(4,1fr); gap:10px; }
+  @media (max-width:520px){ .readouts{ grid-template-columns:repeat(2,1fr); } }
+  .readout{
+    background:var(--surface-sunken); border-radius:10px; padding:12px 10px;
+  }
+  .readout .lab{ font-size:.7rem; letter-spacing:.06em; text-transform:uppercase; color:var(--ink-muted); }
+  .readout .lab .sym{ font-style:italic; font-family:"Spectral", serif; text-transform:none; letter-spacing:0; }
+  .readout .value{ font-family:"IBM Plex Mono",monospace; font-size:1.28rem; margin-top:4px; }
+  .readout .unit{ font-size:.74rem; color:var(--ink-muted); margin-left:2px; }
+  .readout.pos .value{ color:var(--series-position); }
+  .readout.vel .value{ color:var(--series-velocity); }
+
+  /* ---- charts ---- */
+  .chart-block{ margin-top:16px; }
+  .chart-title{
+    display:flex; align-items:center; gap:8px;
+    font-size:.82rem; color:var(--ink-soft); margin-bottom:6px;
+  }
+  .chart-title .swatch{ width:10px; height:10px; border-radius:2px; flex:none; }
+  .chart-scroll{ overflow-x:auto; }
+  svg.chart{ width:100%; height:auto; min-width:420px; display:block; }
+  .grid-line{ stroke:var(--grid-line); stroke-width:1; }
+  .axis-line{ stroke:var(--border); stroke-width:1; }
+  .axis-label{ fill:var(--ink-muted); font-size:11px; font-family:"IBM Plex Mono",monospace; }
+  .series-path{ fill:none; stroke-width:2.5; stroke-linecap:round; stroke-linejoin:round; }
+  .ref-line{ stroke:var(--reference-line); stroke-width:1.5; stroke-dasharray:4 4; fill:none; }
+  .ref-label{ fill:var(--ink-muted); font-size:10.5px; font-family:"IBM Plex Mono",monospace; }
+  .cursor-line{ stroke:var(--ink-muted); stroke-width:1; opacity:.55; }
+  .cursor-dot{ }
+
+  /* ---- equations ---- */
+  details.eq{
+    background:var(--surface-panel); border:1px solid var(--border); border-radius:14px;
+    padding:16px 18px; margin-top:20px;
+  }
+  details.eq > summary{
+    cursor:pointer; font-size:.72rem; font-weight:600; letter-spacing:.09em; text-transform:uppercase;
+    color:var(--ink-muted); list-style:none; display:flex; align-items:center; gap:8px;
+  }
+  details.eq > summary::-webkit-details-marker{ display:none; }
+  details.eq > summary::before{ content:"›"; display:inline-block; transition:transform .15s ease; font-size:1.1em; }
+  details.eq[open] > summary::before{ transform:rotate(90deg); }
+  @media (prefers-reduced-motion:reduce){ details.eq > summary::before{ transition:none; } }
+  .eq-grid{ display:grid; grid-template-columns:repeat(2,1fr); gap:22px; margin-top:14px; }
+  @media (max-width:700px){ .eq-grid{ grid-template-columns:1fr; } }
+  .eq-col h3{ font-size:.95rem; font-weight:600; margin-bottom:8px; color:var(--ink); }
+  .eq-col.active h3{ color:var(--accent); }
+  .eq-line{ font-family:"IBM Plex Mono",monospace; font-size:.9rem; color:var(--ink-soft); margin:6px 0; }
+  .eq-note{ font-size:.82rem; color:var(--ink-muted); margin-top:8px; line-height:1.5; }
+
+  .sr-only{ position:absolute; width:1px; height:1px; overflow:hidden; clip:rect(0,0,0,0); white-space:nowrap; }
+</style>
+</head>
+<body>
+
+<div class="wrap">
+  <header class="top">
+    <div>
+      <span class="eyebrow">PHY2048 · Kinematics</span>
+      <h1>Drop Tower</h1>
+      <p class="sub">Launch a ball from height <span class="num">h</span> with initial velocity <span class="num">v₀</span> and watch it fall — and bounce — under gravity, with optional air resistance.</p>
+    </div>
+    <span class="course-tag">1‑D free fall &amp; bounce simulator</span>
+  </header>
+
+  <div class="layout">
+    <!-- LEFT: controls + tower -->
+    <div class="left-col">
+      <div class="panel">
+        <h2>Setup</h2>
+
+        <div class="field">
+          <div class="field-label"><span>Drop height, <em class="num" style="font-style:italic">h</em></span><span class="val"><span id="hVal">20</span> m</span></div>
+          <input type="range" id="hSlider" min="1" max="150" step="1" value="20" aria-label="Drop height in meters">
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span>Initial vertical velocity, <em class="num" style="font-style:italic">v</em><sub>0</sub></span><span class="val"><span id="v0Val">0.0</span> m/s</span></div>
+          <input type="range" id="v0Slider" min="-5" max="5" step="0.1" value="0" aria-label="Initial vertical velocity in meters per second">
+          <p class="eq-note" style="margin-top:8px;">Positive = tossed upward before it falls; negative = an extra downward push at release.</p>
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span>Gravity</span></div>
+          <div class="g-row">
+            <select id="gPreset" aria-label="Gravity preset">
+              <option value="9.81" selected>Earth — 9.81 m/s²</option>
+              <option value="1.62">Moon — 1.62 m/s²</option>
+              <option value="3.71">Mars — 3.71 m/s²</option>
+              <option value="24.79">Jupiter — 24.79 m/s²</option>
+              <option value="custom">Custom…</option>
+            </select>
+          </div>
+          <div class="custom-g" id="customGWrap">
+            <div class="field-label"><span>Custom <em class="num" style="font-style:italic">g</em></span><span class="val"><span id="gCustomVal">9.81</span> m/s²</span></div>
+            <input type="range" id="gCustomSlider" min="0.5" max="30" step="0.01" value="9.81" aria-label="Custom gravity in meters per second squared">
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="toggle-row">
+            <span class="lab">Air resistance</span>
+            <div class="switch" id="dragToggle" role="switch" aria-checked="false" tabindex="0" aria-label="Toggle air resistance"><div class="knob"></div></div>
+          </div>
+          <div class="drag-fields" id="dragFields">
+            <div class="field-label"><span>Terminal velocity, <em class="num" style="font-style:italic">v</em><sub>t</sub></span><span class="val"><span id="vtVal">20</span> m/s</span></div>
+            <input type="range" id="vtSlider" min="3" max="70" step="1" value="20" aria-label="Terminal velocity in meters per second">
+            <p class="eq-note" style="margin-top:8px;">Quadratic drag: <span class="num">dv/dt = −g − (g/v<sub>t</sub>²)v·|v|</span>. Low <span class="num">v_t</span> = feather‑like; high <span class="num">v_t</span> ≈ free fall.</p>
+          </div>
+        </div>
+
+        <div class="field">
+          <div class="field-label"><span>Bounce — coefficient of restitution, <em class="num" style="font-style:italic">e</em></span><span class="val"><span id="eVal">0.50</span></span></div>
+          <input type="range" id="eSlider" min="0" max="1" step="0.05" value="0.5" aria-label="Coefficient of restitution">
+          <p class="eq-note" style="margin-top:8px;"><span class="num">v_after = −e · v_impact</span>. e = 0 stops dead on impact; e = 1 bounces back to the same height, forever.</p>
+        </div>
+
+        <div class="field" style="margin-bottom:0;">
+          <div class="transport">
+            <button class="btn primary" id="dropBtn">
+              <svg width="13" height="13" viewBox="0 0 13 13" fill="none" aria-hidden="true"><path d="M3 1.5L11 6.5L3 11.5V1.5Z" fill="currentColor"/></svg>
+              Drop
+            </button>
+            <button class="btn" id="pauseBtn">Pause</button>
+            <button class="btn" id="resetBtn">Reset</button>
+          </div>
+          <div class="speed-row" role="group" aria-label="Playback speed">
+            <button data-speed="0.25">0.25×</button>
+            <button data-speed="0.5">0.5×</button>
+            <button data-speed="1" aria-pressed="true">1×</button>
+            <button data-speed="2">2×</button>
+          </div>
+        </div>
+      </div>
+
+      <div class="panel">
+        <h2>Tower</h2>
+        <div class="tower-wrap">
+          <svg class="tower" id="towerSvg" viewBox="0 0 230 420" role="img" aria-label="Vertical shaft showing the ball's position above ground">
+            <defs>
+              <radialGradient id="ballShade" cx="35%" cy="30%" r="75%">
+                <stop offset="0%" stop-color="#dce9ff"/>
+                <stop offset="55%" stop-color="var(--series-position)"/>
+                <stop offset="100%" stop-color="var(--accent-strong)"/>
+              </radialGradient>
+            </defs>
+            <g id="towerTicks"></g>
+            <line id="shaftLine" class="axis-line" x1="70" y1="20" x2="70" y2="380"/>
+            <g id="releaseMark" opacity="0">
+              <line x1="70" y1="0" x2="150" y2="0" class="ref-line"/>
+              <text x="150" y="-4" text-anchor="end" class="ref-label">release</text>
+            </g>
+            <g id="groundHatch"></g>
+            <line x1="30" y1="380" x2="150" y2="380" stroke="var(--ink-soft)" stroke-width="2"/>
+            <line id="weightArrow" stroke="var(--series-position)" stroke-width="2.2" marker-end="url(#arrowPos)"/>
+            <line id="dragArrow" stroke="var(--series-velocity)" stroke-width="2.2" marker-end="url(#arrowNeg)" opacity="0"/>
+            <circle id="ball" cx="70" cy="20" r="9" fill="url(#ballShade)" stroke="var(--accent-strong)" stroke-width="1"/>
+            <defs>
+              <marker id="arrowPos" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--series-position)"/></marker>
+              <marker id="arrowNeg" markerWidth="8" markerHeight="8" refX="4" refY="4" orient="auto"><path d="M0,0 L8,4 L0,8 Z" fill="var(--series-velocity)"/></marker>
+            </defs>
+          </svg>
+        </div>
+        <p class="tower-status" id="towerStatus">Ready to drop from <strong>20 m</strong>.</p>
+      </div>
+    </div>
+
+    <!-- RIGHT: readouts + charts -->
+    <div class="right-col">
+      <div class="panel">
+        <h2>Live readout</h2>
+        <div class="readouts">
+          <div class="readout">
+            <div class="lab"><span class="sym">t</span> elapsed</div>
+            <div class="value"><span id="rT">0.00</span><span class="unit">s</span></div>
+          </div>
+          <div class="readout pos">
+            <div class="lab"><span class="sym">y</span> height</div>
+            <div class="value"><span id="rY">20.0</span><span class="unit">m</span></div>
+          </div>
+          <div class="readout vel">
+            <div class="lab"><span class="sym">v</span> velocity</div>
+            <div class="value"><span id="rV">0.00</span><span class="unit">m/s</span></div>
+          </div>
+          <div class="readout">
+            <div class="lab"><span class="sym">a</span> accel.</div>
+            <div class="value"><span id="rA">-9.81</span><span class="unit">m/s²</span></div>
+          </div>
+        </div>
+
+        <div class="chart-block">
+          <div class="chart-title"><span class="swatch" style="background:var(--series-position)"></span>Height above ground vs. time</div>
+          <div class="chart-scroll">
+            <svg class="chart" id="chartY" viewBox="0 0 560 150" preserveAspectRatio="none"></svg>
+          </div>
+        </div>
+        <div class="chart-block">
+          <div class="chart-title"><span class="swatch" style="background:var(--series-velocity)"></span>Vertical velocity vs. time</div>
+          <div class="chart-scroll">
+            <svg class="chart" id="chartV" viewBox="0 0 560 150" preserveAspectRatio="none"></svg>
+          </div>
+        </div>
+      </div>
+
+      <details class="eq" id="eqPanel">
+        <summary>Kinematic equations</summary>
+        <div class="eq-grid">
+          <div class="eq-col" id="eqIdeal">
+            <h3>Ideal free fall</h3>
+            <p class="eq-line">v(t) = v₀ − g·t</p>
+            <p class="eq-line">y(t) = h + v₀·t − ½·g·t²</p>
+            <p class="eq-line">v² = v₀² + 2g(h − y)</p>
+            <p class="eq-note">Up is positive, so gravity's acceleration is <span class="num">−g</span> — constant, so the speed chart is a straight line between impacts.</p>
+          </div>
+          <div class="eq-col" id="eqDrag">
+            <h3>With quadratic drag</h3>
+            <p class="eq-line">dv/dt = −g − (g / v<sub>t</sub>²)·v·|v|</p>
+            <p class="eq-line">v(t) → −v<sub>t</sub> while falling</p>
+            <p class="eq-line">solved numerically (RK4)</p>
+            <p class="eq-note">Drag always opposes motion — it slows the fall as speed nears <span class="num">−v_t</span>, and it also slows any upward rebound.</p>
+          </div>
+        </div>
+        <p class="eq-note" style="margin-top:16px; padding-top:14px; border-top:1px dashed var(--border);">Each time the ball reaches the ground it bounces: <span class="num">v → −e·v</span>, where <span class="num">e</span> is the coefficient of restitution above. <span class="num">e = 1</span> keeps all the kinetic energy (bounces forever, idealized); <span class="num">e = 0</span> loses it all on first contact.</p>
+      </details>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  "use strict";
+  var reduceMotion = window.matchMedia && window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
+  // ---------- elements ----------
+  var hSlider = document.getElementById("hSlider"), hVal = document.getElementById("hVal");
+  var v0Slider = document.getElementById("v0Slider"), v0Val = document.getElementById("v0Val");
+  var gPreset = document.getElementById("gPreset"), customGWrap = document.getElementById("customGWrap");
+  var gCustomSlider = document.getElementById("gCustomSlider"), gCustomVal = document.getElementById("gCustomVal");
+  var dragToggle = document.getElementById("dragToggle"), dragFields = document.getElementById("dragFields");
+  var vtSlider = document.getElementById("vtSlider"), vtVal = document.getElementById("vtVal");
+  var eSlider = document.getElementById("eSlider"), eVal = document.getElementById("eVal");
+  var dropBtn = document.getElementById("dropBtn"), pauseBtn = document.getElementById("pauseBtn"), resetBtn = document.getElementById("resetBtn");
+  var speedButtons = Array.prototype.slice.call(document.querySelectorAll(".speed-row button"));
+  var towerStatus = document.getElementById("towerStatus");
+  var ball = document.getElementById("ball"), weightArrow = document.getElementById("weightArrow"), dragArrow = document.getElementById("dragArrow");
+  var towerTicks = document.getElementById("towerTicks"), groundHatch = document.getElementById("groundHatch"), shaftLine = document.getElementById("shaftLine");
+  var releaseMark = document.getElementById("releaseMark");
+  var rT = document.getElementById("rT"), rY = document.getElementById("rY"), rV = document.getElementById("rV"), rA = document.getElementById("rA");
+  var chartY = document.getElementById("chartY"), chartV = document.getElementById("chartV");
+  var eqIdeal = document.getElementById("eqIdeal"), eqDrag = document.getElementById("eqDrag");
+
+  // ---------- state ----------
+  var params = { h:20, v0:0, g:9.81, drag:false, vt:20, restitution:0.5, speed:1 };
+  // sim.state = [y, v] — y: height above ground (m), v: vertical velocity,
+  // positive = upward (gravity's acceleration is therefore -g). Ground
+  // collisions bounce in place: v -> -e*v.
+  var sim = null; // {t, state, landed, tLand, vLand, bounces, history:[{t,y,v,a}]}
+  var playing = false, rafId = null, lastPerf = null;
+
+  function niceStep(maxVal, targetTicks){
+    if (maxVal <= 0) return 1;
+    var raw = maxVal / targetTicks;
+    var mag = Math.pow(10, Math.floor(Math.log10(raw)));
+    var norm = raw / mag;
+    var step = norm < 1.5 ? 1 : norm < 3 ? 2 : norm < 7 ? 5 : 10;
+    return step * mag;
+  }
+
+  // ---------- ground hatching (drawn once) ----------
+  (function drawGround(){
+    var g = "";
+    for (var x = 34; x <= 146; x += 8){
+      g += '<line x1="'+x+'" y1="380" x2="'+(x-8)+'" y2="392" stroke="var(--border)" stroke-width="1.4"/>';
+    }
+    groundHatch.innerHTML = g;
+  })();
+
+  // ---------- tower ruler ----------
+  // The ruler spans [0, hMax], where hMax accounts for any overshoot above
+  // the release height (an upward toss can rise past h before it falls).
+  var towerTop = 20, towerBottom = 380, towerPxSpan = towerBottom - towerTop;
+  function drawTowerTicks(hMax, hRaw){
+    var step = niceStep(hMax, 5);
+    var ticks = [];
+    for (var v = 0; v <= hMax + 1e-6; v += step) ticks.push(Math.round(v*1000)/1000);
+    var svgHtml = "";
+    ticks.forEach(function(v){
+      var y = towerBottom - (v/hMax)*towerPxSpan;
+      svgHtml += '<line x1="60" y1="'+y+'" x2="70" y2="'+y+'" class="axis-line"/>';
+      svgHtml += '<text x="54" y="'+(y+3.5)+'" text-anchor="end" class="axis-label">'+v+'</text>';
+    });
+    towerTicks.innerHTML = svgHtml;
+    shaftLine.setAttribute("y1", towerTop);
+    shaftLine.setAttribute("y2", towerBottom);
+    // mark the release height only when the ball actually rises above it
+    // (an upward toss), not just because the axis has breathing-room padding
+    if (hRaw !== undefined && hRaw > params.h * 1.01){
+      var ry = towerBottom - (params.h/hMax)*towerPxSpan;
+      releaseMark.setAttribute("transform", "translate(0,"+ry+")");
+      releaseMark.setAttribute("opacity", 1);
+    } else {
+      releaseMark.setAttribute("opacity", 0);
+    }
+  }
+
+  function ballY(y, hMax){ return towerBottom - (Math.max(0, Math.min(hMax, y))/hMax) * towerPxSpan; }
+
+  function updateTower(y, v, a, hMax, gVal, landed){
+    var py = ballY(y, hMax);
+    ball.setAttribute("cy", py);
+    if (landed){
+      weightArrow.setAttribute("opacity", 0);
+      dragArrow.setAttribute("opacity", 0);
+      return;
+    }
+    var arrowLen = 34;
+    weightArrow.setAttribute("opacity", 1);
+    weightArrow.setAttribute("x1", 70); weightArrow.setAttribute("y1", py+11);
+    weightArrow.setAttribute("x2", 70); weightArrow.setAttribute("y2", py+11+arrowLen);
+    // Drag is only illustrated while actually falling (v < 0): it always
+    // opposes motion, but showing it during a brief upward rebound would
+    // sit on top of the weight arrow and read as confusing rather than useful.
+    if (params.drag && v < -0.02){
+      var frac = Math.min(1, (v*v) / (params.vt*params.vt));
+      var dLen = arrowLen * frac;
+      dragArrow.setAttribute("opacity", frac > 0.02 ? 1 : 0);
+      dragArrow.setAttribute("x1", 70); dragArrow.setAttribute("y1", py-11);
+      dragArrow.setAttribute("x2", 70); dragArrow.setAttribute("y2", py-11-dLen);
+    } else {
+      dragArrow.setAttribute("opacity", 0);
+    }
+  }
+
+  // ---------- physics ----------
+  // state = [y, v]: y = height above ground, v = vertical velocity
+  // (positive = upward, so gravity contributes -g). Quadratic drag uses
+  // v*|v| so it opposes motion whichever way the ball is moving.
+  var SETTLE_SPEED = 0.05;   // m/s — below this after a bounce, call it at rest
+  var MAX_BOUNCES = 150;     // safety cap for high-restitution / e=1 cases
+
+  function deriv(state, g, k){
+    var v = state[1];
+    return [v, -g - k*v*Math.abs(v)];
+  }
+  function rk4Step(state, dt, g, k){
+    var k1 = deriv(state, g, k);
+    var s2 = [state[0]+dt/2*k1[0], state[1]+dt/2*k1[1]];
+    var k2 = deriv(s2, g, k);
+    var s3 = [state[0]+dt/2*k2[0], state[1]+dt/2*k2[1]];
+    var k3 = deriv(s3, g, k);
+    var s4 = [state[0]+dt*k3[0], state[1]+dt*k3[1]];
+    var k4 = deriv(s4, g, k);
+    return [
+      state[0] + dt/6*(k1[0]+2*k2[0]+2*k3[0]+k4[0]),
+      state[1] + dt/6*(k1[1]+2*k2[1]+2*k3[1]+k4[1])
+    ];
+  }
+
+  function newSim(){
+    var k = params.drag ? params.g/(params.vt*params.vt) : 0;
+    var v0 = params.v0;
+    var a0 = -params.g - k*v0*Math.abs(v0);
+    return { t:0, state:[params.h, v0], landed:false, tLand:null, vLand:null, bounces:0,
+      history:[{t:0, y:params.h, v:v0, a:a0}] };
+  }
+
+  function stepSim(sim, dt){
+    var g = params.g, k = params.drag ? g/(params.vt*params.vt) : 0;
+    var sub = 1/480, remaining = dt;
+    while (remaining > 1e-9 && !sim.landed){
+      var step = Math.min(sub, remaining);
+      var prevY = sim.state[0];
+      var next = rk4Step(sim.state, step, g, k);
+      if (next[0] <= 0 && prevY > 0){
+        var frac = prevY / Math.max(1e-9, prevY - next[0]);
+        var tImpact = step*frac;
+        var vImpact = sim.state[1] + (next[1]-sim.state[1])*frac;
+        sim.t += tImpact;
+        sim.bounces += 1;
+        var vAfter = -params.restitution * vImpact;
+        if (Math.abs(vAfter) < SETTLE_SPEED || sim.bounces >= MAX_BOUNCES){
+          sim.state = [0, 0];
+          sim.landed = true; sim.tLand = sim.t; sim.vLand = vImpact;
+        } else {
+          sim.state = [0, vAfter];
+          var remainder = step - tImpact;
+          if (remainder > 1e-9){
+            sim.state = rk4Step(sim.state, remainder, g, k);
+            sim.t += remainder;
+          }
+        }
+      } else {
+        sim.state = next;
+        sim.t += step;
+      }
+      remaining -= step;
+    }
+    var v = sim.state[1];
+    var a = -g - k*v*Math.abs(v);
+    sim.history.push({ t:sim.t, y: Math.max(0, sim.state[0]), v: v, a: sim.landed ? 0 : a });
+    if (sim.history.length > 3600) sim.history.shift();
+  }
+
+  // ---------- charts ----------
+  // Axis bounds are solved once per parameter change (not re-derived from
+  // live data), so the plot holds a stable scale while the trace fills in.
+  var CW = 560, CH = 150, PAD_L = 40, PAD_R = 14, PAD_T = 10, PAD_B = 22;
+  var axisBounds = { tMax: 1, vMax: 10, hMax: 20 };
+
+  function solveAxisBounds(){
+    var temp = newSim(), guard = 0;
+    var maxAbsV = Math.abs(params.v0), maxY = params.h;
+    while (!temp.landed && guard < 9000){
+      stepSim(temp, 1/60);
+      var last = temp.history[temp.history.length-1];
+      if (Math.abs(last.v) > maxAbsV) maxAbsV = Math.abs(last.v);
+      if (last.y > maxY) maxY = last.y;
+      guard++;
+    }
+    var tSettle = temp.landed ? temp.tLand : temp.t;
+    return {
+      tMax: Math.max(0.4, tSettle * 1.06),
+      vMax: Math.max(1, (params.drag ? Math.max(maxAbsV, params.vt) : maxAbsV) * 1.12),
+      hMax: Math.max(1, maxY * 1.06),
+      hRaw: maxY // unpadded peak height, for deciding whether to mark "release" above h
+    };
+  }
+
+  // opts.axisVMin defaults to 0 (position chart); the velocity chart passes
+  // a negative axisVMin so upward (post-bounce) speed reads below the line.
+  function buildChart(svg, series, color, opts){
+    opts = opts || {};
+    var axisTMax = opts.axisTMax;
+    var axisVMin = opts.axisVMin !== undefined ? opts.axisVMin : 0;
+    var axisVMax = opts.axisVMax;
+    var vRange = axisVMax - axisVMin;
+    var stepT = niceStep(axisTMax, 5), stepV = niceStep(vRange, 4);
+    var x0 = PAD_L, x1 = CW-PAD_R, y0 = CH-PAD_B, y1 = PAD_T;
+    function X(t){ return x0 + (t/axisTMax) * (x1-x0); }
+    function Y(v){ return y0 - ((v-axisVMin)/vRange) * (y0-y1); }
+
+    var svgHtml = "";
+    for (var tv=0; tv<=axisTMax+1e-9; tv+=stepT){
+      var gx = X(tv);
+      svgHtml += '<line x1="'+gx+'" y1="'+y1+'" x2="'+gx+'" y2="'+y0+'" class="grid-line"/>';
+      svgHtml += '<text x="'+gx+'" y="'+(CH-6)+'" text-anchor="middle" class="axis-label">'+ (Math.round(tv*100)/100) +'</text>';
+    }
+    var vStart = Math.ceil(axisVMin/stepV)*stepV;
+    for (var vv=vStart; vv<=axisVMax+1e-9; vv+=stepV){
+      var gy = Y(vv);
+      svgHtml += '<line x1="'+x0+'" y1="'+gy+'" x2="'+x1+'" y2="'+gy+'" class="grid-line"/>';
+      svgHtml += '<text x="'+(x0-6)+'" y="'+(gy+3.5)+'" text-anchor="end" class="axis-label">'+ (Math.round(vv*10)/10) +'</text>';
+    }
+    svgHtml += '<line x1="'+x0+'" y1="'+y0+'" x2="'+x1+'" y2="'+y0+'" class="axis-line"/>';
+    svgHtml += '<line x1="'+x0+'" y1="'+y1+'" x2="'+x0+'" y2="'+y0+'" class="axis-line"/>';
+    if (axisVMin < 0 && axisVMax > 0){
+      var gz = Y(0);
+      svgHtml += '<line x1="'+x0+'" y1="'+gz+'" x2="'+x1+'" y2="'+gz+'" stroke="var(--ink-soft)" stroke-width="1.2"/>';
+    }
+
+    if (opts.refLine !== undefined){
+      var ry = Y(opts.refLine);
+      svgHtml += '<line x1="'+x0+'" y1="'+ry+'" x2="'+x1+'" y2="'+ry+'" class="ref-line"/>';
+      svgHtml += '<text x="'+(x1-4)+'" y="'+(ry-4)+'" text-anchor="end" class="ref-label">'+opts.refLabel+'</text>';
+    }
+
+    if (series.length > 1){
+      var d = series.map(function(p,i){
+        var val = opts.key === "v" ? p.v : p.y;
+        return (i===0?"M":"L") + X(p.t).toFixed(1) + "," + Y(val).toFixed(1);
+      }).join(" ");
+      svgHtml += '<path d="'+d+'" class="series-path" stroke="'+color+'"/>';
+      var last = series[series.length-1];
+      var lastVal = opts.key === "v" ? last.v : last.y;
+      svgHtml += '<circle cx="'+X(last.t).toFixed(1)+'" cy="'+Y(lastVal).toFixed(1)+'" r="3.6" fill="'+color+'"/>';
+    }
+    svg.innerHTML = svgHtml;
+  }
+
+  function renderCharts(){
+    var h = sim ? sim.history : [{t:0,y:params.h,v:params.v0}];
+    buildChart(chartY, h, getVar("--series-position"), { key:"y", axisTMax:axisBounds.tMax, axisVMax:axisBounds.hMax });
+    buildChart(chartV, h, getVar("--series-velocity"), {
+      key:"v", axisTMax:axisBounds.tMax, axisVMin:-axisBounds.vMax, axisVMax:axisBounds.vMax,
+      refLine: params.drag ? -params.vt : undefined,
+      refLabel: params.drag ? ("−v_t = −"+params.vt+" m/s") : null
+    });
+  }
+  function getVar(name){
+    return getComputedStyle(document.body).getPropertyValue(name).trim() || "#2a5cad";
+  }
+
+  // ---------- readouts ----------
+  function describeSetup(){
+    var txt = "Ready to drop from <strong>"+params.h+" m</strong>";
+    if (Math.abs(params.v0) > 0.05){
+      txt += " with an initial "+(params.v0>0?"upward":"downward")+" velocity of <strong>"+Math.abs(params.v0).toFixed(1)+" m/s</strong>";
+    }
+    return txt+".";
+  }
+
+  function renderReadouts(){
+    var last = sim ? sim.history[sim.history.length-1] : {t:0,y:params.h,v:params.v0,a:params.g};
+    rT.textContent = last.t.toFixed(2);
+    rY.textContent = Math.max(0,last.y).toFixed(1);
+    rV.textContent = last.v.toFixed(2);
+    rA.textContent = last.a.toFixed(2);
+    updateTower(sim ? sim.state[0] : params.h, last.v, last.a, axisBounds.hMax, params.g, !!(sim && sim.landed));
+    if (sim && sim.landed){
+      if (sim.bounces <= 1){
+        towerStatus.innerHTML = "Landed after <strong>"+sim.tLand.toFixed(2)+" s</strong> at <strong>"+Math.abs(sim.vLand).toFixed(1)+" m/s</strong>.";
+      } else {
+        var nb = sim.bounces - 1;
+        towerStatus.innerHTML = "Came to rest after <strong>"+sim.tLand.toFixed(2)+" s</strong> and <strong>"+nb+"</strong> bounce"+(nb===1?"":"s")+".";
+      }
+    } else if (playing){
+      var phase = (sim && sim.bounces > 0) ? ("Bounce "+sim.bounces+" — ") : (last.v > 0.02 ? "Rising — " : "Falling — ");
+      towerStatus.innerHTML = phase+"<strong>"+Math.max(0,last.y).toFixed(1)+" m</strong> above ground.";
+    } else {
+      towerStatus.innerHTML = describeSetup();
+    }
+  }
+
+  // ---------- animation loop ----------
+  function tick(now){
+    if (!playing) return;
+    if (lastPerf === null) lastPerf = now;
+    var dt = Math.min(0.05, (now - lastPerf)/1000) * params.speed;
+    lastPerf = now;
+    if (dt > 0 && sim && !sim.landed) stepSim(sim, dt);
+    renderReadouts();
+    renderCharts();
+    if (sim && sim.landed){
+      playing = false;
+      pauseBtn.textContent = "Pause";
+      return;
+    }
+    rafId = requestAnimationFrame(tick);
+  }
+
+  function play(){
+    if (playing) return;
+    if (!sim) sim = newSim();
+    if (sim.landed) return;
+    playing = true; lastPerf = null;
+    pauseBtn.textContent = "Pause";
+    rafId = requestAnimationFrame(tick);
+  }
+  function pause(){
+    playing = false;
+    if (rafId) cancelAnimationFrame(rafId);
+    pauseBtn.textContent = "Resume";
+  }
+  function drop(){
+    sim = newSim();
+    axisBounds = solveAxisBounds();
+    pauseBtn.textContent = "Pause";
+    drawTowerTicks(axisBounds.hMax, axisBounds.hRaw);
+    renderReadouts(); renderCharts();
+    play();
+  }
+  function resetOnly(){
+    pause();
+    sim = null;
+    axisBounds = solveAxisBounds();
+    drawTowerTicks(axisBounds.hMax, axisBounds.hRaw);
+    renderReadouts(); renderCharts();
+    pauseBtn.textContent = "Pause";
+    towerStatus.innerHTML = describeSetup();
+  }
+
+  // ---------- pre-run a full illustrative trace instantly (page-at-rest state) ----------
+  function precomputeFullTrace(){
+    var s = newSim();
+    var dt = 1/60;
+    var guard = 0;
+    while (!s.landed && guard < 30000){ stepSim(s, dt); guard++; }
+    return s;
+  }
+
+  // ---------- controls wiring ----------
+  hSlider.addEventListener("input", function(){
+    params.h = parseFloat(hSlider.value);
+    hVal.textContent = params.h;
+    if (!playing){ resetOnly(); }
+  });
+  v0Slider.addEventListener("input", function(){
+    params.v0 = parseFloat(v0Slider.value);
+    v0Val.textContent = params.v0.toFixed(1);
+    if (!playing) resetOnly();
+  });
+  eSlider.addEventListener("input", function(){
+    params.restitution = parseFloat(eSlider.value);
+    eVal.textContent = params.restitution.toFixed(2);
+    if (!playing) resetOnly();
+  });
+  gPreset.addEventListener("change", function(){
+    if (gPreset.value === "custom"){
+      customGWrap.classList.add("show");
+      params.g = parseFloat(gCustomSlider.value);
+    } else {
+      customGWrap.classList.remove("show");
+      params.g = parseFloat(gPreset.value);
+    }
+    if (!playing) resetOnly();
+  });
+  gCustomSlider.addEventListener("input", function(){
+    gCustomVal.textContent = gCustomSlider.value;
+    params.g = parseFloat(gCustomSlider.value);
+    if (!playing) resetOnly();
+  });
+  function setDrag(on){
+    params.drag = on;
+    dragToggle.setAttribute("aria-checked", on ? "true" : "false");
+    dragFields.classList.toggle("show", on);
+    eqIdeal.classList.toggle("active", !on);
+    eqDrag.classList.toggle("active", on);
+    if (!playing) resetOnly();
+  }
+  dragToggle.addEventListener("click", function(){ setDrag(dragToggle.getAttribute("aria-checked") !== "true"); });
+  dragToggle.addEventListener("keydown", function(e){
+    if (e.key === " " || e.key === "Enter"){ e.preventDefault(); dragToggle.click(); }
+  });
+  vtSlider.addEventListener("input", function(){
+    params.vt = parseFloat(vtSlider.value); vtVal.textContent = params.vt;
+    if (!playing){ axisBounds = solveAxisBounds(); renderCharts(); }
+  });
+  speedButtons.forEach(function(btn){
+    btn.addEventListener("click", function(){
+      speedButtons.forEach(function(b){ b.setAttribute("aria-pressed","false"); });
+      btn.setAttribute("aria-pressed","true");
+      params.speed = parseFloat(btn.getAttribute("data-speed"));
+    });
+  });
+  dropBtn.addEventListener("click", drop);
+  pauseBtn.addEventListener("click", function(){ playing ? pause() : play(); });
+  resetBtn.addEventListener("click", resetOnly);
+
+  // ---------- init ----------
+  eqIdeal.classList.add("active");
+  axisBounds = solveAxisBounds();
+  drawTowerTicks(axisBounds.hMax, axisBounds.hRaw);
+  if (reduceMotion){
+    sim = precomputeFullTrace();
+    renderReadouts(); renderCharts();
+  } else {
+    renderReadouts(); renderCharts();
+    setTimeout(drop, 300);
+  }
+})();
+</script>
+
+</body>
+</html>
