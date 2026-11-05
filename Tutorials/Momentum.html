@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Momentum and Impulse: Interactive Tutorial (PHY2048)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Fraunces:opsz,wght@9..144,600;9..144,800&display=swap" rel="stylesheet">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  svg: { fontCache: 'global' },
+  options: { menuOptions: { settings: { assistiveMml: true } } }
+};
+</script>
+<script defer src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js"></script>
+<style>
+:root{
+  --bg:#eaf0f6; --surface:#ffffff; --surface-2:#f3f6fa; --ink:#14213d; --ink-2:#44506a;
+  --line:#c9d3e0; --grid:#e1e7ef; --zero:#5b6780;
+  --blue:#1d5bbf; --blue-bg:#e5eefc; --orange:#a84a00; --orange-fill:#f29a3a; --orange-bg:#fdf0e3;
+  --green:#17703e; --green-bg:#e3f4ea; --red:#b42318; --red-bg:#fdeceb;
+  --on-blue:#ffffff; --focus:#b43c00; --shadow:0 1px 0 rgba(20,33,61,.06), 0 8px 24px -14px rgba(20,33,61,.35);
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --bg:#0d1420; --surface:#152033; --surface-2:#1b283e; --ink:#e9eef6; --ink-2:#b3bfd3;
+    --line:#2f3d55; --grid:#24324a; --zero:#8a98b2;
+    --blue:#8bb8ff; --blue-bg:#1b2c4a; --orange:#ffb46b; --orange-fill:#e58a2e; --orange-bg:#3a2a18;
+    --green:#74d6a0; --green-bg:#163526; --red:#ff9a91; --red-bg:#3d1c1c;
+    --on-blue:#0d1420; --focus:#ffc46b; --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 30px -16px rgba(0,0,0,.8);
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"]{
+  --bg:#0d1420; --surface:#152033; --surface-2:#1b283e; --ink:#e9eef6; --ink-2:#b3bfd3;
+  --line:#2f3d55; --grid:#24324a; --zero:#8a98b2;
+  --blue:#8bb8ff; --blue-bg:#1b2c4a; --orange:#ffb46b; --orange-fill:#e58a2e; --orange-bg:#3a2a18;
+  --green:#74d6a0; --green-bg:#163526; --red:#ff9a91; --red-bg:#3d1c1c;
+  --on-blue:#0d1420; --focus:#ffc46b; --shadow:0 1px 0 rgba(0,0,0,.3), 0 10px 30px -16px rgba(0,0,0,.8);
+  color-scheme: dark;
+}
+:root{ box-sizing:border-box; padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px); }
+*,*::before,*::after{ box-sizing:inherit; }
+html{ scroll-padding-top:calc(env(safe-area-inset-top,0px) + 96px); }
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:'Atkinson Hyperlegible', 'Segoe UI', Verdana, sans-serif;
+  font-size:1.0625rem; line-height:1.6;
+  background-image: linear-gradient(var(--grid) 1px, transparent 1px), linear-gradient(90deg, var(--grid) 1px, transparent 1px);
+  background-size: 28px 28px; background-attachment: fixed;
+}
+body::before{ content:""; position:fixed; inset:0 0 auto; height:env(safe-area-inset-top,0px); z-index:10; background:var(--surface); }
+h1,h2,h3,h4{ font-family:'Fraunces', Georgia, 'Times New Roman', serif; line-height:1.2; color:var(--ink); }
+a{ color:var(--blue); text-underline-offset:3px; }
+:focus-visible{ outline:3px solid var(--focus); outline-offset:3px; border-radius:4px; }
+.visually-hidden{ position:absolute!important; width:1px; height:1px; padding:0; margin:-1px; overflow:hidden; clip:rect(0 0 0 0); white-space:nowrap; border:0; }
+.skip{ position:absolute; left:12px; top:-60px; background:var(--blue); color:var(--on-blue); padding:10px 16px; border-radius:6px; z-index:50; font-weight:700; }
+.skip:focus{ top:calc(env(safe-area-inset-top,0px) + 10px); }
+
+/* top bar */
+.topbar{ position:sticky; top:env(safe-area-inset-top,0px); z-index:20; background:var(--surface); border-bottom:1px solid var(--line); }
+.topbar-in{ max-width:920px; margin:0 auto; padding:10px 20px; display:flex; align-items:center; gap:20px; flex-wrap:wrap; }
+.brand{ font-family:'Fraunces', Georgia, serif; font-weight:800; font-size:1.1rem; margin:0; flex:1 1 auto; }
+.brand small{ font-family:'Atkinson Hyperlegible', sans-serif; font-weight:400; color:var(--ink-2); font-size:.9rem; margin-left:8px; }
+.prog{ flex:1 1 280px; min-width:240px; }
+.prog-label{ display:flex; justify-content:space-between; gap:12px; font-size:.92rem; color:var(--ink-2); }
+.prog-label strong{ color:var(--ink); }
+.prog-track{ height:10px; border-radius:6px; background:var(--surface-2); border:1px solid var(--line); overflow:hidden; margin-top:4px; }
+.prog-fill{ height:100%; width:0; background:repeating-linear-gradient(135deg, var(--blue) 0 6px, color-mix(in srgb, var(--blue) 70%, var(--surface)) 6px 9px); transition:width .4s ease; }
+
+main{ max-width:920px; margin:0 auto; padding:28px 20px 64px; }
+.unit, .welcome, .finish{ background:var(--surface); border:1px solid var(--line); border-radius:14px; box-shadow:var(--shadow); padding:28px clamp(18px,4vw,40px) 32px; }
+
+/* welcome */
+.welcome h1{ font-size:clamp(2rem,6vw,3.2rem); margin:.2em 0 .25em; font-weight:800; letter-spacing:-.01em; }
+.welcome .lede{ font-size:1.15rem; color:var(--ink-2); max-width:62ch; margin:0 0 1.4em; }
+.hero-fig{ margin:0 0 1.5em; }
+.rules{ display:grid; grid-template-columns:repeat(auto-fit,minmax(220px,1fr)); gap:14px; margin:0 0 1.6em; padding:0; list-style:none; }
+.rules li{ border-left:4px solid var(--blue); background:var(--surface-2); padding:12px 14px; border-radius:0 8px 8px 0; }
+.rules strong{ display:block; }
+.name-form{ display:flex; flex-wrap:wrap; gap:12px; align-items:flex-end; }
+.name-form .field{ flex:1 1 260px; }
+.name-form label{ display:block; font-weight:700; margin-bottom:6px; }
+input[type=text]{ width:100%; font:inherit; padding:12px 14px; border:2px solid var(--zero); border-radius:8px; background:var(--surface); color:var(--ink); min-height:48px; }
+.field-err{ color:var(--red); font-weight:700; margin:6px 0 0; min-height:1.6em; }
+
+/* section header */
+.unit-head{ display:flex; gap:18px; align-items:center; margin-bottom:10px; }
+.unit-letter{
+  font-family:'Fraunces', Georgia, serif; font-weight:800; font-size:4.6rem; line-height:.9; flex:none; width:1.1em; text-align:center;
+  color:transparent; -webkit-text-stroke:2px var(--orange);
+  background:repeating-linear-gradient(135deg, var(--orange-fill) 0 3px, transparent 3px 8px); -webkit-background-clip:text; background-clip:text;
+}
+.unit-kicker{ margin:0; color:var(--ink-2); font-size:.95rem; }
+.unit-head h2{ margin:.05em 0 0; font-size:clamp(1.5rem,4vw,2.1rem); }
+.unit-head h2:focus{ outline:none; }
+.unit-head h2:focus-visible{ outline:3px solid var(--focus); }
+.prose{ max-width:68ch; }
+.prose p{ margin:.7em 0; }
+.prose ol, .prose ul{ padding-left:1.3em; }
+.prose li{ margin:.35em 0; }
+.key{ border-left:4px solid var(--orange); background:var(--orange-bg); padding:10px 14px; border-radius:0 8px 8px 0; }
+.example{ background:var(--surface-2); border:1px solid var(--line); border-radius:10px; padding:4px 16px; }
+.example-title{ font-weight:700; margin-top:.8em!important; }
+mjx-container[display="true"]{ overflow-x:auto; overflow-y:hidden; max-width:100%; padding:2px 0; }
+
+/* figures / charts */
+.fig{ margin:1.2em 0; }
+.fig figcaption{ font-size:.95rem; color:var(--ink-2); margin-top:6px; max-width:68ch; }
+.chart{ width:100%; height:auto; display:block; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
+.chart text{ font-family:'Atkinson Hyperlegible', sans-serif; }
+.c-grid{ stroke:var(--grid); stroke-width:1; }
+.c-zero{ stroke:var(--zero); stroke-width:2; }
+.c-frame{ fill:none; stroke:var(--line); }
+.c-tick{ fill:var(--ink-2); font-size:15px; }
+.c-label{ fill:var(--ink); font-size:16px; font-weight:700; }
+.c-line{ fill:none; stroke:var(--blue); stroke-width:3; stroke-linejoin:round; }
+.c-line.p-line{ stroke:var(--orange); }
+.c-line.dash{ stroke-dasharray:7 6; stroke-width:2; stroke:var(--ink-2); }
+.c-cursor{ stroke:var(--ink); stroke-width:2; stroke-dasharray:4 4; }
+.c-dot{ fill:var(--orange); stroke:var(--surface); stroke-width:2; }
+.c-note{ fill:var(--ink); font-size:15px; font-weight:700; }
+.pp-bg{ fill:color-mix(in srgb, var(--blue) 14%, transparent); } .pp-line{ stroke:var(--blue); stroke-width:2; }
+.np-bg{ fill:color-mix(in srgb, var(--red) 14%, transparent); } .np-line{ stroke:var(--red); stroke-width:1.6; }
+.legend-key{ display:inline-block; width:22px; height:14px; vertical-align:-2px; margin-right:6px; border:1.5px solid; border-radius:2px; }
+.lk-pos{ border-color:var(--blue); background:repeating-linear-gradient(45deg, var(--blue) 0 2px, transparent 2px 6px); }
+.lk-neg{ border-color:var(--red); background:repeating-linear-gradient(45deg, var(--red) 0 1.5px, transparent 1.5px 6px), repeating-linear-gradient(-45deg, var(--red) 0 1.5px, transparent 1.5px 6px); }
+
+/* simulations */
+.sim{ margin:1.8em 0; border:2px solid var(--blue); border-radius:12px; padding:18px clamp(14px,3vw,24px) 20px; background:var(--surface-2); }
+.sim-h{ font-size:1.25rem; margin:0 0 .3em; }
+.sim-h .tag{ font-family:'Atkinson Hyperlegible',sans-serif; font-size:.85rem; font-weight:700; background:var(--blue); color:var(--on-blue); padding:2px 9px; border-radius:20px; vertical-align:3px; margin-right:6px; }
+.sim-intro{ margin:0 0 1em; color:var(--ink-2); max-width:68ch; }
+.ctls{ display:grid; grid-template-columns:repeat(auto-fit,minmax(200px,1fr)); gap:14px 20px; margin:6px 0 10px; }
+.ctl-top{ display:flex; justify-content:space-between; gap:8px; align-items:baseline; }
+.ctl label{ font-weight:700; font-size:.97rem; }
+.ctl output{ font-variant-numeric:tabular-nums; font-weight:700; color:var(--orange); white-space:nowrap; }
+input[type=range]{ width:100%; accent-color:var(--blue); min-height:32px; cursor:pointer; }
+select{ font:inherit; width:100%; padding:9px 10px; border-radius:8px; border:2px solid var(--zero); background:var(--surface); color:var(--ink); min-height:44px; margin-top:4px; }
+.timebar{ display:flex; gap:14px; align-items:flex-end; flex-wrap:wrap; margin-top:8px; }
+.timebar .ctl{ flex:1 1 260px; }
+.stage{ width:100%; height:auto; display:block; background:var(--surface); border:1px solid var(--line); border-radius:8px; }
+.stage text{ font-family:'Atkinson Hyperlegible', sans-serif; fill:var(--ink); font-size:16px; }
+.stage .muted{ fill:var(--ink-2); font-size:14px; }
+.stage .ground{ stroke:var(--zero); stroke-width:3; }
+.stage .cart{ fill:var(--surface-2); stroke:var(--ink); stroke-width:2.5; }
+.stage .wheel{ fill:var(--ink); }
+.arr-v.shaft{ stroke:var(--blue); stroke-width:4; } .arr-v.head, .arr-v.dot{ fill:var(--blue); }
+.arr-p.shaft{ stroke:var(--orange); stroke-width:8; } .arr-p.head, .arr-p.dot{ fill:var(--orange); }
+.ball1{ fill:var(--blue); stroke:var(--ink); stroke-width:2; } .ball2{ fill:var(--orange-fill); stroke:var(--ink); stroke-width:2; }
+.stage .ball1-t{ fill:var(--on-blue); font-weight:700; } .stage .ball2-t{ fill:#1a1206; font-weight:700; }
+.bar-pos{ fill:var(--blue); } .bar-neg{ fill:var(--red); }
+.readouts{ display:grid; grid-template-columns:repeat(auto-fit,minmax(150px,1fr)); gap:10px; margin:12px 0 0; }
+.readouts div{ background:var(--surface); border:1px solid var(--line); border-radius:8px; padding:8px 12px; }
+.readouts dt{ font-size:.9rem; color:var(--ink-2); }
+.readouts dd{ margin:0; font-size:1.25rem; font-weight:700; font-variant-numeric:tabular-nums; }
+.eq-readout{ font-size:1.1rem; margin:.8em 0 0; font-variant-numeric:tabular-nums; }
+.note{ font-size:.95rem; color:var(--ink-2); }
+.warnline{ color:var(--red); font-weight:700; }
+.table-wrap{ overflow-x:auto; margin-top:12px; border-radius:8px; border:1px solid var(--line); }
+table.data{ border-collapse:collapse; width:100%; background:var(--surface); font-variant-numeric:tabular-nums; font-size:.97rem; }
+table.data caption{ text-align:left; font-weight:700; padding:8px 12px; }
+table.data th, table.data td{ padding:8px 12px; border-top:1px solid var(--line); text-align:right; white-space:nowrap; }
+table.data th:first-child, table.data td:first-child{ text-align:left; }
+table.data thead th{ background:var(--surface-2); font-size:.9rem; }
+
+/* buttons */
+.btn{ font:inherit; font-weight:700; border-radius:8px; padding:10px 18px; min-height:46px; cursor:pointer; border:2px solid var(--blue); }
+.btn.primary{ background:var(--blue); color:var(--on-blue); }
+.btn.ghost{ background:transparent; color:var(--blue); }
+.btn:hover:not(:disabled){ filter:brightness(1.08); }
+.btn.ghost:hover:not(:disabled){ background:var(--blue-bg); }
+.btn:disabled{ cursor:not-allowed; background:var(--surface-2); color:var(--ink-2); border-color:var(--line); }
+
+/* questions */
+.q{ margin:2em 0 0; border:1px solid var(--line); border-radius:12px; padding:18px clamp(14px,3vw,24px); background:var(--surface); position:relative; }
+.q::before{ content:""; position:absolute; left:-1px; top:14px; bottom:14px; width:5px; border-radius:0 4px 4px 0; background:var(--orange); }
+.q-top{ display:flex; justify-content:space-between; gap:12px; flex-wrap:wrap; align-items:baseline; }
+.q-num{ margin:0; font-size:1.2rem; }
+.q-pts{ font-size:.95rem; color:var(--ink-2); font-weight:700; }
+.q fieldset{ border:0; padding:0; margin:.6em 0 0; min-width:0; }
+.q legend{ padding:0; font-size:1.08rem; max-width:68ch; margin-bottom:.4em; }
+.opts{ display:grid; gap:10px; margin-top:12px; }
+.opt{ position:relative; }
+.opt input{ position:absolute; left:16px; top:50%; transform:translateY(-50%); width:22px; height:22px; margin:0; accent-color:var(--blue); }
+.opt label{ display:flex; align-items:center; gap:12px; padding:12px 14px 12px 50px; border:2px solid var(--line); border-radius:10px; cursor:pointer; min-height:52px; flex-wrap:wrap; }
+.opt input:checked + label{ border-color:var(--blue); background:var(--blue-bg); box-shadow:inset 0 0 0 1px var(--blue); }
+.opt input:focus-visible + label{ outline:3px solid var(--focus); outline-offset:2px; }
+.opt input:disabled + label{ cursor:default; }
+.opt-letter{ font-weight:800; font-family:'Fraunces', Georgia, serif; color:var(--ink-2); min-width:1.2em; }
+.opt-text{ font-variant-numeric:tabular-nums; flex:1 1 auto; }
+.opt-status{ font-weight:700; font-size:.92rem; padding:2px 10px; border-radius:20px; }
+.opt-status:empty{ display:none; }
+.opt.wrong input + label{ border-color:var(--red); background:var(--red-bg); border-style:dashed; }
+.opt.wrong .opt-status{ color:var(--red); border:1.5px solid var(--red); }
+.opt.right input + label{ border-color:var(--green); background:var(--green-bg); border-width:3px; box-shadow:none; }
+.opt.right .opt-status{ color:var(--green); border:1.5px solid var(--green); }
+.q-actions{ display:flex; gap:10px; flex-wrap:wrap; margin-top:14px; }
+.hint{ margin-top:12px; background:var(--orange-bg); border-radius:8px; padding:4px 14px; border-left:4px solid var(--orange); }
+.fb:empty{ display:none; }
+.fb p{ margin:12px 0 0; padding:10px 14px; border-radius:8px; }
+.fb .ok{ background:var(--green-bg); color:var(--ink); border-left:5px solid var(--green); }
+.fb .bad{ background:var(--red-bg); color:var(--ink); border-left:5px solid var(--red); }
+.fb .warn{ background:var(--surface-2); border-left:5px solid var(--zero); }
+.sol{ margin-top:14px; border-top:2px dashed var(--line); padding-top:6px; }
+.sol h4{ font-size:1.1rem; margin:.6em 0 .2em; }
+.sol h4:focus{ outline:none; } .sol h4:focus-visible{ outline:3px solid var(--focus); }
+.sol .check{ font-size:.97rem; color:var(--ink-2); }
+
+.unit-nav{ display:flex; justify-content:space-between; align-items:center; gap:16px; flex-wrap:wrap; margin-top:2.2em; padding-top:18px; border-top:1px solid var(--line); }
+.nav-right{ display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-left:auto; }
+.gate{ margin:0; color:var(--ink-2); font-size:.95rem; max-width:34ch; text-align:right; }
+
+/* finish */
+.finish{ position:relative; overflow:hidden; text-align:center; }
+.cert{ border:3px double var(--orange); border-radius:12px; padding:28px clamp(14px,4vw,40px); position:relative; background:var(--surface); }
+.cert-kicker{ color:var(--ink-2); margin:0; }
+.cert h2{ font-size:clamp(1.8rem,5vw,2.6rem); margin:.3em 0 .2em; }
+.cert h2:focus{ outline:none; } .cert h2:focus-visible{ outline:3px solid var(--focus); }
+.score-big{ font-family:'Fraunces', Georgia, serif; font-weight:800; font-size:clamp(3rem,10vw,5rem); line-height:1; margin:.2em 0 0; color:var(--orange); }
+.score-sub{ margin:.2em 0 1em; font-size:1.1rem; }
+.cert .stats{ display:flex; justify-content:center; gap:12px 26px; flex-wrap:wrap; list-style:none; padding:0; margin:0 0 1.2em; }
+.cert .stats li{ font-size:1rem; }
+.cert .stats strong{ font-size:1.3rem; }
+.cert table.data{ max-width:520px; margin:0 auto; }
+.cert-actions{ display:flex; justify-content:center; gap:12px; flex-wrap:wrap; margin-top:1.4em; }
+.confetti{ position:absolute; inset:0; pointer-events:none; overflow:hidden; }
+.confetti i{ position:absolute; top:-20px; width:10px; height:16px; opacity:.9; animation:fall linear forwards; }
+@keyframes fall{ to{ transform:translateY(900px) rotate(540deg); opacity:0; } }
+@media (prefers-reduced-motion: reduce){ .confetti{ display:none; } .prog-fill{ transition:none; } * { scroll-behavior:auto!important; } }
+@media (max-width:560px){ .unit-letter{ font-size:3.2rem; } .gate{ text-align:left; } body{ font-size:1rem; } }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<header class="topbar">
+  <div class="topbar-in">
+    <p class="brand">Momentum and impulse <small>PHY2048 tutorial</small></p>
+    <div class="prog" id="prog" hidden>
+      <div class="prog-label"><span id="prog-sec">Section 1 of 7</span><span>Score <strong id="prog-score">0</strong> / <span id="prog-max">60</span></span></div>
+      <div class="prog-track" id="prog-track" role="progressbar" aria-label="Questions completed" aria-valuemin="0" aria-valuemax="12" aria-valuenow="0"><div class="prog-fill" id="prog-fill"></div></div>
+    </div>
+  </div>
+</header>
+<main id="main" tabindex="-1"></main>
+
+<script>
+/* =========================================================
+   Settings
+   ========================================================= */
+const PTS_FIRST = 5;      // points for a correct answer on attempt 1
+const PTS_SECOND = 3;     // points for a correct answer on attempt 2
+const STORE_KEY = 'phy2048-momentum-tutorial-v1';
+const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)');
+
+/* =========================================================
+   Helpers
+   ========================================================= */
+const $ = id => document.getElementById(id);
+function fmt(x, d = 1) {
+  const r = Number(x.toFixed(d));
+  if (Object.is(r, -0) || Math.abs(r) < Math.pow(10, -d) / 2) return (0).toFixed(d);
+  return (r < 0 ? '\u2212' : '') + Math.abs(r).toFixed(d);
+}
+function fmtS(x, d = 1) { const s = fmt(x, d); return (x > 0 && Number(s) !== 0 ? '+' : '') + s; }
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c])); }
+function shuffle(a) { a = a.slice(); for (let i = a.length - 1; i > 0; i--) { const j = Math.floor(Math.random() * (i + 1)); [a[i], a[j]] = [a[j], a[i]]; } return a; }
+function niceStep(range, target = 5) { const raw = range / target; const p = Math.pow(10, Math.floor(Math.log10(raw))); const f = raw / p; return (f < 1.5 ? 1 : f < 3 ? 2 : f < 7 ? 5 : 10) * p; }
+function niceRange(lo, hi, target = 5) {
+  if (hi - lo < 1e-9) { hi = lo + 1; }
+  const s = niceStep(hi - lo, target);
+  let a = Math.floor(lo / s + 1e-9) * s, b = Math.ceil(hi / s - 1e-9) * s;
+  if (Math.abs(b - hi) < s * 0.08) b += s;
+  if (lo < 0 && Math.abs(a - lo) < s * 0.08) a -= s;
+  return [a, b, s];
+}
+
+/* piecewise-linear force functions: arrays of [t, F] */
+function evalPL(v, t) {
+  if (t < v[0][0] || t > v[v.length - 1][0]) return 0;
+  let f = 0;
+  for (let i = 0; i < v.length - 1; i++) {
+    const [a, fa] = v[i], [b, fb] = v[i + 1];
+    if (t >= a && t <= b) f = b > a ? fa + (fb - fa) * (t - a) / (b - a) : fb;
+  }
+  return f;
+}
+function withCrossings(v) {
+  const out = [v[0]];
+  for (let i = 1; i < v.length; i++) {
+    const [t0, f0] = v[i - 1], [t1, f1] = v[i];
+    if (f0 * f1 < 0 && t1 > t0) out.push([t0 + (t1 - t0) * f0 / (f0 - f1), 0]);
+    out.push(v[i]);
+  }
+  return out;
+}
+function clipTo(v, tEnd) {
+  const out = [];
+  for (const p of v) {
+    if (p[0] <= tEnd) out.push(p);
+    else {
+      const prev = out[out.length - 1];
+      if (prev && prev[0] < tEnd) out.push([tEnd, prev[1] + (p[1] - prev[1]) * (tEnd - prev[0]) / (p[0] - prev[0])]);
+      break;
+    }
+  }
+  return out;
+}
+function areaTo(v, t) { const c = clipTo(v, t); let A = 0; for (let i = 1; i < c.length; i++) A += (c[i][0] - c[i - 1][0]) * (c[i][1] + c[i - 1][1]) / 2; return A; }
+
+/* accessible SVG line chart with optional hatched area */
+function chartSVG(o) {
+  const W = 520, H = o.h || 290, m = { l: 62, r: 16, t: 16, b: 54 }, pw = W - m.l - m.r, ph = H - m.t - m.b;
+  const X = t => m.l + (t - o.x0) / (o.x1 - o.x0) * pw, Y = f => m.t + ph - (f - o.y0) / (o.y1 - o.y0) * ph;
+  const id = o.id, dec = s => Math.max(0, -Math.floor(Math.log10(s) + 1e-9));
+  let s = `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="${id}-t ${id}-d" focusable="false">
+  <title id="${id}-t">${esc(o.title)}</title><desc id="${id}-d">${esc(o.desc)}</desc>
+  <defs><pattern id="${id}-pp" patternUnits="userSpaceOnUse" width="8" height="8" patternTransform="rotate(45)"><rect width="8" height="8" class="pp-bg"/><line x1="1" y1="0" x2="1" y2="8" class="pp-line"/></pattern>
+  <pattern id="${id}-np" patternUnits="userSpaceOnUse" width="9" height="9"><rect width="9" height="9" class="np-bg"/><path d="M0 0L9 9M9 0L0 9" class="np-line"/></pattern></defs>`;
+  const xd = dec(o.xs), yd = dec(o.ys);
+  for (let k = Math.ceil(o.x0 / o.xs - 1e-9); k * o.xs <= o.x1 + 1e-9; k++) {
+    const v = k * o.xs, x = X(v).toFixed(1);
+    s += `<line x1="${x}" y1="${m.t}" x2="${x}" y2="${m.t + ph}" class="c-grid"/><text x="${x}" y="${m.t + ph + 21}" text-anchor="middle" class="c-tick">${fmt(v, xd)}</text>`;
+  }
+  for (let k = Math.ceil(o.y0 / o.ys - 1e-9); k * o.ys <= o.y1 + 1e-9; k++) {
+    const v = k * o.ys, y = Y(v).toFixed(1);
+    s += `<line x1="${m.l}" y1="${y}" x2="${m.l + pw}" y2="${y}" class="${Math.abs(v) < 1e-9 ? 'c-zero' : 'c-grid'}"/><text x="${m.l - 8}" y="${(+y + 5).toFixed(1)}" text-anchor="end" class="c-tick">${fmt(v, yd)}</text>`;
+  }
+  s += `<rect x="${m.l}" y="${m.t}" width="${pw}" height="${ph}" class="c-frame"/>`;
+  if (o.shade) {
+    const c = clipTo(withCrossings(o.shade.verts), o.shade.to);
+    if (c.length > 1) {
+      const t0 = c[0][0], t1 = c[c.length - 1][0];
+      const poly = fn => [[t0, 0], ...c.map(p => [p[0], fn(p[1])]), [t1, 0]].map(p => X(p[0]).toFixed(1) + ',' + Y(p[1]).toFixed(1)).join(' ');
+      s += `<polygon points="${poly(f => Math.max(f, 0))}" fill="url(#${id}-pp)"/>`;
+      s += `<polygon points="${poly(f => Math.min(f, 0))}" fill="url(#${id}-np)"/>`;
+    }
+  }
+  (o.lines || []).forEach(L => { s += `<polyline points="${L.pts.map(p => X(p[0]).toFixed(1) + ',' + Y(p[1]).toFixed(1)).join(' ')}" class="c-line ${L.cls || ''}"/>`; });
+  if (o.overlay) s += o.overlay(X, Y);
+  if (o.cursor != null) {
+    const x = X(o.cursor).toFixed(1);
+    s += `<line x1="${x}" y1="${m.t}" x2="${x}" y2="${m.t + ph}" class="c-cursor"/>`;
+    if (o.cursorY != null) s += `<circle cx="${x}" cy="${Y(o.cursorY).toFixed(1)}" r="6" class="c-dot"/>`;
+  }
+  s += `<text x="${m.l + pw / 2}" y="${H - 8}" text-anchor="middle" class="c-label">${esc(o.xLabel)}</text>`;
+  s += `<text transform="translate(17 ${m.t + ph / 2}) rotate(-90)" text-anchor="middle" class="c-label">${esc(o.yLabel)}</text></svg>`;
+  return s;
+}
+function forceFig(id, f, shadeTo, caption) {
+  return `<figure class="fig">${chartSVG({ id, x0: f.x0, x1: f.x1, xs: f.xs, y0: f.y0, y1: f.y1, ys: f.ys, xLabel: 'Time (s)', yLabel: 'Force (N)',
+    title: f.title, desc: f.desc + (shadeTo != null ? ' ' + f.shadeDesc[shadeTo] : ''),
+    lines: [{ pts: f.verts }], shade: shadeTo != null ? { verts: f.verts, to: shadeTo } : null })}
+    <figcaption>${caption}</figcaption></figure>`;
+}
+function arrowSVG(x0, y, len, cls) {
+  if (Math.abs(len) < 1.5) return `<circle cx="${x0}" cy="${y}" r="5" class="${cls} dot"/>`;
+  const d = Math.sign(len), x1 = x0 + len, hl = Math.min(14, Math.abs(len)), xb = x1 - d * hl, hw = cls === 'arr-p' ? 10 : 8;
+  return `<line x1="${x0}" y1="${y}" x2="${xb}" y2="${y}" class="${cls} shaft"/><polygon points="${x1},${y} ${xb},${y - hw} ${xb},${y + hw}" class="${cls} head"/>`;
+}
+function sliderHTML(id, label, min, max, step, val) {
+  return `<div class="ctl"><div class="ctl-top"><label for="${id}">${label}</label><output id="${id}-o" aria-hidden="true"></output></div><input type="range" id="${id}" min="${min}" max="${max}" step="${step}" value="${val}"></div>`;
+}
+function bindSlider(id, unit, dec, cb) {
+  const el = $(id), o = $(id + '-o');
+  const upd = () => { const t = fmt(parseFloat(el.value), dec) + (unit ? ' ' + unit : ''); o.textContent = t; el.setAttribute('aria-valuetext', t); };
+  el.addEventListener('input', () => { upd(); cb && cb('input'); });
+  el.addEventListener('change', () => cb && cb('change'));
+  upd();
+  return () => parseFloat(el.value);
+}
+const PLAY_HTML = '<span aria-hidden="true">\u25B6</span> Play', PAUSE_HTML = '<span aria-hidden="true">\u275A\u275A</span> Pause';
+function makePlayer(slider, btn, msPerUnit, onDone) {
+  let raf = null;
+  const stop = () => { if (raf) { cancelAnimationFrame(raf); raf = null; } btn.innerHTML = PLAY_HTML; };
+  const set = v => { slider.value = v; slider.dispatchEvent(new Event('input')); };
+  btn.innerHTML = PLAY_HTML;
+  btn.addEventListener('click', () => {
+    if (raf) { stop(); onDone(); return; }
+    const max = +slider.max; let v = +slider.value;
+    if (v >= max - 1e-6) v = +slider.min;
+    if (reduceMotion.matches) { set(max); onDone(); return; }
+    btn.innerHTML = PAUSE_HTML; let last = null;
+    const step = ts => {
+      if (last == null) last = ts;
+      v = Math.min(max, v + (ts - last) / msPerUnit); last = ts; set(v);
+      if (v >= max) { raf = null; btn.innerHTML = PLAY_HTML; onDone(); return; }
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  });
+  slider.addEventListener('pointerdown', stop);
+  slider.addEventListener('keydown', stop);
+  return stop;
+}
+
+/* =========================================================
+   Force graphs used in questions
+   ========================================================= */
+const q10verts = (() => { const v = []; for (let i = 0; i <= 50; i++) { const t = 0.5 * i / 50; v.push([t, 3 * (1 - Math.exp(-2 * t))]); } v.push([0.5, 0], [0.7, 0]); return v; })();
+const FIG = {
+  q4: { verts: [[0, 0], [1, 0], [1, 1.5], [9, 1.5], [9, 0], [10, 0]], x0: 0, x1: 10, xs: 1, y0: 0, y1: 2, ys: 0.5,
+    title: 'Force as a function of time: constant 1.5 newton push',
+    desc: 'The force is 0 N until t = 1 s, then a constant 1.5 N from t = 1 s to t = 9 s, then 0 N again. The force acts for 8 s.',
+    shadeDesc: { 10: 'The rectangle under the force line, 8.0 s wide and 1.5 N tall, is shaded to show the impulse, 12.0 N·s.' } },
+  q5: { verts: [[0, 0], [2, 0], [2, -2], [4, -2], [4, 0], [8, 0]], x0: 0, x1: 8, xs: 1, y0: -2.5, y1: 1, ys: 0.5,
+    title: 'Force as a function of time: negative rectangular pulse',
+    desc: 'The force is 0 N from t = 0 to 2 s, a constant −2.0 N from t = 2 s to 4 s, and 0 N from 4 s to 8 s.',
+    shadeDesc: { 8: 'The rectangle between the force line and the time axis, below the axis, is cross-hatched to show a negative impulse of −4.0 N·s.' } },
+  q6: { verts: [[0, 0], [2, 6], [4, 0], [4.5, 0]], x0: 0, x1: 4.5, xs: 0.5, y0: 0, y1: 7, ys: 1,
+    title: 'Force as a function of time: triangular push',
+    desc: 'The force rises in a straight line from 0 N at t = 0 to a peak of 6.0 N at t = 2.0 s, then falls in a straight line back to 0 N at t = 4.0 s.',
+    shadeDesc: { 4: 'The triangle under the force line, base 4.0 s and height 6.0 N, is shaded: area 12.0 N·s.' } },
+  tri2: { verts: [[0, 0], [2, 8], [4, 0], [5, -12], [6, 0], [7, 0]], x0: 0, x1: 7, xs: 1, y0: -14, y1: 10, ys: 2,
+    title: 'Force as a function of time: a positive triangle followed by a negative triangle',
+    desc: 'The force rises in a straight line from 0 N at t = 0 to 8 N at t = 2 s, falls to 0 N at t = 4 s, then drops to −12 N at t = 5 s and rises back to 0 N at t = 6 s. It stays 0 N after that.',
+    shadeDesc: { 2: 'The area from t = 0 to 2 s is shaded: a triangle with base 2 s and height 8 N, area 8.0 N·s.',
+      4: 'The area from t = 0 to 4 s is shaded: a triangle with base 4 s and height 8 N, area 16.0 N·s.',
+      6: 'The area from t = 0 to 6 s is shaded: the upper triangle, +16.0 N·s, is hatched and the lower triangle, base 2 s and depth 12 N, is cross-hatched as −12.0 N·s.' } },
+  q10: { verts: q10verts, x0: 0, x1: 0.7, xs: 0.1, y0: 0, y1: 2.5, ys: 0.5,
+    title: 'Force as a function of time: F(t) = 3(1 − e^(−2t))',
+    desc: 'The force rises smoothly from 0 N at t = 0 and bends over, reaching about 1.90 N at t = 0.5 s, when the push stops and the force drops to 0 N.',
+    shadeDesc: { 0.5: 'The area under the curve from t = 0 to 0.5 s is shaded: about 0.552 N·s.' } }
+};
+
+/* =========================================================
+   Questions
+   ========================================================= */
+const Q = {
+  q1: { stem: String.raw`A 2.0 kg object moves with velocity \(v = -4.0\ \mathrm{m/s}\). What is its momentum?`,
+    options: ['\u22128.0 kg·m/s', '+8.0 kg·m/s', '\u22122.0 kg·m/s', '\u22120.50 kg·m/s'], correct: 0,
+    why: [null, 'Check the sign: the velocity is negative, so the momentum is too.', 'That is m + v. Momentum is the product m × v.', 'That is m ÷ v. Momentum is the product m × v.'],
+    hint: String.raw`Use \(p = mv\) and keep the sign of the velocity. A negative velocity means motion in the negative direction.`,
+    solution: String.raw`<p>Multiply mass by velocity, keeping the sign:</p>
+      \[p = mv = (2.0\ \mathrm{kg})(-4.0\ \mathrm{m/s}) = -8.0\ \mathrm{kg\cdot m/s}\]
+      <p>The minus sign is part of the answer. It tells you the momentum points in the negative direction, the same direction as the velocity (mass is always positive, so \(p\) and \(v\) always share a sign).</p>` },
+  q2: { stem: String.raw`An object of mass \(m = 0.5\ \mathrm{kg}\) moves with a constant acceleration \(a = 3.0\ \mathrm{m/s^2}\). What is the rate of change of its momentum, \(dp/dt\)?`,
+    options: ['1.5 N', '6.0 N', '0.17 N', '3.5 N'], correct: 0,
+    why: [null, 'That is a ÷ m. The rate of change of momentum is m × a.', 'That is m ÷ a. The rate of change of momentum is m × a.', 'That is m + a. The quantities multiply.'],
+    hint: String.raw`The mass is constant, so \(\dfrac{dp}{dt} = m\dfrac{dv}{dt} = ma\).`,
+    solution: String.raw`<p>With constant mass, \(dm/dt = 0\), so only the second term survives:</p>
+      \[\frac{dp}{dt} = m\frac{dv}{dt} = ma = (0.5\ \mathrm{kg})(3.0\ \mathrm{m/s^2}) = 1.5\ \mathrm{kg\cdot m/s^2} = 1.5\ \mathrm{N}\]
+      <p>The rate of change of momentum <em>is</em> the net force: \(dp/dt = F_\text{net}\). That is why the unit comes out in newtons.</p>` },
+  q3: { stem: String.raw`An object of mass \(m = 0.1\ \mathrm{kg}\) has velocity \(v_1 = 2.0\ \mathrm{m/s}\) at \(t_1 = 1.5\ \mathrm{s}\) and velocity \(v_2 = 2.5\ \mathrm{m/s}\) at \(t_2 = 1.6\ \mathrm{s}\). Using momentum, find the net force on the object.`,
+    options: ['0.5 N', '0.05 N', '5.0 N', '2.5 N'], correct: 0,
+    why: [null, 'That is Δp. You still need to divide by Δt = 0.1 s.', 'That is Δv/Δt, which is the acceleration. Multiply by the mass (or work with momentum from the start).', 'That is p₂ ÷ Δt. Use the change in momentum, p₂ − p₁.'],
+    hint: String.raw`Find \(p_1 = mv_1\) and \(p_2 = mv_2\), then use \(F_\text{net} = \dfrac{\Delta p}{\Delta t} = \dfrac{p_2 - p_1}{t_2 - t_1}\).`,
+    solution: String.raw`<p>Momentum at each instant:</p>
+      \[p_1 = mv_1 = (0.1\ \mathrm{kg})(2.0\ \mathrm{m/s}) = 0.20\ \mathrm{kg\cdot m/s}\]
+      \[p_2 = mv_2 = (0.1\ \mathrm{kg})(2.5\ \mathrm{m/s}) = 0.25\ \mathrm{kg\cdot m/s}\]
+      <p>The net force is the rate of change of momentum:</p>
+      \[F_\text{net} = \frac{p_2 - p_1}{t_2 - t_1} = \frac{0.25 - 0.20}{1.6 - 1.5}\ \frac{\mathrm{kg\cdot m/s}}{\mathrm{s}} = \frac{0.05}{0.1}\ \mathrm{kg\cdot m/s^2} = 0.5\ \mathrm{N}\]
+      <p class="check">Check: the acceleration is \(\Delta v/\Delta t = 0.5/0.1 = 5.0\ \mathrm{m/s^2}\), and \(ma = (0.1)(5.0) = 0.5\ \mathrm{N}\). Same answer.</p>` },
+  q4: { stem: String.raw`A constant force \(F = 1.5\ \mathrm{N}\) acts for \(\Delta t = 8.0\ \mathrm{s}\) on a 2.0 kg object that is initially moving with velocity \(v_\text{initial} = -2.0\ \mathrm{m/s}\). The force is graphed below. What is the object’s final velocity?`,
+    fig: 'q4', options: ['+4.0 m/s', '+8.0 m/s', '+6.0 m/s', '\u22128.0 m/s'], correct: 0,
+    why: [null, 'You may have used p_initial = +4.0 kg·m/s. The initial velocity is negative, so p_initial = −4.0 kg·m/s.', 'That is the change in velocity (impulse ÷ mass). Add it to the initial velocity.', 'The force points in the + direction, so the impulse is added, not subtracted.'],
+    hint: String.raw`Start with \(p_\text{initial} = mv_\text{initial}\) (it is negative). The impulse is \(F\Delta t\), the area of the rectangle. Then \(p_\text{final} = p_\text{initial} + F\Delta t\) and \(v_\text{final} = p_\text{final}/m\).`,
+    solution: String.raw`<p><strong>1. Initial momentum.</strong></p>
+      \[p_\text{initial} = mv_\text{initial} = (2.0\ \mathrm{kg})(-2.0\ \mathrm{m/s}) = -4.0\ \mathrm{kg\cdot m/s}\]
+      <p><strong>2. Impulse</strong> = area of the rectangle under the force graph:</p>
+      \[\Delta p = F\,\Delta t = (1.5\ \mathrm{N})(8.0\ \mathrm{s}) = 12.0\ \mathrm{N\cdot s} = 12.0\ \mathrm{kg\cdot m/s}\]
+      <p><strong>3. Final momentum and velocity.</strong></p>
+      \[p_\text{final} = p_\text{initial} + \Delta p = -4.0 + 12.0 = +8.0\ \mathrm{kg\cdot m/s}\]
+      \[v_\text{final} = \frac{p_\text{final}}{m} = \frac{8.0\ \mathrm{kg\cdot m/s}}{2.0\ \mathrm{kg}} = +4.0\ \mathrm{m/s}\]
+      <p>The force points opposite to the initial motion: it first stops the object and then speeds it up in the + direction. Only the duration of the push matters, not when it starts.</p>`,
+    solFig: ['q4', 10, 'Shaded rectangle: the impulse, 8.0 s × 1.5 N = 12.0 N·s.'] },
+  q5: { stem: String.raw`An object of mass \(m = 5.0\ \mathrm{kg}\) has initial velocity \(v = 2.8\ \mathrm{m/s}\) when it is pushed with the force shown below. What is the velocity of the object at \(t = 6.0\ \mathrm{s}\)?`,
+    fig: 'q5', options: ['+2.0 m/s', '+3.6 m/s', '\u22121.2 m/s', '+0.8 m/s'], correct: 0,
+    why: [null, 'The force is negative, so the impulse is −4.0 N·s, not +4.0 N·s.', 'You subtracted the impulse straight from the velocity. Divide by the mass first, or work with momentum: p_final = p_initial + Δp.', 'That is the size of the velocity change only. Combine it with the initial velocity.'],
+    hint: String.raw`The impulse is the area between the force line and the time axis. Area <em>below</em> the axis is negative. What is the force after \(t = 4\ \mathrm{s}\)?`,
+    solution: String.raw`<p><strong>1. Impulse.</strong> The force is \(-2.0\ \mathrm{N}\) from 2.0 s to 4.0 s and zero otherwise, so the area is a rectangle below the axis:</p>
+      \[\Delta p = F\,\Delta t = (-2.0\ \mathrm{N})(2.0\ \mathrm{s}) = -4.0\ \mathrm{N\cdot s}\]
+      <p>From 4.0 s to 6.0 s the force is zero, so the momentum at 6.0 s equals the momentum at 4.0 s.</p>
+      <p><strong>2. Initial momentum.</strong> \(p_i = (5.0\ \mathrm{kg})(2.8\ \mathrm{m/s}) = 14.0\ \mathrm{kg\cdot m/s}\)</p>
+      <p><strong>3. Final momentum and velocity.</strong></p>
+      \[p_f = p_i + \Delta p = 14.0 + (-4.0) = 10.0\ \mathrm{kg\cdot m/s}, \qquad v_f = \frac{p_f}{m} = \frac{10.0}{5.0} = 2.0\ \mathrm{m/s}\]
+      <p>The negative force slows the object down but does not reverse it.</p>`,
+    solFig: ['q5', 8, 'Cross-hatched rectangle below the axis: impulse (−2.0 N)(2.0 s) = −4.0 N·s.'] },
+  q6: { stem: String.raw`A box of mass \(m = 8.0\ \mathrm{kg}\), initially at rest, is pushed with a force that varies in time as shown below. What is the velocity of the box at \(t = 4.0\ \mathrm{s}\)?`,
+    fig: 'q6', options: ['1.5 m/s', '3.0 m/s', '0.75 m/s', '12.0 m/s'], correct: 0,
+    why: [null, 'The area of a triangle includes a factor of ½.', 'Use the full base of the triangle, 4.0 s.', 'That is the impulse in kg·m/s. Divide by the mass to get the velocity.'],
+    hint: String.raw`The force is not constant, so use the area of the triangle: \(\tfrac12(\text{base})(\text{height})\). The box starts at rest.`,
+    solution: String.raw`<p>The force changes with time, so \(\Delta p = F\Delta t\) does not apply directly. Use the area under the curve, a triangle:</p>
+      \[\Delta p = \tfrac12(\text{base})(\text{height}) = \tfrac12(4.0\ \mathrm{s})(6.0\ \mathrm{N}) = 12.0\ \mathrm{N\cdot s} = 12.0\ \mathrm{kg\cdot m/s}\]
+      \[p_\text{final} = p_\text{initial} + \Delta p = 0 + 12.0 = 12.0\ \mathrm{kg\cdot m/s}\]
+      \[v_\text{final} = \frac{p_\text{final}}{m} = \frac{12.0\ \mathrm{kg\cdot m/s}}{8.0\ \mathrm{kg}} = 1.5\ \mathrm{m/s}\]`,
+    solFig: ['q6', 4, 'Shaded triangle: impulse ½(4.0 s)(6.0 N) = 12.0 N·s.'] },
+  q7: { stem: String.raw`Using the force graph above (box: \(m = 12.0\ \mathrm{kg}\), \(v_\text{initial} = 2.0\ \mathrm{m/s}\)), what is the velocity of the box at \(t_1 = 2.0\ \mathrm{s}\)?`,
+    options: ['2.67 m/s', '0.67 m/s', '3.33 m/s', '2.00 m/s'], correct: 0,
+    why: [null, 'That is only the change in velocity, 8.0/12.0. Add the initial momentum, 24.0 kg·m/s, before dividing.', 'That uses the area all the way to 4.0 s. Stop at 2.0 s.', 'The force has already changed the momentum by t = 2.0 s. Find the area from 0 to 2.0 s.'],
+    hint: String.raw`Only the area from \(t = 0\) to \(t = 2.0\ \mathrm{s}\) counts: a triangle with base 2.0 s and height 8.0 N. Then add \(p_\text{initial} = 24.0\ \mathrm{kg\cdot m/s}\).`,
+    solution: String.raw`\[\Delta p_{0\to 2} = \tfrac12(2.0\ \mathrm{s})(8.0\ \mathrm{N}) = 8.0\ \mathrm{kg\cdot m/s}\]
+      \[p_\text{final} = 24.0 + 8.0 = 32.0\ \mathrm{kg\cdot m/s}, \qquad v_\text{final} = \frac{32.0\ \mathrm{kg\cdot m/s}}{12.0\ \mathrm{kg}} = 2.67\ \mathrm{m/s}\]`,
+    solFig: ['tri2', 2, 'Shaded: area from 0 to 2.0 s, 8.0 N·s.'] },
+  q8: { stem: String.raw`Same box and force graph. What is the velocity of the box at \(t_2 = 4.0\ \mathrm{s}\)?`,
+    options: ['3.33 m/s', '1.33 m/s', '4.67 m/s', '2.67 m/s'], correct: 0,
+    why: [null, 'That is only 16.0/12.0, the change in velocity. Add the initial momentum first.', 'The area of a triangle includes a factor of ½.', 'That is the velocity at 2.0 s. Include the area out to 4.0 s.'],
+    hint: String.raw`Now the area runs from 0 to 4.0 s: the whole upper triangle, base 4.0 s and height 8.0 N.`,
+    solution: String.raw`\[\Delta p_{0\to 4} = \tfrac12(4.0\ \mathrm{s})(8.0\ \mathrm{N}) = 16.0\ \mathrm{kg\cdot m/s}\]
+      \[p_\text{final} = 24.0 + 16.0 = 40.0\ \mathrm{kg\cdot m/s}, \qquad v_\text{final} = \frac{40.0\ \mathrm{kg\cdot m/s}}{12.0\ \mathrm{kg}} = 3.33\ \mathrm{m/s}\]
+      <p>Notice the box keeps speeding up between 2 s and 4 s even though the force is decreasing. The force is still positive, so momentum still increases, just more slowly.</p>`,
+    solFig: ['tri2', 4, 'Shaded: the full upper triangle, 16.0 N·s.'] },
+  q9: { stem: String.raw`Same box and force graph. What is the velocity of the box at \(t_3 = 6.0\ \mathrm{s}\)?`,
+    options: ['2.33 m/s', '4.33 m/s', '3.33 m/s', '0.33 m/s'], correct: 0,
+    why: [null, 'The lower triangle lies below the axis, so its area is negative. Subtract it.', 'Include the impulse from 4.0 s to 6.0 s. It is not zero.', 'That is only the change in velocity. Add the initial momentum first.'],
+    hint: String.raw`Add the upper triangle (positive) and the lower triangle (negative, base 2.0 s, depth 12 N).`,
+    solution: String.raw`<p>The triangle from 4.0 s to 6.0 s lies below the axis, so its area is negative:</p>
+      \[\Delta p_{4\to 6} = \tfrac12(2.0\ \mathrm{s})(-12.0\ \mathrm{N}) = -12.0\ \mathrm{kg\cdot m/s}\]
+      \[\Delta p_{0\to 6} = +16.0 + (-12.0) = +4.0\ \mathrm{kg\cdot m/s}\]
+      \[p_\text{final} = 24.0 + 4.0 = 28.0\ \mathrm{kg\cdot m/s}, \qquad v_\text{final} = \frac{28.0\ \mathrm{kg\cdot m/s}}{12.0\ \mathrm{kg}} = 2.33\ \mathrm{m/s}\]
+      <p>The box sped up from 2.0 m/s to 3.33 m/s, then the backward pull slowed it to 2.33 m/s.</p>`,
+    solFig: ['tri2', 6, 'Hatched upper triangle: +16.0 N·s. Cross-hatched lower triangle: −12.0 N·s. Net impulse +4.0 N·s.'] },
+  q10: { stem: String.raw`A box of mass \(m = 0.5\ \mathrm{kg}\) is pushed from rest with the time-dependent force \(F(t) = 3\left(1 - e^{-2t}\right)\) (in newtons, with \(t\) in seconds) from \(t = 0\) until \(t = 0.5\ \mathrm{s}\). What is the speed of the box at \(t = 0.5\ \mathrm{s}\)?`,
+    fig: 'q10', options: ['1.1 m/s', '1.9 m/s', '4.1 m/s', '0.55 m/s'], correct: 0,
+    why: [null, 'The force is not constant, so you cannot multiply F(0.5) by Δt. Integrate.', 'Evaluate the antiderivative at the lower limit too, and subtract its value at t = 0.', 'That is Δp ≈ 0.552 kg·m/s. Divide by the mass to get the speed.'],
+    hint: String.raw`\(\Delta p = \displaystyle\int_0^{0.5} 3\left(1 - e^{-2t}\right)dt\). An antiderivative of \(e^{-2t}\) is \(-\tfrac12 e^{-2t}\). Evaluate at both limits.`,
+    solution: String.raw`<p>Integrate the force over the time it acts:</p>
+      \[\Delta p = \int_0^{0.5} 3\left(1 - e^{-2t}\right)dt = 3\left[\,t + \tfrac12 e^{-2t}\right]_0^{0.5}\]
+      \[= 3\left[\left(0.5 + \tfrac12 e^{-1}\right) - \left(0 + \tfrac12\right)\right] = \tfrac32 e^{-1} \approx 0.552\ \mathrm{kg\cdot m/s}\]
+      <p>The box starts at rest, so \(p_\text{final} = \Delta p = 0.552\ \mathrm{kg\cdot m/s}\) and</p>
+      \[v_\text{final} = \frac{p_\text{final}}{m} = \frac{0.552\ \mathrm{kg\cdot m/s}}{0.5\ \mathrm{kg}} \approx 1.1\ \mathrm{m/s}\]
+      <p class="check">Sanity check: the force never exceeds 1.90 N, so the impulse must be less than (1.90 N)(0.5 s) = 0.95 N·s. 0.552 N·s fits.</p>`,
+    solFig: ['q10', 0.5, 'Shaded: the area under F(t) from 0 to 0.5 s, about 0.552 N·s.'] },
+  q11: { stem: String.raw`Two skaters, \(m_1 = 55\ \mathrm{kg}\) and \(m_2 = 45\ \mathrm{kg}\), stand at rest facing each other. At \(t = 0\) they push off, and skater 2 moves away with velocity \(v_{2f} = +5.0\ \mathrm{m/s}\). What is the velocity of skater 1?`,
+    options: ['\u22124.09 m/s', '+4.09 m/s', '\u22126.11 m/s', '\u22125.0 m/s'], correct: 0,
+    why: [null, 'The total momentum must stay zero, so skater 1 has to move opposite to skater 2.', 'Check which mass goes with which velocity: 55 kg multiplies v₁f.', 'The momenta are equal and opposite, not the speeds. The heavier skater moves more slowly.'],
+    hint: String.raw`The system starts at rest and no external horizontal force acts, so \(p_{1f} + p_{2f} = 0\).`,
+    solution: String.raw`<p>The total momentum starts at zero and the push is internal to the two-skater system, so it stays zero:</p>
+      \[m_1v_{1f} + m_2v_{2f} = 0 \quad\Rightarrow\quad (55\ \mathrm{kg})\,v_{1f} + (45\ \mathrm{kg})(5.0\ \mathrm{m/s}) = 0\]
+      \[55\,v_{1f} = -225 \quad\Rightarrow\quad v_{1f} = -\frac{225}{55} = -4.09\ \mathrm{m/s}\]
+      <p>Skater 1 moves in the negative direction, more slowly than skater 2 because she is heavier. Both skaters have momentum of size 225 kg·m/s, in opposite directions.</p>` },
+  q12: { stem: String.raw`A ball of mass \(m_1 = 0.8\ \mathrm{kg}\) moving with \(v_{1i} = +1.2\ \mathrm{m/s}\) collides head-on with a ball of mass \(m_2 = 0.6\ \mathrm{kg}\) moving with \(v_{2i} = -2.5\ \mathrm{m/s}\). The coefficient of restitution is \(r = 0.4\). What are the final velocities?`,
+    options: ['Ball 1: \u22121.02 m/s; ball 2: +0.46 m/s', 'Ball 1: \u22120.39 m/s; ball 2: \u22120.39 m/s', 'Ball 1: \u22121.97 m/s; ball 2: +1.73 m/s', 'Ball 1: +0.46 m/s; ball 2: \u22121.02 m/s'], correct: 0,
+    why: [null, 'Those are the velocities for r = 0, when the balls stick together. Here r = 0.4.', 'Those are the velocities for an elastic collision, r = 1. Here r = 0.4.', 'Those values are swapped and do not conserve momentum: (0.8)(0.46) + (0.6)(−1.02) ≠ −0.54.'],
+    hint: String.raw`Write two equations. Momentum: \(m_1v_{1i} + m_2v_{2i} = m_1v_{1f} + m_2v_{2f}\). Restitution: \(v_{2f} - v_{1f} = r\,(v_{1i} - v_{2i})\). Solve them together.`,
+    solution: String.raw`<p><strong>1. Conservation of momentum.</strong></p>
+      \[(0.8)(1.2) + (0.6)(-2.5) = 0.8\,v_{1f} + 0.6\,v_{2f} \quad\Rightarrow\quad -0.54 = 0.8\,v_{1f} + 0.6\,v_{2f}\]
+      <p><strong>2. Coefficient of restitution.</strong></p>
+      \[v_{2f} - v_{1f} = r\,(v_{1i} - v_{2i}) = 0.4\,\big(1.2 - (-2.5)\big) = 0.4\,(3.7) = 1.48\ \mathrm{m/s}\]
+      <p><strong>3. Solve.</strong> Substitute \(v_{2f} = v_{1f} + 1.48\) into the momentum equation:</p>
+      \[-0.54 = 0.8\,v_{1f} + 0.6\,(v_{1f} + 1.48) = 1.4\,v_{1f} + 0.888\]
+      \[v_{1f} = \frac{-0.54 - 0.888}{1.4} = \frac{-1.428}{1.4} = -1.02\ \mathrm{m/s}, \qquad v_{2f} = -1.02 + 1.48 = +0.46\ \mathrm{m/s}\]
+      <p class="check">Check momentum: \((0.8)(-1.02) + (0.6)(0.46) = -0.816 + 0.276 = -0.54\ \mathrm{kg\cdot m/s}\). ✓ Both balls bounce back. Try these numbers in the collision simulator above.</p>` }
+};
+
+/* =========================================================
+   Sections
+   ========================================================= */
+const SECTIONS = [
+  { letter: 'A', title: 'What is momentum?', qs: ['q1'], sim: 'momentum',
+    simTitle: 'Momentum of a cart', simIntro: 'Change the mass and velocity. The blue arrow is the velocity; the thicker orange arrow is the momentum. They always point the same way.',
+    intro: String.raw`<p>Momentum is the product of mass and velocity:</p>
+      \[\vec p = m\,\vec v\]
+      <p>Mass is always positive, so the momentum vector points in the same direction as the velocity vector. In this tutorial every problem is one-dimensional, so we drop the arrows and let the <strong>sign</strong> carry the direction: positive for motion in the + direction (to the right), negative for motion in the − direction.</p>
+      \[p = mv \qquad\text{units: } \mathrm{kg\cdot m/s}\]
+      <div class="example"><p class="example-title">Example</p><p>A 2.0 kg object moving with \(v = 3.0\ \mathrm{m/s}\) has \(p = (2.0\ \mathrm{kg})(3.0\ \mathrm{m/s}) = 6.0\ \mathrm{kg\cdot m/s}\).</p></div>` },
+  { letter: 'B', title: 'Rate of change of momentum', qs: ['q2', 'q3'], sim: 'rate',
+    simTitle: 'The slope of p(t) is the net force', simIntro: 'A constant net force acts on a cart. The orange line is the cart’s momentum over 5 seconds. Change the force and the mass, and watch which one controls the slope.',
+    intro: String.raw`<p>The momentum of an object changes if its mass changes, its velocity changes, or both:</p>
+      \[\frac{dp}{dt} = \frac{d(mv)}{dt} = \frac{dm}{dt}\,v + m\,\frac{dv}{dt}\]
+      <p>A rocket that burns fuel and gets lighter is a changing-mass system. In this course we keep the mass constant, so \(dm/dt = 0\) and</p>
+      \[\frac{dp}{dt} = m\frac{dv}{dt} = ma = F_\text{net}\]
+      <p class="key">To change an object’s momentum, apply a net force. If the net force is zero, the momentum does not change: momentum is <strong>conserved</strong>.</p>
+      <p>Over a finite time interval this becomes \(F_\text{net} = \dfrac{\Delta p}{\Delta t}\).</p>` },
+  { letter: 'C', title: 'Impulse: the area under the force curve', qs: ['q4', 'q5', 'q6'], sim: 'impulse',
+    simTitle: 'Impulse explorer', simIntro: 'Pick a force shape and slide the time t. The hatched area under the force curve up to t equals the change in momentum, and the momentum graph below rises or falls by exactly that amount.',
+    intro: String.raw`<p>Reverse the relationship \(dp = F\,dt\) and integrate to find how much the momentum changes while a force acts:</p>
+      \[\Delta p = p_\text{final} - p_\text{initial} = \int_{t_\text{initial}}^{t_\text{final}} F\,dt\]
+      <p>This change in momentum is called the <strong>impulse</strong>. Its units are \(\mathrm{N\cdot s}\), which are the same as \(\mathrm{kg\cdot m/s}\). There are three ways to evaluate it:</p>
+      <ol>
+        <li><strong>F is constant:</strong> \(\Delta p = F\,(t_\text{final} - t_\text{initial}) = F\,\Delta t\).</li>
+        <li><strong>F is given as a graph with a simple shape:</strong> \(\Delta p\) is the area under the curve. Area below the time axis counts as negative.</li>
+        <li><strong>F is given as a function F(t):</strong> evaluate the integral with calculus (section E).</li>
+      </ol>
+      <p class="key">Once you have the impulse: \(p_\text{final} = p_\text{initial} + \Delta p\), then \(v_\text{final} = p_\text{final}/m\).</p>` },
+  { letter: 'D', title: 'When the force changes direction', qs: ['q7', 'q8', 'q9'], sim: null,
+    intro: String.raw`<p>When the force reverses, the area below the time axis is a negative impulse: it removes momentum in the + direction. Questions 7 to 9 all use the force graph below, applied to a box of mass \(m = 12.0\ \mathrm{kg}\) initially moving with \(v = 2.0\ \mathrm{m/s}\). Its initial momentum is</p>
+      \[p_\text{initial} = mv_\text{initial} = (12.0\ \mathrm{kg})(2.0\ \mathrm{m/s}) = 24.0\ \mathrm{kg\cdot m/s}\]
+      <p>For each time, find the area from \(t = 0\) up to that time, add it to \(p_\text{initial}\), and divide by the mass.</p>`,
+    introFig: ['tri2', null, 'Force on the 12.0 kg box. Upper triangle: from 0 to 4 s, peak 8 N at 2 s. Lower triangle: from 4 to 6 s, minimum −12 N at 5 s.'] },
+  { letter: 'E', title: 'Force given as a function of time', qs: ['q10'], sim: null,
+    intro: String.raw`<p>When the force is given as a formula \(F(t)\), the area under the curve is found exactly with an integral:</p>
+      \[\Delta p = \int_{t_\text{initial}}^{t_\text{final}} F(t)\,dt\]
+      <p>A useful result for this section: \(\displaystyle\int e^{kt}\,dt = \frac{1}{k}\,e^{kt}\). Do not replace a changing force by its final value: that overestimates the impulse whenever the force grows over time.</p>` },
+  { letter: 'F', title: 'Conservation of momentum: explosions', qs: ['q11'], sim: 'explode',
+    simTitle: 'Push-off on ice', simIntro: 'Two skaters start at rest and push off each other. Set their masses and how fast skater 2 leaves, then press Play or move the time slider. Watch the momentum bars: they are always equal and opposite.',
+    intro: String.raw`<p>Now consider a <strong>system</strong> of two objects that are not tied together. Object 1 has momentum \(p_1 = m_1v_1\), object 2 has \(p_2 = m_2v_2\), and the system has</p>
+      \[p_\text{system} = p_1 + p_2, \qquad \Delta p_\text{system} = F_\text{ext}\,\Delta t\]
+      <p>If the net external force on the system is zero, \(\Delta p_\text{system} = 0\) and the momentum of the system is <strong>conserved</strong>. The parts can still move; only the total stays fixed.</p>
+      <p>In an <strong>explosion</strong> (or a push-off), the two objects start together at rest, so \(p_\text{system} = 0\). The explosion is internal, so afterwards</p>
+      \[p_{1f} + p_{2f} = 0\]
+      <p>One momentum must be positive and the other negative. They cannot both be positive or both be negative.</p>` },
+  { letter: 'G', title: 'Collisions and the coefficient of restitution', qs: ['q12'], sim: 'collide',
+    simTitle: 'Collision lab', simIntro: 'Set the masses, initial velocities, and the coefficient of restitution r, then press Play or drag the time slider. The table updates with the velocities, momenta, and kinetic energies before and after.',
+    intro: String.raw`<p>Two objects approach, collide, and separate. Only forces between the two objects act during the collision, so the momentum of the system is conserved:</p>
+      \[p_{1i} + p_{2i} = p_{1f} + p_{2f}\]
+      <p>That is one equation with two unknowns. The second equation comes from the <strong>coefficient of restitution</strong>, which compares how fast the objects separate to how fast they approached:</p>
+      \[r = \left|\frac{v_{2f} - v_{1f}}{v_{1i} - v_{2i}}\right|, \qquad 0 \le r \le 1\]
+      <ul>
+        <li>\(r = 0\): <strong>perfectly inelastic</strong> collision. The objects stick together and move with the same velocity.</li>
+        <li>\(r = 1\): <strong>elastic</strong> collision. Kinetic energy is conserved. This is rare in real life.</li>
+        <li>\(0 &lt; r &lt; 1\): the most common case. The objects separate, and some kinetic energy is lost.</li>
+      </ul>
+      <p>You can also explore collisions with the <a href="https://phet.colorado.edu/en/simulation/legacy/collision-lab" target="_blank" rel="noopener">PhET Collision Lab (opens in a new tab)</a>, where r is called “elasticity”.</p>` }
+];
+const QORDER = SECTIONS.flatMap(s => s.qs);
+const MAXPTS = QORDER.length * PTS_FIRST;
+
+/* =========================================================
+   State
+   ========================================================= */
+function freshQ(id) { return { order: shuffle(Q[id].options.map((_, i) => i)), attempts: [], status: 'open', pts: 0 }; }
+function freshState() { const q = {}; QORDER.forEach(id => q[id] = freshQ(id)); return { name: '', started: false, cur: 0, finished: false, q }; }
+function loadState() {
+  try {
+    const raw = localStorage.getItem(STORE_KEY); if (!raw) return null;
+    const s = JSON.parse(raw); if (!s || !s.q) return null;
+    QORDER.forEach(id => { const e = s.q[id]; if (!e || !Array.isArray(e.order) || e.order.length !== Q[id].options.length) s.q[id] = freshQ(id); });
+    return s;
+  } catch (e) { return null; }
+}
+function saveState() { try { localStorage.setItem(STORE_KEY, JSON.stringify(state)); } catch (e) { } }
+let state = loadState() || freshState();
+
+/* =========================================================
+   Rendering
+   ========================================================= */
+function questionHTML(id) {
+  const q = Q[id], n = QORDER.indexOf(id) + 1, st = state.q[id];
+  const opts = st.order.map((oi, k) => `<div class="opt" id="opt-${id}-${oi}"><input type="radio" name="r-${id}" id="r-${id}-${oi}" value="${oi}"><label for="r-${id}-${oi}"><span class="opt-letter" aria-hidden="true">${'ABCD'[k]}</span><span class="opt-text">${q.options[oi]}</span><span class="opt-status" id="st-${id}-${oi}"></span></label></div>`).join('');
+  const fig = q.fig ? forceFig(`fig-${id}`, FIG[q.fig], null, FIG[q.fig].desc) : '';
+  const sf = q.solFig ? forceFig(`sfig-${id}`, FIG[q.solFig[0]], q.solFig[1], q.solFig[2] + ' <span class="legend-key lk-pos" aria-hidden="true"></span>hatched: positive impulse <span class="legend-key lk-neg" aria-hidden="true"></span>cross-hatched: negative impulse') : '';
+  return `<article class="q" id="q-${id}" aria-labelledby="qh-${id}">
+    <div class="q-top"><h3 class="q-num" id="qh-${id}">Question ${n} of ${QORDER.length}</h3><span class="q-pts" id="qp-${id}"></span></div>
+    <fieldset><legend>${q.stem}</legend>${fig}<div class="opts">${opts}</div></fieldset>
+    <div class="q-actions"><button type="button" class="btn primary" data-act="check" data-q="${id}" id="chk-${id}">Check answer</button>
+      <button type="button" class="btn ghost" data-act="hint" data-q="${id}" aria-expanded="false" aria-controls="hint-${id}" id="hb-${id}">Show hint</button></div>
+    <div class="hint" id="hint-${id}" hidden><p><strong>Hint:</strong> ${q.hint}</p></div>
+    <div class="fb" id="fb-${id}" role="status" aria-live="polite"></div>
+    <div class="sol" id="sol-${id}" hidden><h4 tabindex="-1" id="solh-${id}">Detailed solution</h4>${q.solution}${sf}</div>
+  </article>`;
+}
+function sectionHTML(sec, si) {
+  let h = `<section class="unit" id="sec-${si}" hidden aria-labelledby="sec-${si}-h">
+    <div class="unit-head"><span class="unit-letter" aria-hidden="true">${sec.letter}</span><div><p class="unit-kicker">Section ${sec.letter}, part ${si + 1} of ${SECTIONS.length}</p><h2 id="sec-${si}-h" tabindex="-1">${sec.title}</h2></div></div>
+    <div class="prose">${sec.intro}</div>`;
+  if (sec.introFig) h += forceFig(`ifig-${si}`, FIG[sec.introFig[0]], sec.introFig[1], sec.introFig[2]);
+  if (sec.sim) h += `<div class="sim" role="region" aria-labelledby="simh-${sec.sim}"><h3 class="sim-h" id="simh-${sec.sim}"><span class="tag">Simulation</span>${sec.simTitle}</h3><p class="sim-intro">${sec.simIntro}</p><div id="simbody-${sec.sim}"></div></div>`;
+  h += sec.qs.map(questionHTML).join('');
+  const last = si === SECTIONS.length - 1;
+  h += `<nav class="unit-nav" aria-label="Section navigation">${si > 0 ? `<button type="button" class="btn ghost" data-act="back">Back to section ${SECTIONS[si - 1].letter}</button>` : '<span></span>'}
+    <div class="nav-right"><p class="gate" id="gate-${si}" aria-live="polite"></p><button type="button" class="btn primary" data-act="next" id="next-${si}">${last ? 'Finish tutorial' : 'Continue to section ' + SECTIONS[si + 1].letter}</button></div></nav></section>`;
+  return h;
+}
+function welcomeHTML() {
+  const heroVerts = [[0, 0], [1, 0], [1.6, 2], [2.2, 0], [4, 0]];
+  return `<section class="welcome" id="welcome" aria-labelledby="w-h">
+    <h1 id="w-h" tabindex="-1">Momentum and impulse</h1>
+    <p class="lede">An interactive tutorial for PHY2048. Work through seven short sections, try the simulations, and answer ${QORDER.length} multiple-choice questions along the way.</p>
+    <figure class="fig hero-fig">${chartSVG({ id: 'hero', x0: 0, x1: 4, xs: 0.5, y0: 0, y1: 2.5, ys: 0.5, h: 220, xLabel: 'Time (s)', yLabel: 'Force (N)', title: 'A short push and its impulse', desc: 'A triangular force pulse from t = 1 s to t = 2.2 s with a peak of 2 N. The area under it is hatched: that area is the impulse, the change in momentum.', lines: [{ pts: heroVerts }], shade: { verts: heroVerts, to: 4 } })}
+      <figcaption>The big idea: the hatched area under a force–time graph is the change in momentum.</figcaption></figure>
+    <h2>How it works</h2>
+    <ul class="rules">
+      <li><strong>${QORDER.length} questions, ${PTS_FIRST} points each</strong>${MAXPTS} points in total.</li>
+      <li><strong>Two attempts per question</strong>${PTS_FIRST} points if correct on the first try, ${PTS_SECOND} points on the second.</li>
+      <li><strong>Hints are free</strong>Open a hint any time. It never costs points.</li>
+      <li><strong>Solutions unlock</strong>after a correct first answer or after your second attempt.</li>
+      <li><strong>Answer to move on</strong>Each section’s questions must be answered before the next section opens.</li>
+      <li><strong>Progress is saved</strong>in this browser, so you can close the page and come back.</li>
+    </ul>
+    <form class="name-form" id="name-form" novalidate>
+      <div class="field"><label for="name-in">Your name, as it should appear on your completion card</label>
+        <input type="text" id="name-in" autocomplete="name" maxlength="60" aria-describedby="name-err" required>
+        <p class="field-err" id="name-err" aria-live="assertive"></p></div>
+      <button type="submit" class="btn primary" style="margin-bottom:2.2em">Start the tutorial</button>
+    </form>
+  </section>`;
+}
+
+function buildPage() {
+  $('main').innerHTML = welcomeHTML() + SECTIONS.map(sectionHTML).join('') + `<section class="finish" id="finish" hidden aria-labelledby="cert-h"></section>`;
+  QORDER.forEach(id => applyQ(id, false));
+  SECTIONS.forEach((s, si) => updateGate(si, false));
+  SIMS.momentum($('simbody-momentum'));
+  SIMS.rate($('simbody-rate'));
+  SIMS.impulse($('simbody-impulse'));
+  SIMS.explode($('simbody-explode'));
+  SIMS.collide($('simbody-collide'));
+  $('name-in').value = state.name || '';
+  $('name-form').addEventListener('submit', e => {
+    e.preventDefault();
+    const v = $('name-in').value.trim();
+    if (!v) { $('name-err').textContent = 'Enter your name to start.'; $('name-in').setAttribute('aria-invalid', 'true'); $('name-in').focus(); return; }
+    $('name-in').removeAttribute('aria-invalid'); $('name-err').textContent = '';
+    state.name = v; state.started = true; saveState(); show(state.cur || 0);
+  });
+}
+
+/* question state -> DOM */
+function applyQ(id, announce) {
+  const q = Q[id], st = state.q[id], done = st.status !== 'open';
+  const letterOf = oi => 'ABCD'[st.order.indexOf(oi)];
+  q.options.forEach((_, oi) => {
+    const wrap = $(`opt-${id}-${oi}`), inp = $(`r-${id}-${oi}`), chip = $(`st-${id}-${oi}`);
+    wrap.classList.remove('wrong', 'right'); chip.textContent = '';
+    if (st.attempts.includes(oi) && oi !== q.correct) { wrap.classList.add('wrong'); chip.textContent = 'Incorrect'; inp.disabled = true; inp.checked = false; }
+    if (done) { inp.disabled = true; if (oi === q.correct) { wrap.classList.add('right'); chip.textContent = st.status === 'missed' ? 'Correct answer' : 'Correct'; inp.checked = st.status !== 'missed'; } }
+  });
+  const left = 2 - st.attempts.length;
+  $(`qp-${id}`).textContent = done ? `${st.pts} of ${PTS_FIRST} points` : `${PTS_FIRST} points, ${left} attempt${left === 1 ? '' : 's'} left`;
+  $(`chk-${id}`).disabled = done;
+  $(`sol-${id}`).hidden = !done;
+  const fb = $(`fb-${id}`), lastPick = st.attempts[st.attempts.length - 1];
+  let msg = '';
+  if (st.status === 'first') msg = `<p class="ok"><span aria-hidden="true">✓ </span><strong>Correct on your first try.</strong> +${PTS_FIRST} points. The detailed solution is below.</p>`;
+  else if (st.status === 'second') msg = `<p class="ok"><span aria-hidden="true">✓ </span><strong>Correct on your second try.</strong> +${PTS_SECOND} points. The detailed solution is below.</p>`;
+  else if (st.status === 'missed') msg = `<p class="bad"><span aria-hidden="true">✗ </span><strong>Not correct, 0 points.</strong> ${q.why[lastPick] || ''} The correct answer is ${letterOf(q.correct)}: ${q.options[q.correct]}. Work through the solution below.</p>`;
+  else if (st.attempts.length === 1) msg = `<p class="bad"><span aria-hidden="true">✗ </span><strong>Not quite.</strong> ${q.why[lastPick] || ''} You have one attempt left. The hint may help.</p>`;
+  if (announce || done || st.attempts.length) fb.innerHTML = msg;
+  if (announce && done) setTimeout(() => $(`solh-${id}`).focus(), 60);
+}
+function check(id) {
+  const st = state.q[id]; if (st.status !== 'open') return;
+  const sel = document.querySelector(`input[name="r-${id}"]:checked`);
+  if (!sel) { $(`fb-${id}`).innerHTML = '<p class="warn">Choose one of the answers first, then select Check answer.</p>'; return; }
+  const oi = +sel.value; st.attempts.push(oi);
+  if (oi === Q[id].correct) { st.status = st.attempts.length === 1 ? 'first' : 'second'; st.pts = st.attempts.length === 1 ? PTS_FIRST : PTS_SECOND; }
+  else if (st.attempts.length >= 2) { st.status = 'missed'; st.pts = 0; }
+  saveState(); applyQ(id, true);
+  const si = SECTIONS.findIndex(s => s.qs.includes(id));
+  updateGate(si, true); updateHeader();
+}
+function sectionDone(si) { return SECTIONS[si].qs.every(id => state.q[id].status !== 'open'); }
+function updateGate(si, announce) {
+  const qs = SECTIONS[si].qs, n = qs.filter(id => state.q[id].status !== 'open').length, ok = n === qs.length;
+  $(`next-${si}`).disabled = !ok;
+  $(`gate-${si}`).textContent = ok ? (announce ? 'All questions answered. You can continue.' : '') : `Answer ${qs.length === 1 ? 'the question' : 'all ' + qs.length + ' questions'} in this section to continue (${n} of ${qs.length} done).`;
+}
+function score() { return QORDER.reduce((a, id) => a + state.q[id].pts, 0); }
+function updateHeader() {
+  const answered = QORDER.filter(id => state.q[id].status !== 'open').length;
+  $('prog-score').textContent = score(); $('prog-max').textContent = MAXPTS;
+  const tr = $('prog-track');
+  tr.setAttribute('aria-valuemax', QORDER.length); tr.setAttribute('aria-valuenow', answered);
+  tr.setAttribute('aria-valuetext', `${answered} of ${QORDER.length} questions answered`);
+  $('prog-fill').style.width = (100 * answered / QORDER.length) + '%';
+  $('prog-sec').textContent = state.finished && state.cur >= SECTIONS.length ? 'Complete' : `Section ${SECTIONS[Math.min(state.cur, SECTIONS.length - 1)].letter}, part ${Math.min(state.cur, SECTIONS.length - 1) + 1} of ${SECTIONS.length}`;
+}
+function show(i) {
+  $('welcome').hidden = true; $('finish').hidden = true;
+  SECTIONS.forEach((_, k) => $(`sec-${k}`).hidden = k !== i);
+  state.cur = i; saveState();
+  $('prog').hidden = false;
+  if (i >= SECTIONS.length) { renderFinish(); $('finish').hidden = false; }
+  updateHeader();
+  window.scrollTo(0, 0);
+  const h = i >= SECTIONS.length ? $('cert-h') : $(`sec-${i}-h`);
+  setTimeout(() => h && h.focus(), 30);
+}
+function onClick(e) {
+  const b = e.target.closest('button[data-act]'); if (!b) return;
+  const act = b.dataset.act;
+  if (act === 'check') check(b.dataset.q);
+  else if (act === 'hint') {
+    const h = $(`hint-${b.dataset.q}`), open = h.hidden;
+    h.hidden = !open; b.setAttribute('aria-expanded', String(open)); b.textContent = open ? 'Hide hint' : 'Show hint';
+  }
+  else if (act === 'next') { if (sectionDone(state.cur)) { if (state.cur === SECTIONS.length - 1) state.finished = true; show(state.cur + 1); } }
+  else if (act === 'back') show(state.cur - 1);
+  else if (act === 'review') show(0);
+  else if (act === 'restart') {
+    if (b.dataset.armed !== '1') { b.dataset.armed = '1'; b.textContent = 'Select again to erase all progress'; return; }
+    try { localStorage.removeItem(STORE_KEY); } catch (err) { }
+    state = freshState(); buildPage(); $('prog').hidden = true; $('welcome').hidden = false; window.scrollTo(0, 0); setTimeout(() => $('w-h').focus(), 30);
+    if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([$('main')]).catch(() => { });
+  }
+}
+function renderFinish() {
+  const sc = score(), pct = Math.round(100 * sc / MAXPTS);
+  const first = QORDER.filter(id => state.q[id].status === 'first').length;
+  const second = QORDER.filter(id => state.q[id].status === 'second').length;
+  const missed = QORDER.filter(id => state.q[id].status === 'missed').length;
+  const msg = pct >= 90 ? 'Outstanding work. You have a strong command of momentum and impulse.'
+    : pct >= 70 ? 'Great work. Revisit the solutions for any question that took two tries.'
+    : 'Well done for finishing. Review the sections where you missed points, then try the simulations again.';
+  const rows = QORDER.map((id, k) => { const s = state.q[id].status; const r = s === 'first' ? 'Correct, first try' : s === 'second' ? 'Correct, second try' : 'Missed'; return `<tr><th scope="row">Question ${k + 1}</th><td>${r}</td><td>${state.q[id].pts} / ${PTS_FIRST}</td></tr>`; }).join('');
+  const date = new Date().toLocaleDateString(undefined, { year: 'numeric', month: 'long', day: 'numeric' });
+  let conf = '';
+  if (!reduceMotion.matches) {
+    const cols = ['var(--blue)', 'var(--orange-fill)', 'var(--green)', 'var(--red)'];
+    for (let i = 0; i < 70; i++) conf += `<i style="left:${Math.random() * 100}%;background:${cols[i % 4]};animation-duration:${2.6 + Math.random() * 2.4}s;animation-delay:${Math.random() * 1.2}s;transform:rotate(${Math.random() * 180}deg)"></i>`;
+  }
+  $('finish').innerHTML = `<div class="confetti" aria-hidden="true">${conf}</div>
+    <div class="cert">
+      <p class="cert-kicker">PHY2048: Momentum and impulse tutorial completed</p>
+      <h2 id="cert-h" tabindex="-1">Congratulations, ${esc(state.name || 'student')}!</h2>
+      <p class="score-big">${sc}<span style="font-size:.45em;color:var(--ink-2)"> / ${MAXPTS}</span></p>
+      <p class="score-sub">${pct}% of the available points</p>
+      <p>${msg}</p>
+      <ul class="stats"><li><strong>${first}</strong> correct on the first try</li><li><strong>${second}</strong> correct on the second try</li><li><strong>${missed}</strong> missed</li></ul>
+      <div class="table-wrap" style="max-width:520px;margin:0 auto" tabindex="0" role="region" aria-label="Results by question"><table class="data"><caption>Results by question</caption><thead><tr><th scope="col">Question</th><th scope="col">Result</th><th scope="col">Points</th></tr></thead><tbody>${rows}</tbody></table></div>
+      <p class="note">Completed on ${date}.</p>
+      <div class="cert-actions"><button type="button" class="btn primary" data-act="review">Review the tutorial</button><button type="button" class="btn ghost" data-act="restart">Start over</button></div>
+    </div>`;
+}
+
+/* =========================================================
+   Simulations
+   ========================================================= */
+const SIMS = {
+  momentum(root) {
+    root.innerHTML = `<div class="ctls">${sliderHTML('mom-m', 'Mass m', 0.5, 5, 0.5, 2)}${sliderHTML('mom-v', 'Velocity v', -5, 5, 0.5, 3)}</div>
+      <svg class="stage" id="mom-svg" viewBox="0 0 520 200" role="img" aria-labelledby="mom-desc"><title id="mom-desc"></title><g id="mom-g"></g></svg>
+      <p class="eq-readout" id="mom-eq"></p><p class="visually-hidden" aria-live="polite" id="mom-live"></p>`;
+    let gm, gv;
+    const draw = ev => {
+      const m = gm(), v = gv(), p = m * v, cx = 260, w = 40 + 14 * m, h = 40, gy = 176;
+      const dir = v > 0 ? 'in the + direction (to the right)' : v < 0 ? 'in the − direction (to the left)' : 'nowhere: the cart is at rest';
+      let g = `<line x1="12" y1="${gy}" x2="508" y2="${gy}" class="ground"/>
+        <text x="14" y="34" class="muted">momentum p</text><text x="14" y="98" class="muted">velocity v</text>
+        <text x="506" y="${gy + 20}" text-anchor="end" class="muted">+ direction ⟶</text>
+        <rect x="${cx - w / 2}" y="${gy - h - 12}" width="${w}" height="${h}" rx="6" class="cart"/>
+        <circle cx="${cx - w / 2 + 12}" cy="${gy - 7}" r="7" class="wheel"/><circle cx="${cx + w / 2 - 12}" cy="${gy - 7}" r="7" class="wheel"/>
+        <text x="${cx}" y="${gy - 12 - h / 2 + 6}" text-anchor="middle" style="font-weight:700">${fmt(m, 1)} kg</text>`;
+      g += arrowSVG(cx, 52, p * 6, 'arr-p') + `<text x="${cx}" y="34" text-anchor="middle" style="font-weight:700">p = ${fmtS(p, 1)} kg·m/s</text>`;
+      g += arrowSVG(cx, 116, v * 24, 'arr-v') + `<text x="${cx}" y="98" text-anchor="middle" style="font-weight:700">v = ${fmtS(v, 1)} m/s</text>`;
+      $('mom-g').innerHTML = g;
+      const sentence = `p = m × v = (${fmt(m, 1)} kg) × (${fmtS(v, 1)} m/s) = ${fmtS(p, 1)} kg·m/s, pointing ${dir}.`;
+      $('mom-eq').textContent = sentence;
+      $('mom-desc').textContent = `A cart of mass ${fmt(m, 1)} kg. ${sentence}`;
+      if (ev === 'change') $('mom-live').textContent = sentence;
+    };
+    gm = bindSlider('mom-m', 'kg', 1, draw); gv = bindSlider('mom-v', 'm/s', 1, draw); draw();
+  },
+
+  rate(root) {
+    root.innerHTML = `<div class="ctls">${sliderHTML('rt-F', 'Net force F', -3, 3, 0.5, 1.5)}${sliderHTML('rt-m', 'Mass m', 0.5, 5, 0.5, 1)}${sliderHTML('rt-v', 'Initial velocity v₀', -3, 3, 0.5, 0)}</div>
+      <figure class="fig"><div id="rt-chart"></div><figcaption>The dashed triangle measures the slope between t = 1 s and t = 3 s: Δp ÷ Δt.</figcaption></figure>
+      <dl class="readouts"><div><dt>Slope of p(t)</dt><dd id="rt-slope"></dd></div><div><dt>Acceleration F/m</dt><dd id="rt-a"></dd></div><div><dt>Velocity at 5 s</dt><dd id="rt-v5"></dd></div></dl>
+      <p class="visually-hidden" aria-live="polite" id="rt-live"></p>`;
+    let gF, gm, gv;
+    const draw = ev => {
+      const F = gF(), m = gm(), v0 = gv(), p0 = m * v0, p5 = p0 + 5 * F;
+      const [y0, y1, ys] = niceRange(Math.min(p0, p5, 0), Math.max(p0, p5, 0));
+      const p1 = p0 + F, p3 = p0 + 3 * F;
+      const overlay = (X, Y) => `<polyline points="${X(1)},${Y(p1)} ${X(3)},${Y(p1)} ${X(3)},${Y(p3)}" class="c-line dash"/>
+        <text x="${X(2)}" y="${Y(p1) + (F >= 0 ? 22 : -10)}" text-anchor="middle" class="c-note">Δt = 2 s</text>
+        <text x="${X(3) + 8}" y="${(Y(p1) + Y(p3)) / 2 + 5}" class="c-note">Δp = ${fmtS(2 * F, 1)}</text>`;
+      const desc = `Momentum rises in a straight line from ${fmt(p0, 1)} kg·m/s at t = 0 to ${fmt(p5, 1)} kg·m/s at t = 5 s. Slope ${fmt(F, 1)} newtons.`;
+      $('rt-chart').innerHTML = chartSVG({ id: 'rtc', x0: 0, x1: 5, xs: 1, y0, y1, ys, xLabel: 'Time (s)', yLabel: 'Momentum (kg·m/s)', title: 'Momentum versus time under a constant net force', desc, lines: [{ pts: [[0, p0], [5, p5]], cls: 'p-line' }], overlay });
+      $('rt-slope').textContent = `${fmt(F, 1)} N`;
+      $('rt-a').textContent = `${fmt(F / m, 2)} m/s²`;
+      $('rt-v5').textContent = `${fmt(v0 + 5 * F / m, 2)} m/s`;
+      if (ev === 'change') $('rt-live').textContent = `The slope of the momentum graph is ${fmt(F, 1)} newtons, equal to the net force, whatever the mass. The acceleration is ${fmt(F / m, 2)} metres per second squared.`;
+    };
+    gF = bindSlider('rt-F', 'N', 1, draw); gm = bindSlider('rt-m', 'kg', 1, draw); gv = bindSlider('rt-v', 'm/s', 1, draw); draw();
+  },
+
+  impulse(root) {
+    const T = 8;
+    root.innerHTML = `<div class="ctls">
+        <div class="ctl"><label for="imp-shape">Force shape</label><select id="imp-shape">
+          <option value="rect">Rectangle (constant)</option><option value="tri">Triangle</option>
+          <option value="bump">Smooth bump (impact)</option><option value="two">Push, then pull</option></select></div>
+        ${sliderHTML('imp-F', 'Peak force F₀', -8, 8, 0.5, 4)}${sliderHTML('imp-D', 'Force lasts', 1, 6, 0.5, 4)}
+        ${sliderHTML('imp-m', 'Mass m', 1, 10, 0.5, 4)}${sliderHTML('imp-v', 'Initial velocity v₀', -5, 5, 0.5, 0)}</div>
+      <figure class="fig"><div id="imp-Fc"></div><figcaption><span class="legend-key lk-pos" aria-hidden="true"></span>hatched: positive impulse (area above the axis). <span class="legend-key lk-neg" aria-hidden="true"></span>cross-hatched: negative impulse (area below the axis). The dashed line marks the time t.</figcaption></figure>
+      <div class="timebar">${sliderHTML('imp-t', 'Time t', 0, T, 0.01, T)}<button type="button" class="btn ghost" id="imp-play"></button></div>
+      <dl class="readouts"><div><dt>Force at t</dt><dd id="imp-r-F"></dd></div><div><dt>Impulse from 0 to t</dt><dd id="imp-r-J"></dd></div><div><dt>Momentum p(t)</dt><dd id="imp-r-p"></dd></div><div><dt>Velocity v(t)</dt><dd id="imp-r-v"></dd></div></dl>
+      <figure class="fig"><div id="imp-pc"></div><figcaption>Momentum p(t) = p₀ + (area from 0 to t). The dot marks the current time.</figcaption></figure>
+      <p class="visually-hidden" aria-live="polite" id="imp-live"></p>`;
+    let gF, gD, gm, gv, gt;
+    const verts = (k, F0, D) => {
+      const s = 1, e = 1 + D;
+      if (k === 'rect') return [[0, 0], [s, 0], [s, F0], [e, F0], [e, 0], [T, 0]];
+      if (k === 'tri') return [[0, 0], [s, 0], [s + D / 2, F0], [e, 0], [T, 0]];
+      if (k === 'two') return [[0, 0], [s, 0], [s + D / 4, F0], [s + D / 2, 0], [s + 3 * D / 4, -F0], [e, 0], [T, 0]];
+      const v = [[0, 0], [s, 0]]; for (let i = 1; i < 60; i++) { const t = s + D * i / 60; v.push([t, F0 * Math.exp(-Math.pow((t - (s + D / 2)) / (D / 5), 2))]); } v.push([e, 0], [T, 0]); return v;
+    };
+    const names = { rect: 'constant push', tri: 'triangular push', bump: 'smooth bump', two: 'push followed by an equal pull' };
+    const draw = ev => {
+      const k = $('imp-shape').value, F0 = gF(), D = gD(), m = gm(), v0 = gv(), t = gt(), V = verts(k, F0, D), p0 = m * v0;
+      const J = areaTo(V, t), p = p0 + J, Ft = evalPL(V, t), Jtot = areaTo(V, T);
+      $('imp-Fc').innerHTML = chartSVG({ id: 'impF', x0: 0, x1: T, xs: 1, y0: -10, y1: 10, ys: 2, xLabel: 'Time (s)', yLabel: 'Force (N)',
+        title: 'Force versus time', desc: `A ${names[k]} with peak ${fmt(F0, 1)} N, starting at t = 1 s and lasting ${fmt(D, 1)} s. Area shaded up to t = ${fmt(t, 2)} s: ${fmt(J, 2)} N·s. Total impulse ${fmt(Jtot, 2)} N·s.`,
+        lines: [{ pts: V }], shade: { verts: V, to: t }, cursor: t });
+      const P = []; let lo = 0, hi = 0;
+      for (let i = 0; i <= 160; i++) { const tt = T * i / 160, pp = p0 + areaTo(V, tt); P.push([tt, pp]); lo = Math.min(lo, pp); hi = Math.max(hi, pp); }
+      const [y0, y1, ys] = niceRange(lo, hi);
+      $('imp-pc').innerHTML = chartSVG({ id: 'impP', x0: 0, x1: T, xs: 1, y0, y1, ys, xLabel: 'Time (s)', yLabel: 'Momentum (kg·m/s)',
+        title: 'Momentum versus time', desc: `Momentum starts at ${fmt(p0, 1)} kg·m/s and ends at ${fmt(p0 + Jtot, 1)} kg·m/s. At t = ${fmt(t, 2)} s it is ${fmt(p, 2)} kg·m/s.`,
+        lines: [{ pts: P, cls: 'p-line' }], cursor: t, cursorY: p });
+      $('imp-r-F').textContent = `${fmt(Ft, 2)} N`; $('imp-r-J').textContent = `${fmt(J, 2)} N·s`;
+      $('imp-r-p').textContent = `${fmt(p, 2)} kg·m/s`; $('imp-r-v').textContent = `${fmt(p / m, 2)} m/s`;
+      if (ev === 'change') $('imp-live').textContent = `At t = ${fmt(t, 2)} seconds: impulse so far ${fmt(J, 2)} newton seconds, momentum ${fmt(p, 2)} kilogram metres per second, velocity ${fmt(p / m, 2)} metres per second.`;
+    };
+    gF = bindSlider('imp-F', 'N', 1, draw); gD = bindSlider('imp-D', 's', 1, draw); gm = bindSlider('imp-m', 'kg', 1, draw);
+    gv = bindSlider('imp-v', 'm/s', 1, draw); gt = bindSlider('imp-t', 's', 2, draw);
+    $('imp-shape').addEventListener('change', () => draw('change'));
+    makePlayer($('imp-t'), $('imp-play'), 600, () => draw('change'));
+    draw();
+  },
+
+  explode(root) {
+    const T = 1.5, S = 14;
+    root.innerHTML = `<div class="ctls">${sliderHTML('ex-m1', 'Mass of skater 1, m₁', 30, 90, 5, 60)}${sliderHTML('ex-m2', 'Mass of skater 2, m₂', 30, 90, 5, 40)}${sliderHTML('ex-v2', 'Final velocity of skater 2', 0.5, 8, 0.5, 3)}</div>
+      <svg class="stage" viewBox="0 0 520 270" role="img" aria-labelledby="ex-desc"><title id="ex-desc"></title><g id="ex-g"></g></svg>
+      <div class="timebar">${sliderHTML('ex-t', 'Time after the push', 0, T, 0.01, 0)}<button type="button" class="btn ghost" id="ex-play"></button></div>
+      <p class="eq-readout" id="ex-eq"></p><p class="visually-hidden" aria-live="polite" id="ex-live"></p>`;
+    let g1, g2, gv, gt;
+    const draw = ev => {
+      const m1 = g1(), m2 = g2(), v2 = gv(), t = gt(), v1 = -m2 * v2 / m1, p1 = m1 * v1, p2 = m2 * v2;
+      const w1 = 22 + 0.5 * m1, w2 = 22 + 0.5 * m2, h1 = 30 + 0.6 * m1, h2 = 30 + 0.6 * m2, gy = 140;
+      const r1 = 260 + v1 * t * S, l2 = 260 + v2 * t * S;
+      const x1 = Math.max(4, r1 - w1), x2 = Math.min(516 - w2, l2);
+      const moving = t > 0;
+      let g = `<line x1="8" y1="${gy}" x2="512" y2="${gy}" class="ground"/><text x="506" y="${gy + 20}" text-anchor="end" class="muted">+ direction ⟶</text>
+        <rect x="${x1}" y="${gy - h1}" width="${w1}" height="${h1}" rx="8" class="ball1"/><text x="${x1 + w1 / 2}" y="${gy - h1 / 2 + 6}" text-anchor="middle" class="ball1-t">1</text>
+        <rect x="${x2}" y="${gy - h2}" width="${w2}" height="${h2}" rx="8" class="ball2"/><text x="${x2 + w2 / 2}" y="${gy - h2 / 2 + 6}" text-anchor="middle" class="ball2-t">2</text>`;
+      if (r1 - w1 < 4) g += `<text x="10" y="${gy - h1 - 8}" class="muted">◀ beyond view</text>`;
+      if (moving) {
+        g += arrowSVG(x1 + w1 / 2, gy - h1 - 18, Math.max(-110, v1 * 12), 'arr-v') + arrowSVG(x2 + w2 / 2, gy - h2 - 18, Math.min(110, v2 * 12), 'arr-v');
+      }
+      // momentum bars
+      const sc = 150 / Math.max(Math.abs(p2), 60), by = 178;
+      g += `<line x1="260" y1="${by - 8}" x2="260" y2="${by + 84}" class="ground" style="stroke-width:2"/>`;
+      const bar = (y, p, label) => { const len = moving ? p * sc : 0; return `<rect x="${Math.min(260, 260 + len)}" y="${y}" width="${Math.abs(len)}" height="18" class="${p < 0 ? 'bar-neg' : 'bar-pos'}"/><text x="${len < 0 ? 252 + len - 4 : 268 + Math.max(len, 0)}" y="${y + 15}" text-anchor="${len < 0 ? 'end' : 'start'}" style="font-size:15px">${label}</text>`; };
+      g += bar(by, p1, `p₁ = ${fmt(moving ? p1 : 0, 0)}`) + bar(by + 26, p2, `p₂ = ${fmtS(moving ? p2 : 0, 0)}`) + `<text x="268" y="${by + 67}" style="font-size:15px;font-weight:700">p₁ + p₂ = 0 kg·m/s</text>`;
+      $('ex-g').innerHTML = g;
+      const sent = moving ? `Skater 1 moves at ${fmt(v1, 2)} m/s and skater 2 at ${fmtS(v2, 2)} m/s. p₁ = ${fmt(p1, 0)} kg·m/s, p₂ = ${fmtS(p2, 0)} kg·m/s, total 0.`
+        : `Both skaters are at rest, touching. Total momentum 0. After the push: v₁ = ${fmt(v1, 2)} m/s.`;
+      $('ex-eq').textContent = sent;
+      $('ex-desc').textContent = `Two skaters on ice, masses ${fmt(m1, 0)} kg and ${fmt(m2, 0)} kg, ${fmt(t, 2)} s after pushing off. ${sent}`;
+      if (ev === 'change') $('ex-live').textContent = sent;
+    };
+    g1 = bindSlider('ex-m1', 'kg', 0, draw); g2 = bindSlider('ex-m2', 'kg', 0, draw); gv = bindSlider('ex-v2', 'm/s', 1, draw); gt = bindSlider('ex-t', 's', 2, draw);
+    makePlayer($('ex-t'), $('ex-play'), 1200, () => draw('change'));
+    draw();
+  },
+
+  collide(root) {
+    root.innerHTML = `<div class="ctls">${sliderHTML('co-m1', 'Mass of ball 1, m₁', 0.2, 3, 0.1, 0.8)}${sliderHTML('co-m2', 'Mass of ball 2, m₂', 0.2, 3, 0.1, 0.6)}
+        ${sliderHTML('co-v1', 'Initial velocity of ball 1', -3, 3, 0.1, 1.2)}${sliderHTML('co-v2', 'Initial velocity of ball 2', -3, 3, 0.1, -2.5)}${sliderHTML('co-r', 'Coefficient of restitution r', 0, 1, 0.05, 0.4)}</div>
+      <svg class="stage" viewBox="0 0 520 170" role="img" aria-labelledby="co-desc"><title id="co-desc"></title><g id="co-g"></g></svg>
+      <div class="timebar">${sliderHTML('co-t', 'Time', 0, 3, 0.01, 0)}<button type="button" class="btn ghost" id="co-play"></button></div>
+      <p id="co-msg" class="note"></p>
+      <div class="table-wrap" tabindex="0" role="region" aria-label="Collision results table, scrolls sideways on small screens"><table class="data"><caption>Before and after the collision</caption>
+        <thead><tr><th scope="col">Object</th><th scope="col">v before (m/s)</th><th scope="col">p before (kg·m/s)</th><th scope="col">v after (m/s)</th><th scope="col">p after (kg·m/s)</th><th scope="col">KE before (J)</th><th scope="col">KE after (J)</th></tr></thead>
+        <tbody id="co-tb"></tbody></table></div>
+      <p class="visually-hidden" aria-live="polite" id="co-live"></p>`;
+    let gm1, gm2, gv1, gv2, gr, gt;
+    const PX = 140, X = x => 8 + (x + 0.3) * PX;
+    const model = () => {
+      const m1 = gm1(), m2 = gm2(), v1 = gv1(), v2 = gv2(), r = gr();
+      const R1 = 0.1 * Math.cbrt(m1), R2 = 0.1 * Math.cbrt(m2), d = v1 - v2, gap = 1.0 - R1 - R2;
+      const hit = d > 1e-9, tc = hit ? gap / d : Infinity;
+      const P = m1 * v1 + m2 * v2;
+      let v1f = v1, v2f = v2;
+      if (hit) { v1f = (P - m2 * r * d) / (m1 + m2); v2f = v1f + r * d; }
+      const Tend = hit ? Math.min(tc + 2, 12) : 3;
+      return { m1, m2, v1, v2, r, R1, R2, hit, tc, v1f, v2f, P, Tend };
+    };
+    const at = (M, t) => {
+      if (M.hit && t > M.tc) return { x1: 1 + M.v1 * M.tc + M.v1f * (t - M.tc), x2: 2 + M.v2 * M.tc + M.v2f * (t - M.tc), u1: M.v1f, u2: M.v2f, after: true };
+      return { x1: 1 + M.v1 * t, x2: 2 + M.v2 * t, u1: M.v1, u2: M.v2, after: false };
+    };
+    let lastKey = '';
+    const draw = ev => {
+      const M = model(), tsl = $('co-t');
+      const key = [M.m1, M.m2, M.v1, M.v2, M.r].join(',');
+      if (key !== lastKey) { lastKey = key; tsl.max = M.Tend.toFixed(2); if (ev !== 'init') { tsl.value = 0; tsl.dispatchEvent(new Event('input')); return; } }
+      const t = gt(), S = at(M, t);
+      const c1 = X(S.x1), c2 = X(S.x2), rp1 = M.R1 * PX, rp2 = M.R2 * PX, cy = 120;
+      let g = `<line x1="8" y1="${cy + 26}" x2="512" y2="${cy + 26}" class="ground"/>`;
+      for (let x = 0; x <= 3; x++) g += `<line x1="${X(x)}" y1="${cy + 26}" x2="${X(x)}" y2="${cy + 34}" class="ground" style="stroke-width:2"/><text x="${X(x)}" y="${cy + 50}" text-anchor="middle" class="muted">${x} m</text>`;
+      g += `<circle cx="${c1}" cy="${cy}" r="${rp1}" class="ball1"/><text x="${c1}" y="${cy + 6}" text-anchor="middle" class="ball1-t">1</text>`;
+      g += `<circle cx="${c2}" cy="${cy}" r="${rp2}" class="ball2"/><text x="${c2}" y="${cy + 6}" text-anchor="middle" class="ball2-t">2</text>`;
+      g += arrowSVG(c1, 40, S.u1 * 30, 'arr-v') + `<text x="${c1}" y="22" text-anchor="middle" style="font-size:15px">${fmtS(S.u1, 2)}</text>`;
+      g += arrowSVG(c2, 62, S.u2 * 30, 'arr-v') + `<text x="${c2}" y="86" text-anchor="middle" style="font-size:15px">${fmtS(S.u2, 2)}</text>`;
+      $('co-g').innerHTML = g;
+      const KE = (m, v) => 0.5 * m * v * v, ki = KE(M.m1, M.v1) + KE(M.m2, M.v2), kf = KE(M.m1, M.v1f) + KE(M.m2, M.v2f);
+      const row = (n, m, a, b) => `<tr><th scope="row">${n}</th><td>${fmtS(a, 2)}</td><td>${fmtS(m * a, 3)}</td><td>${fmtS(b, 2)}</td><td>${fmtS(m * b, 3)}</td><td>${fmt(KE(m, a), 3)}</td><td>${fmt(KE(m, b), 3)}</td></tr>`;
+      $('co-tb').innerHTML = row('Ball 1', M.m1, M.v1, M.v1f) + row('Ball 2', M.m2, M.v2, M.v2f) +
+        `<tr><th scope="row">Total</th><td></td><td>${fmtS(M.P, 3)}</td><td></td><td>${fmtS(M.m1 * M.v1f + M.m2 * M.v2f, 3)}</td><td>${fmt(ki, 3)}</td><td>${fmt(kf, 3)}</td></tr>`;
+      const msg = !M.hit ? 'With these velocities ball 1 never catches up with ball 2, so they do not collide. Make v₁ greater than v₂.'
+        : `${S.after ? 'After' : 'Before'} the collision (contact at t = ${fmt(M.tc, 2)} s). Momentum stays ${fmtS(M.P, 3)} kg·m/s; kinetic energy ${M.r >= 0.999 ? 'is conserved' : `drops from ${fmt(ki, 3)} J to ${fmt(kf, 3)} J`}.`;
+      $('co-msg').textContent = msg; if (!M.hit) $('co-msg').classList.add('warnline'); else $('co-msg').classList.remove('warnline');
+      $('co-desc').textContent = `Ball 1 at ${fmt(S.x1, 2)} m moving at ${fmtS(S.u1, 2)} m/s; ball 2 at ${fmt(S.x2, 2)} m moving at ${fmtS(S.u2, 2)} m/s. ${msg}`;
+      if (ev === 'change') $('co-live').textContent = M.hit ? `Final velocities: ball 1 ${fmtS(M.v1f, 2)} metres per second, ball 2 ${fmtS(M.v2f, 2)} metres per second. ${msg}` : msg;
+    };
+    gm1 = bindSlider('co-m1', 'kg', 1, draw); gm2 = bindSlider('co-m2', 'kg', 1, draw); gv1 = bindSlider('co-v1', 'm/s', 1, draw);
+    gv2 = bindSlider('co-v2', 'm/s', 1, draw); gr = bindSlider('co-r', '', 2, draw); gt = bindSlider('co-t', 's', 2, draw);
+    makePlayer($('co-t'), $('co-play'), 1000, () => draw('change'));
+    draw('init');
+  }
+};
+
+/* =========================================================
+   Boot
+   ========================================================= */
+buildPage();
+$('main').addEventListener('click', onClick);
+if (state.started) { show(state.finished && state.cur >= SECTIONS.length ? SECTIONS.length : state.cur); }
+else { $('welcome').hidden = false; }
+</script>
+</body>
+</html>
