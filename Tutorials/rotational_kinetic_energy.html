@@ -1,0 +1,2059 @@
+<!doctype html><html><head><meta charset=utf8><meta name=viewport content="width=device-width,initial-scale=1,viewport-fit=cover"><style>:root{color-scheme:light;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}html{scroll-padding-top:env(safe-area-inset-top,0px)}body{margin:0;padding:0;font:14px -apple-system,BlinkMacSystemFont,sans-serif;background:#fff;color:#000}img{max-width:100%}[hidden]:not([hidden=until-found i]){display:none!important}</style></head><body>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Rotational Kinetic Energy and Rolling (PHY2048)</title>
+<meta name="description" content="Rotational kinetic energy, the work–energy theorem for rotation, and rolling motion: notes, 3-D simulations, a rolling race and practice questions.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible+Mono:wght@400;600&family=Atkinson+Hyperlegible+Next:ital,wght@0,400;0,700;0,800;1,400;1,700&display=swap" rel="stylesheet">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  svg: { fontCache: 'global' },
+  startup: {
+    typeset: false,
+    pageReady() {
+      return MathJax.startup.defaultPageReady().then(() => { window.__mjLoaded = true; if (window.__typesetAll) window.__typesetAll(); });
+    }
+  },
+  options: { enableMenu: true }
+};
+function __mjFallback() {
+  if (window.__mjLoaded || document.getElementById('MathJax-fallback')) return;
+  const s = document.createElement('script'); s.id = 'MathJax-fallback'; s.async = true;
+  s.src = 'https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.min.js';
+  document.head.appendChild(s);
+}
+setTimeout(() => { if (!window.__mjLoaded && !(window.MathJax && MathJax.version)) __mjFallback(); }, 12000);
+</script>
+<script src="https://cdn.jsdelivr.net/npm/mathjax@3.2.2/es5/tex-svg.js" id="MathJax-script" async onerror="__mjFallback()"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/build/three.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+<style>
+
+:root{
+  color-scheme: light;
+  --bg:#F5F6F8; --surface:#FFFFFF; --surface-2:#EEF1F5; --ink:#172033; --muted:#4B5568; --rule:#CBD2DC;
+  --accent:#7A2E6E; --accent-ink:#FFFFFF; --focus:#7A2E6E;
+  --x:#0B5FA5; --v:#A84A00; --a:#17784F;
+  --x-fill:rgba(11,95,165,.16); --v-fill:rgba(168,74,0,.16); --a-fill:rgba(23,120,79,.16);
+  --good:#17603F; --bad:#9B2226; --good-bg:#E5F3EC; --bad-bg:#FBEAEA;
+  --grid:#E1E6EC; --A:#7A2E6E; --B:#0E6A78; --R:#172033; --F:#B0123F;
+  --body:"Atkinson Hyperlegible Next","Atkinson Hyperlegible",Verdana,"Segoe UI",system-ui,sans-serif;
+  --mono:"Atkinson Hyperlegible Mono",ui-monospace,"Cascadia Mono",Menlo,Consolas,monospace;
+  box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px);
+  padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    color-scheme: dark;
+    --bg:#10141A; --surface:#171C24; --surface-2:#1E2530; --ink:#E8ECF2; --muted:#A9B3C1; --rule:#344051;
+    --accent:#E3A6D6; --accent-ink:#1A0F18; --focus:#F1C6E8;
+    --x:#7DBCF5; --v:#F5A55B; --a:#6FD3A0;
+    --x-fill:rgba(125,188,245,.20); --v-fill:rgba(245,165,91,.20); --a-fill:rgba(111,211,160,.20);
+    --good:#8EE3B5; --bad:#FFA3A3; --good-bg:#14301F; --bad-bg:#3A1A1C;
+    --grid:#232B36; --A:#E3A6D6; --B:#6ED3DD; --R:#E8ECF2; --F:#FF8FAB;
+  }
+}
+:root[data-theme="dark"]{
+  color-scheme: dark;
+  --bg:#10141A; --surface:#171C24; --surface-2:#1E2530; --ink:#E8ECF2; --muted:#A9B3C1; --rule:#344051;
+  --accent:#E3A6D6; --accent-ink:#1A0F18; --focus:#F1C6E8;
+  --x:#7DBCF5; --v:#F5A55B; --a:#6FD3A0;
+  --x-fill:rgba(125,188,245,.20); --v-fill:rgba(245,165,91,.20); --a-fill:rgba(111,211,160,.20);
+  --good:#8EE3B5; --bad:#FFA3A3; --good-bg:#14301F; --bad-bg:#3A1A1C;
+  --grid:#232B36; --A:#E3A6D6; --B:#6ED3DD; --R:#E8ECF2; --F:#FF8FAB;
+}
+*,*::before,*::after{box-sizing:inherit;}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 1rem);-webkit-text-size-adjust:100%;}
+body{margin:0;background:var(--bg);color:var(--ink);font-family:var(--body);font-size:1.0625rem;line-height:1.6;}
+img,svg{max-width:100%;}
+a{color:var(--accent);text-underline-offset:.18em;}
+:focus-visible{outline:3px solid var(--focus);outline-offset:3px;border-radius:3px;}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;border:0;}
+.skip{position:absolute;left:1rem;top:-4rem;background:var(--accent);color:var(--accent-ink);padding:.6rem 1rem;border-radius:6px;z-index:20;font-weight:700;}
+.skip:focus{top:calc(env(safe-area-inset-top,0px) + .75rem);}
+
+/* quantity colour code — always paired with a line style or a label */
+.qx{color:var(--x);font-weight:700;} .qv{color:var(--v);font-weight:700;} .qa{color:var(--a);font-weight:700;}
+
+/* ---------- hero ---------- */
+.hero{padding:2.5rem 1.25rem 1.25rem;border-bottom:1px solid var(--rule);background:var(--surface);}
+.hero-inner{max-width:72rem;margin:0 auto;}
+.hero h1{font-size:clamp(2.3rem,6vw,4rem);line-height:1.02;margin:0 0 .6rem;letter-spacing:-.02em;font-weight:800;max-width:14ch;}
+.hero .lede{font-size:1.15rem;color:var(--muted);max-width:60ch;margin:0 0 1rem;}
+.hero-strip{margin-top:1rem;}
+.hero-strip figcaption{font-size:.95rem;color:var(--muted);}
+.theme-row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;font-size:.95rem;color:var(--muted);margin-top:.5rem;}
+
+/* ---------- layout ---------- */
+.layout{max-width:72rem;margin:0 auto;padding:0 1.25rem 4rem;display:grid;grid-template-columns:15rem minmax(0,1fr);gap:2.5rem;}
+nav.toc{position:sticky;top:calc(env(safe-area-inset-top,0px) + 1rem);align-self:start;max-height:calc(100vh - 2rem);overflow:auto;padding-top:2rem;font-size:.95rem;}
+nav.toc h2{font-size:1rem;margin:0 0 .5rem;}
+nav.toc ol{list-style:none;margin:0;padding:0;}
+nav.toc li{margin:.15rem 0;}
+nav.toc ol ol{padding-left:.9rem;border-left:2px solid var(--rule);margin:.2rem 0 .6rem .2rem;}
+nav.toc a{color:var(--ink);text-decoration:none;display:block;padding:.15rem .3rem;border-radius:4px;}
+nav.toc a:hover{background:var(--surface-2);text-decoration:underline;}
+nav.toc details summary{display:none;}
+main{min-width:0;padding-top:1.5rem;}
+.prose{max-width:68ch;}
+@media (max-width:900px){
+  .layout{grid-template-columns:1fr;gap:0;}
+  nav.toc{position:static;max-height:none;padding-top:1rem;}
+  nav.toc details summary{display:list-item;cursor:pointer;font-weight:700;padding:.4rem 0;}
+}
+
+/* ---------- headings & text ---------- */
+.part{border-top:3px solid var(--ink);margin-top:3.5rem;padding-top:.8rem;}
+.part-num{font-size:1rem;font-weight:700;color:var(--muted);margin:0;}
+main h1{font-size:clamp(1.8rem,3.6vw,2.5rem);line-height:1.12;margin:.1rem 0 1rem;letter-spacing:-.01em;}
+h2{font-size:1.35rem;line-height:1.25;margin:2.4rem 0 .6rem;}
+h3{font-size:1.1rem;margin:1.6rem 0 .4rem;}
+.part > h2{font-size:clamp(1.6rem,3.2vw,2.1rem);line-height:1.15;margin:.1rem 0 1rem;letter-spacing:-.01em;}
+main h1:focus,main h1:focus-visible{outline-offset:6px;}
+p{margin:0 0 1rem;}
+ul,ol{padding-left:1.4rem;margin:0 0 1rem;} li{margin:.25rem 0;}
+.goals{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:1rem 1.25rem;margin:0 0 1.5rem;}
+.goals h2{margin:0 0 .4rem;font-size:1.05rem;}
+.goals ul{margin:0;}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;padding:.25rem 0;}
+code,.num{font-family:var(--mono);}
+
+/* callouts: label + border style, never colour alone */
+.callout{border-left:6px solid var(--ink);background:var(--surface);padding:.8rem 1.1rem;margin:1.2rem 0;border-radius:0 8px 8px 0;}
+.callout > :last-child{margin-bottom:0;}
+.callout .tag{display:block;font-weight:800;margin-bottom:.25rem;}
+.callout.key{border-left-style:solid;}
+.callout.trap{border-left-style:double;border-left-width:8px;border-left-color:var(--bad);}
+.callout.think{border-left-style:dashed;border-left-color:var(--accent);}
+details.deeper{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:.6rem 1rem;margin:1rem 0;}
+details.deeper summary{cursor:pointer;font-weight:700;}
+details.deeper[open] summary{margin-bottom:.5rem;}
+
+/* tables */
+.table-wrap{overflow-x:auto;margin:1rem 0;}
+table{border-collapse:collapse;min-width:100%;font-size:.98rem;background:var(--surface);}
+caption{text-align:left;font-weight:700;padding:.4rem 0;}
+th,td{border:1px solid var(--rule);padding:.45rem .7rem;text-align:left;vertical-align:top;}
+th{background:var(--surface-2);}
+td.num,th.num{text-align:right;white-space:nowrap;font-family:var(--mono);}
+
+/* figures */
+figure{margin:1.4rem 0;}
+figure.fig{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:.8rem 1rem;}
+figure.fig figcaption{font-size:.96rem;color:var(--muted);margin-top:.5rem;}
+figure.fig figcaption b{color:var(--ink);}
+.svgfig{display:block;width:100%;height:auto;}
+.svgfig text{font-family:var(--body);fill:var(--ink);}
+.svgfig .muted{fill:var(--muted);}
+.svgfig .axis{stroke:var(--ink);stroke-width:1.5;fill:none;}
+.svgfig .gridl{stroke:var(--grid);stroke-width:1;}
+.svgfig .dot{fill:var(--ink);}
+.svgfig .ghost{fill:var(--muted);opacity:.75;}
+.c-x{stroke:var(--x);} .f-x{fill:var(--x);} .c-v{stroke:var(--v);} .f-v{fill:var(--v);} .c-a{stroke:var(--a);} .f-a{fill:var(--a);}
+.c-ink{stroke:var(--ink);} .f-ink{fill:var(--ink);}
+.ls-x{stroke-width:2.6;fill:none;}
+.ls-v{stroke-width:2.6;fill:none;stroke-dasharray:9 5;}
+.ls-a{stroke-width:2.6;fill:none;stroke-dasharray:2 4 9 4;}
+.area-v{fill:var(--v-fill);} .area-a{fill:var(--a-fill);} .area-x{fill:var(--x-fill);}
+.txt-x{fill:var(--x)!important;font-weight:700;} .txt-v{fill:var(--v)!important;font-weight:700;} .txt-a{fill:var(--a)!important;font-weight:700;}
+.legend{display:flex;flex-wrap:wrap;gap:.4rem 1.2rem;font-size:.95rem;margin:.4rem 0;}
+.legend span{display:inline-flex;align-items:center;gap:.4rem;}
+.legend svg{width:34px;height:10px;}
+
+/* ---------- labs ---------- */
+.lab{background:var(--surface);border:2px solid var(--ink);border-radius:12px;padding:1rem 1.1rem 1.1rem;margin:2rem 0;}
+.lab > h2{margin-top:.2rem;}
+.lab-intro{max-width:68ch;}
+.lab-grid{display:grid;grid-template-columns:minmax(0,1fr) 17rem;gap:1.2rem;align-items:start;}
+.lab-grid.vertical .viewport{display:grid;grid-template-columns:9rem minmax(0,1fr);gap:.8rem;align-items:start;}
+@media (max-width:760px){ .lab-grid{grid-template-columns:1fr;} .lab-grid.vertical .viewport{grid-template-columns:6.5rem minmax(0,1fr);} }
+.track-wrap svg, .plots svg{display:block;width:100%;}
+.plots{display:flex;flex-direction:column;gap:.2rem;}
+.ctrls{display:flex;flex-direction:column;gap:.9rem;}
+.ctrl label{display:flex;justify-content:space-between;gap:.5rem;font-size:.95rem;font-weight:700;}
+.ctrl output{font-family:var(--mono);font-weight:400;white-space:nowrap;}
+input[type=range]{width:100%;accent-color:var(--accent);min-height:28px;}
+select,input[type=text],textarea{font:inherit;color:var(--ink);background:var(--bg);border:2px solid var(--muted);border-radius:6px;padding:.4rem .5rem;}
+select{width:100%;}
+.btns{display:flex;flex-wrap:wrap;gap:.45rem;}
+button{font:inherit;font-weight:700;font-size:.95rem;cursor:pointer;border-radius:6px;padding:.5rem .85rem;min-height:44px;border:2px solid var(--ink);background:var(--surface);color:var(--ink);}
+button:hover{background:var(--surface-2);}
+button.primary{background:var(--accent);border-color:var(--accent);color:var(--accent-ink);}
+button.primary:hover{filter:brightness(1.08);}
+button[disabled]{opacity:.5;cursor:not-allowed;}
+.readout{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:.4rem;margin:.6rem 0 .2rem;}
+.readout div{background:var(--surface-2);border-radius:6px;padding:.35rem .5rem;}
+.readout span{display:block;font-size:.85rem;color:var(--muted);}
+.readout b{font-family:var(--mono);font-size:1.05rem;font-weight:600;white-space:nowrap;}
+@media (max-width:520px){ .readout{grid-template-columns:repeat(2,minmax(0,1fr));} }
+.lab-status{font-size:.95rem;color:var(--muted);min-height:1.5em;margin:.3rem 0 0;}
+.predict{background:var(--surface-2);border-radius:8px;padding:.7rem .9rem;margin:.6rem 0 1rem;}
+.predict p{margin:0;}
+
+/* ---------- practice ---------- */
+.practice{margin-top:2.5rem;}
+.practice > h2{margin-top:0;}
+.q{background:var(--surface);border:1px solid var(--rule);border-radius:10px;padding:1rem 1.15rem;margin:1.1rem 0;}
+.q-head{display:flex;flex-wrap:wrap;gap:.3rem .8rem;align-items:baseline;margin:0 0 .5rem;}
+.q-head h3{margin:0;font-size:1.1rem;}
+.q-kind{font-size:.9rem;border:1.5px solid var(--muted);border-radius:999px;padding:.05rem .6rem;color:var(--muted);}
+.q fieldset{border:0;padding:0;margin:0;min-width:0;}
+.q legend{padding:0;margin-bottom:.6rem;max-width:68ch;}
+.opt{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem .6rem;border:1.5px solid var(--rule);border-radius:8px;margin:.4rem 0;cursor:pointer;}
+.opt:hover{border-color:var(--muted);}
+.opt input{margin-top:.35rem;width:1.15rem;height:1.15rem;accent-color:var(--accent);flex:none;}
+.opt:has(input:checked){border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);}
+.opt-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(13rem,1fr));gap:.5rem;}
+.opt-grid .opt{flex-direction:column;}
+.opt-grid .opt .row{display:flex;gap:.5rem;align-items:center;}
+.num-row{display:flex;flex-wrap:wrap;gap:.5rem;align-items:center;margin:.4rem 0;}
+.num-row input{width:9rem;font-family:var(--mono);}
+.q-actions{display:flex;flex-wrap:wrap;gap:.45rem;margin-top:.7rem;}
+.feedback{margin-top:.7rem;}
+.feedback:empty{display:none;}
+.fb{border-radius:8px;padding:.6rem .8rem;border:2px solid;}
+.fb.good{background:var(--good-bg);border-color:var(--good);}
+.fb.bad{background:var(--bad-bg);border-color:var(--bad);}
+.fb strong{display:block;}
+.hints{margin-top:.6rem;}
+.hints:empty{display:none;}
+.hint{background:var(--surface-2);border-radius:8px;padding:.5rem .8rem;margin:.35rem 0;}
+.reason{margin-top:.7rem;}
+.reason label{display:block;font-size:.95rem;font-weight:700;margin-bottom:.25rem;}
+.reason textarea{width:100%;min-height:3.2rem;resize:vertical;}
+details.solution{margin-top:.7rem;border-top:1px dashed var(--rule);padding-top:.5rem;}
+details.solution summary{cursor:pointer;font-weight:700;}
+details.solution[hidden]{display:none;}
+.progress{font-size:.95rem;color:var(--muted);}
+
+/* small widgets */
+.widget{background:var(--surface);border:2px solid var(--ink);border-radius:12px;padding:1rem 1.1rem;margin:1.6rem 0;}
+.widget-grid{display:grid;grid-template-columns:minmax(0,1fr) 16rem;gap:1rem;align-items:start;}
+@media (max-width:760px){ .widget-grid{grid-template-columns:1fr;} }
+
+footer{border-top:1px solid var(--rule);padding:2rem 1.25rem;color:var(--muted);font-size:.95rem;}
+footer .inner{max-width:72rem;margin:0 auto;}
+
+@media (prefers-reduced-motion: reduce){ *{scroll-behavior:auto!important;animation:none!important;transition:none!important;} }
+@media print{ nav.toc,.btns,.q-actions,.theme-row{display:none;} .layout{display:block;} .lab,.widget{break-inside:avoid;} }
+
+.prompt{max-width:68ch;}
+.pop{animation:pop .45s ease-out both;transform-box:fill-box;transform-origin:center;}
+@keyframes pop{from{opacity:0;transform:scale(.2);}to{opacity:1;transform:none;}}
+@media (max-width:900px){ nav.toc h2{display:none;} }
+.svgfig.narrow{max-width:560px;margin:0 auto;}
+
+[hidden]{display:none!important;}
+.sitebar{background:var(--surface);border-bottom:1px solid var(--rule);}
+.sitebar-inner{max-width:72rem;margin:0 auto;padding:.7rem 1.25rem;display:flex;flex-wrap:wrap;align-items:center;gap:.6rem 1.5rem;}
+.site-title{margin:0;font-weight:800;font-size:1.1rem;}
+.site-title a{color:var(--ink);text-decoration:none;}
+.site-title a:hover{text-decoration:underline;}
+.sitebar .theme-row{margin:0 0 0 auto;}
+nav.pages ol{list-style:none;margin:0;padding:0;display:flex;flex-wrap:wrap;gap:.3rem;}
+nav.pages li{margin:0;}
+nav.pages a{display:block;padding:.45rem .75rem;border-radius:6px;color:var(--ink);text-decoration:none;border:2px solid transparent;font-weight:700;font-size:.97rem;min-height:44px;display:flex;align-items:center;}
+nav.pages a:hover{background:var(--surface-2);text-decoration:underline;}
+nav.pages a[aria-current="page"]{border-color:var(--ink);background:var(--surface-2);text-decoration:underline;text-decoration-thickness:2px;}
+.hero{border-bottom:1px solid var(--rule);}
+.layout.single{grid-template-columns:minmax(0,1fr);}
+.pager{display:grid;grid-template-columns:1fr 1fr;gap:1rem;margin-top:3.5rem;padding-top:1.2rem;border-top:3px solid var(--ink);}
+.pager a{display:block;padding:.8rem 1rem;border:2px solid var(--ink);border-radius:10px;text-decoration:none;color:var(--ink);font-weight:700;background:var(--surface);}
+.pager a:hover{background:var(--surface-2);}
+.pager a span{display:block;font-weight:400;font-size:.92rem;color:var(--muted);}
+.pager a.next{text-align:right;grid-column:2;}
+@media (max-width:560px){ .pager{grid-template-columns:1fr;} .pager a.next{grid-column:1;} .sitebar .theme-row{margin-left:0;} }
+@media (max-width:560px){ nav.pages .long{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;} nav.pages a{padding:.4rem .6rem;} }
+
+.c-A{stroke:var(--A);} .f-A{fill:var(--A);} .c-B{stroke:var(--B);} .f-B{fill:var(--B);} .c-R{stroke:var(--R);} .f-R{fill:var(--R);}
+.txt-A{fill:var(--A)!important;font-weight:700;font-style:italic;} .txt-B{fill:var(--B)!important;font-weight:700;font-style:italic;} .txt-R{fill:var(--R)!important;font-weight:800;font-style:italic;}
+.vA{color:var(--A);font-weight:700;} .vB{color:var(--B);font-weight:700;} .vR{color:var(--R);font-weight:800;}
+.svgfig .handle{cursor:grab;touch-action:none;}
+.svgfig .handle circle.ring{fill:var(--surface);stroke-width:3;}
+.svgfig .handle:focus{outline:none;}
+.svgfig .handle:focus-visible circle.ring{stroke:var(--focus)!important;stroke-width:5;}
+.svgfig .handle .hit{fill:transparent;}
+.svgfig.drag-area{touch-action:none;}
+.vec-inputs{display:grid;grid-template-columns:auto 1fr 1fr;gap:.35rem .5rem;align-items:center;font-size:.95rem;}
+.vec-inputs input{width:100%;font-family:var(--mono);}
+.vec-inputs .hd{font-size:.85rem;color:var(--muted);}
+.radio-row{display:flex;flex-wrap:wrap;gap:.3rem .9rem;border:0;padding:0;margin:0;}
+.radio-row legend{font-weight:700;font-size:.95rem;margin-bottom:.2rem;padding:0;}
+.radio-row label{display:inline-flex;align-items:center;gap:.35rem;font-size:.95rem;min-height:32px;}
+.radio-row input,.check input{width:1.1rem;height:1.1rem;accent-color:var(--accent);}
+.check{display:flex;align-items:center;gap:.45rem;font-size:.95rem;min-height:32px;}
+.vec-read{font-family:var(--mono);font-size:.95rem;background:var(--surface-2);border-radius:8px;padding:.6rem .8rem;line-height:1.7;}
+.vec-read div{white-space:nowrap;overflow-x:auto;}
+.reveal-box{border:2px dashed var(--accent);border-radius:12px;padding:1rem 1.1rem;margin:1.6rem 0;background:var(--surface);}
+.reveal-box > p:first-child{margin-top:0;}
+button.reveal{border-color:var(--accent);color:var(--ink);}
+.revealed{margin-top:1rem;}
+.plots2{display:grid;grid-template-columns:1fr 1fr;gap:.4rem .8rem;}
+@media (max-width:620px){ .plots2{grid-template-columns:1fr;} }
+.ex-score{font-size:.95rem;color:var(--muted);margin:.4rem 0 0;}
+.ex-task{font-weight:700;margin:0 0 .5rem;}
+.big-eq{font-size:1.1rem;}
+.widget-grid.wide{grid-template-columns:minmax(0,1fr) 17rem;}
+@media (max-width:760px){ .widget-grid.wide{grid-template-columns:1fr;} }
+
+.c-F{stroke:var(--F);} .f-F{fill:var(--F);} .txt-F{fill:var(--F)!important;font-weight:700;} .qF{color:var(--F);font-weight:700;}
+.fbd-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:.4rem .8rem;align-items:center;padding:.4rem .6rem;border:1.5px solid var(--rule);border-radius:8px;margin:.35rem 0;}
+.fbd-row .check{min-height:0;}
+.fbd-row select{width:auto;max-width:100%;}
+.check input{flex:none;}
+
+
+/* ---------- rigid-body additions ---------- */
+:root{ --T:#17784F; --cmk:#A84A00; }
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){ --T:#6FD3A0; --cmk:#F5A55B; } }
+:root[data-theme="dark"]{ --T:#6FD3A0; --cmk:#F5A55B; }
+.qT{color:var(--T);font-weight:700;} .qr{color:var(--x);font-weight:700;} .qcm{color:var(--cmk);font-weight:700;} .qax{color:var(--A);font-weight:700;}
+.c-T{stroke:var(--T);} .f-T{fill:var(--T);} .txt-T{fill:var(--T)!important;font-weight:700;}
+.c-cm{stroke:var(--cmk);} .f-cm{fill:var(--cmk);} .txt-cm{fill:var(--cmk)!important;font-weight:800;}
+.svgfig .solid{fill:var(--surface-2);stroke:var(--ink);stroke-width:1.5;}
+.svgfig .dim{stroke:var(--muted);stroke-width:1.2;fill:none;}
+.viewport3d{position:relative;border:1px solid var(--rule);border-radius:8px;overflow:hidden;background:var(--surface-2);min-height:200px;}
+.viewport3d canvas{display:block;width:100%;touch-action:none;cursor:grab;}
+.viewport3d canvas:focus-visible{outline:3px solid var(--focus);outline-offset:-4px;}
+.no3d{padding:1rem;margin:0;}
+.help3d{font-size:.92rem;color:var(--muted);margin:.45rem 0 .5rem;}
+.lab-grid.wide3d{grid-template-columns:minmax(0,1fr) 18rem;}
+@media (max-width:760px){ .lab-grid.wide3d{grid-template-columns:1fr;} }
+.desc-live{font-size:.97rem;background:var(--surface-2);border-radius:8px;padding:.6rem .8rem;margin:.6rem 0 0;}
+.keyrow{display:flex;flex-wrap:wrap;gap:.35rem 1rem;font-size:.9rem;color:var(--muted);}
+kbd{font-family:var(--mono);font-size:.85rem;border:1.5px solid var(--muted);border-bottom-width:2.5px;border-radius:4px;padding:0 .3rem;background:var(--surface);color:var(--ink);}
+.comp-svg{max-width:440px;margin:0 auto;display:block;}
+.pm-svg{touch-action:none;}
+.status-chip{display:inline-block;border:2px solid var(--ink);border-radius:999px;padding:.05rem .65rem;font-weight:700;font-size:.92rem;}
+.status-chip.out{border-style:dashed;}
+.legend3d{display:flex;flex-wrap:wrap;gap:.3rem 1.1rem;font-size:.93rem;margin:.5rem 0 0;padding:0;list-style:none;}
+.legend3d li{margin:0;display:inline-flex;align-items:center;gap:.4rem;}
+.legend3d i{display:inline-block;width:26px;height:6px;border-radius:3px;}
+.worked{display:grid;grid-template-columns:repeat(auto-fit,minmax(15rem,1fr));gap:.8rem;margin:1rem 0;}
+.worked .card{background:var(--surface);border:1px solid var(--rule);border-radius:8px;padding:.7rem .9rem;}
+.worked .card h4{margin:0 0 .3rem;font-size:1rem;}
+.worked .card p{margin:.2rem 0;font-size:.97rem;}
+.wide3d .readout{grid-template-columns:repeat(2,minmax(0,1fr));}
+.qfig{margin:.7rem 0 .4rem;}
+.qfig svg{max-width:470px;width:100%;height:auto;display:block;}
+.qfig figcaption{font-size:.9rem;color:var(--muted);margin-top:.25rem;}
+.nt{display:inline-block;font-size:.78rem;font-weight:700;font-style:normal;border:1.5px solid currentColor;border-radius:999px;padding:0 .5rem;margin-left:.5rem;vertical-align:middle;}
+.fig-pair{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,22rem),1fr));gap:1rem;align-items:stretch;}
+.fig-pair .fig{margin:0;}
+.hand-card{background:#fff;border-radius:6px;padding:.5rem;}
+.hand-svg{display:block;width:100%;max-width:400px;height:auto;margin:0 auto;}
+.it-table td,.it-table th{vertical-align:middle;}
+.it-pic{width:236px;padding:.3rem;}
+.it-svg{width:226px;max-width:none;height:auto;display:block;}
+.it-f{font-size:1.15rem;white-space:nowrap;}
+.it-table th[scope=row]{font-weight:700;text-align:left;}
+.q.locked{opacity:.8;border-style:dashed;}
+.lock-note{font-weight:700;margin:.4rem 0 0;}
+.attempts{font-size:.95rem;font-weight:700;margin:.6rem 0 0;}
+.fb.reveal{background:var(--surface-2);border-color:var(--muted);margin-top:.5rem;}
+.score-total{font-size:1rem;background:var(--surface-2);border-radius:8px;padding:.45rem .75rem;}
+.score-total:empty{display:none;}
+.lockmark{font-size:.85em;}
+.part-done{background:var(--good-bg);border:2px solid var(--good);border-radius:8px;padding:.6rem .8rem;margin:1rem 0;}
+.part-done[hidden]{display:none;}
+.finish{background:var(--surface);border:2px solid var(--A);border-radius:12px;padding:1rem 1.2rem;margin:1.5rem 0;}
+.form-row{margin:.8rem 0;}
+.form-row label{display:block;font-weight:700;margin-bottom:.25rem;}
+.form-row input{width:100%;max-width:26rem;font:inherit;padding:.45rem .6rem;border:2px solid var(--muted);border-radius:6px;background:var(--surface);color:var(--ink);}
+.form-row input:focus-visible{outline:3px solid var(--focus);outline-offset:1px;}
+.field-err{color:var(--bad);font-weight:700;margin:.3rem 0 0;}
+#cardCanvas{display:block;width:100%;height:auto;border-radius:14px;margin:.6rem 0;box-shadow:0 4px 18px rgba(0,0,0,.18);}
+#cardCanvas.pop{animation:cardpop .6s ease-out;}
+@keyframes cardpop{0%{transform:scale(.85);opacity:0;}70%{transform:scale(1.03);opacity:1;}100%{transform:scale(1);}}
+@media (prefers-reduced-motion: reduce){#cardCanvas.pop{animation:none;}}
+/* ---------- rotational-KE additions ---------- */
+.qA{color:var(--A);font-weight:700;} .qU{color:var(--cmk);font-weight:700;}
+.sim-toolbar{display:flex;flex-wrap:wrap;align-items:center;gap:.4rem 1rem;background:var(--surface-2);border-radius:8px;padding:.55rem .7rem;margin:0 0 1rem;position:sticky;top:0;z-index:5;}
+.sim-toolbar .btns{display:contents;}
+.tb-status{font-size:.95rem;color:var(--muted);}
+.radio-row.stack{flex-direction:column;align-items:flex-start;}
+.ctrls fieldset.radio-row{border:1.5px solid var(--rule);border-radius:8px;padding:.45rem .7rem .55rem;}
+.cmp-h,.en-h{font-size:1rem;margin:1rem 0 .3rem;}
+.legend3d i.sw{width:26px;height:12px;border-radius:2px;border:1px solid var(--ink);}
+.sw-U{background:radial-gradient(circle,var(--cmk) 1.5px,transparent 2px) 0 0/6px 6px;}
+.sw-T{background:var(--x);}
+.sw-R{background:repeating-linear-gradient(45deg,var(--A) 0 3px,transparent 3px 7px);}
+.race-results table{font-size:.93rem;}
+.it-table td:nth-child(6){font-size:.93rem;}
+.race-wrap{display:block;}
+.ctrl-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,16rem),1fr));gap:1rem;margin-top:1rem;align-items:start;}
+.race-fig svg,.en-fig svg{margin:0 auto;}
+.db-calc div{white-space:normal;overflow-wrap:anywhere;}
+.lockmark{font-size:.85em;}
+.attempts{font-size:.95rem;font-weight:700;margin:.6rem 0 0;}
+.attempts:empty{display:none;}
+.fb.reveal{background:var(--surface-2);border-color:var(--muted);margin-top:.5rem;}
+.part-done{background:var(--good-bg);border:2px solid var(--good);border-radius:8px;padding:.6rem .8rem;margin:1rem 0;}
+.part-done[hidden]{display:none;}
+.finish{background:var(--surface);border:2px solid var(--A);border-radius:12px;padding:1rem 1.2rem;margin:2.5rem 0 1rem;}
+.form-row{margin:.8rem 0;}
+.form-row label{display:block;font-weight:700;margin-bottom:.25rem;}
+.form-row input{width:100%;max-width:26rem;font:inherit;padding:.45rem .6rem;border:2px solid var(--muted);border-radius:6px;background:var(--surface);color:var(--ink);}
+.field-err{color:var(--bad);font-weight:700;margin:.3rem 0 0;}
+#cardCanvas{display:block;width:100%;height:auto;border-radius:6px;margin:.6rem 0;box-shadow:0 4px 18px rgba(0,0,0,.18);}
+.instr-banner{background:var(--A);color:var(--accent-ink);padding:.5rem 1.25rem;display:flex;flex-wrap:wrap;gap:.4rem 1rem;align-items:center;font-size:.95rem;}
+.instr-banner strong{font-weight:800;}
+.instr-banner button{min-height:36px;padding:.25rem .7rem;font-size:.9rem;}
+</style>
+</head>
+<body>
+<a class="skip" id="skipLink" href="#main-overview">Skip to the notes</a>
+<header class="sitebar">
+  <div class="sitebar-inner">
+    <p class="site-title"><a href="#overview">Rotational Kinetic Energy and Rolling</a></p>
+    <nav class="pages" aria-label="Pages of these notes">
+      <ol>
+        <li><a href="#itable" data-pg="itable">Moments<span class="long">&nbsp;of inertia</span></a></li>
+        <li><a href="#overview" data-pg="overview">Overview</a></li>
+        <li><a href="#rot" data-pg="rot">Part 1<span class="long">: Rotational KE</span></a></li>
+        <li><a href="#work" data-pg="work">Part 2<span class="long">: Work and energy</span></a></li>
+        <li><a href="#roll" data-pg="roll">Part 3<span class="long">: Rolling</span></a></li>
+        <li><a href="#slip" data-pg="slip">Slipping<span class="long">&nbsp;before rolling</span></a></li>
+        <li><a href="#summary" data-pg="summary">Summary</a></li>
+      </ol>
+    </nav>
+    <div class="theme-row">
+      <label for="themeSel">Colour theme</label>
+      <select id="themeSel" style="width:auto">
+        <option value="auto">Match my device</option>
+        <option value="light">Light</option>
+        <option value="dark">Dark</option>
+      </select>
+    </div>
+  </div>
+</header>
+
+<!-- ======================= MOMENTS OF INERTIA ======================= -->
+<div class="page" data-page="itable" hidden>
+<div class="layout">
+  <main id="main-itable" tabindex="-1" style="grid-column:1/-1">
+    <p class="part-num">Reference</p>
+    <h1 tabindex="-1">Moments of inertia used in these notes</h1>
+    <p class="lede" style="max-width:64ch">Every formula for \(I\) used on the following pages, with a picture of the object and its axis. Keep this tab handy: you can come back to it from any page.</p>
+    <section class="prose" style="max-width:none">
+      <div class="table-wrap"><table class="it-table">
+<caption>Moments of inertia of uniform objects of mass \(M\). The purple dashed line is the axis of rotation; the curved arrow shows the object turning about it.</caption>
+<thead><tr><th scope="col">Picture</th><th scope="col">Object</th><th scope="col">Axis of rotation</th><th scope="col">Moment of inertia \(I\)</th><th scope="col">Rolling factor \(c = I/MR^2\)</th><th scope="col">Used in</th></tr></thead><tbody>
+<tr><td class="it-pic"><svg class="svgfig it-svg" viewBox="0 0 180 150" role="img" aria-label="A small ball at distance r from an axis" focusable="false"><defs><marker id="mit2" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--A)"/></marker><radialGradient id="git2" cx="38%" cy="35%" r="70%"><stop offset="0%" style="stop-color:var(--x);stop-opacity:.12"/><stop offset="100%" style="stop-color:var(--x);stop-opacity:.75"/></radialGradient></defs><line x1="55" y1="14" x2="55" y2="140" style="stroke:var(--A)" stroke-width="2.4" stroke-dasharray="7 4"/><path d="M35,27 A20,6 0 0 0 75,27" fill="none" style="stroke:var(--A)" stroke-width="2" marker-end="url(#mit2)"/><text x="61" y="16" font-size="11" class="txt-A" style="font-style:normal">axis</text><line x1="55" y1="82" x2="132" y2="82" class="dim"/><text x="94" y="74" font-size="13" font-style="italic" text-anchor="middle" style="paint-order:stroke" stroke="var(--surface)" stroke-width="3">r</text><circle cx="140" cy="82" r="9" style="fill:var(--x)"/></svg></td><th scope="row">Point mass \(m\)</th><td>at perpendicular distance \(r\) from the axis</td><td class="it-f">\(mr^2\)</td><td class="it-f">—</td><td>Part 1 (dumbbell)</td></tr>
+<tr><td class="it-pic"><svg class="svgfig it-svg" viewBox="0 0 180 150" role="img" aria-label="A thin ring lying flat with a vertical axis through its center" focusable="false"><defs><marker id="mit3" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--A)"/></marker><radialGradient id="git3" cx="38%" cy="35%" r="70%"><stop offset="0%" style="stop-color:var(--x);stop-opacity:.12"/><stop offset="100%" style="stop-color:var(--x);stop-opacity:.75"/></radialGradient></defs><ellipse cx="90" cy="84" rx="56" ry="18" fill="none" style="stroke:var(--x)" stroke-width="6"/><line x1="90" y1="14" x2="90" y2="140" style="stroke:var(--A)" stroke-width="2.4" stroke-dasharray="7 4"/><path d="M70,27 A20,6 0 0 0 110,27" fill="none" style="stroke:var(--A)" stroke-width="2" marker-end="url(#mit3)"/><text x="96" y="16" font-size="11" class="txt-A" style="font-style:normal">axis</text><line x1="90" y1="84" x2="146" y2="84" class="dim"/><text x="118" y="79" font-size="13" font-style="italic" text-anchor="middle" style="paint-order:stroke" stroke="var(--surface)" stroke-width="3">R</text></svg></td><th scope="row">Hoop (thin ring) or thin-walled hollow cylinder, radius \(R\)</th><td>through the center, perpendicular to the ring</td><td class="it-f">\(MR^2\)</td><td class="it-f">\(1\)</td><td>Parts 1 and 3</td></tr>
+<tr><td class="it-pic"><svg class="svgfig it-svg" viewBox="0 0 180 150" role="img" aria-label="A hollow thin spherical shell with a vertical axis through its center" focusable="false"><defs><marker id="mit9" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--A)"/></marker><radialGradient id="git9" cx="38%" cy="35%" r="70%"><stop offset="0%" style="stop-color:var(--x);stop-opacity:.12"/><stop offset="100%" style="stop-color:var(--x);stop-opacity:.75"/></radialGradient></defs><circle cx="90" cy="82" r="50" style="fill:var(--surface-2);stroke:var(--x)" stroke-width="5"/><ellipse cx="90" cy="82" rx="50" ry="13" fill="none" class="dim" stroke-dasharray="3 3"/><line x1="90" y1="14" x2="90" y2="140" style="stroke:var(--A)" stroke-width="2.4" stroke-dasharray="7 4"/><path d="M70,27 A20,6 0 0 0 110,27" fill="none" style="stroke:var(--A)" stroke-width="2" marker-end="url(#mit9)"/><text x="96" y="16" font-size="11" class="txt-A" style="font-style:normal">axis</text><line x1="90" y1="82" x2="140" y2="82" class="dim"/><text x="116" y="77" font-size="13" font-style="italic" text-anchor="middle" style="paint-order:stroke" stroke="var(--surface)" stroke-width="3">R</text><text x="150" y="140" font-size="12" text-anchor="middle" class="muted" style="font-style:normal">hollow</text></svg></td><th scope="row">Hollow sphere (thin shell), radius \(R\)</th><td>any diameter</td><td class="it-f">\(\dfrac23MR^2\)</td><td class="it-f">\(\dfrac23\)</td><td>Parts 1 and 3</td></tr>
+<tr><td class="it-pic"><svg class="svgfig it-svg" viewBox="0 0 180 150" role="img" aria-label="A solid cylinder with a vertical axis along its center line" focusable="false"><defs><marker id="mit6" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--A)"/></marker><radialGradient id="git6" cx="38%" cy="35%" r="70%"><stop offset="0%" style="stop-color:var(--x);stop-opacity:.12"/><stop offset="100%" style="stop-color:var(--x);stop-opacity:.75"/></radialGradient></defs><path d="M35,58 L35,104 A55,15 0 0 0 145,104 L145,58" style="fill:var(--x);fill-opacity:.28;stroke:var(--x)" stroke-width="2"/><ellipse cx="90" cy="58" rx="55" ry="15" style="fill:var(--x);fill-opacity:.28;stroke:var(--x)" stroke-width="2"/><line x1="90" y1="14" x2="90" y2="140" style="stroke:var(--A)" stroke-width="2.4" stroke-dasharray="7 4"/><path d="M70,27 A20,6 0 0 0 110,27" fill="none" style="stroke:var(--A)" stroke-width="2" marker-end="url(#mit6)"/><text x="96" y="16" font-size="11" class="txt-A" style="font-style:normal">axis</text><line x1="90" y1="58" x2="145" y2="58" class="dim"/><text x="118" y="53" font-size="13" font-style="italic" text-anchor="middle" style="paint-order:stroke" stroke="var(--surface)" stroke-width="3">R</text></svg></td><th scope="row">Solid cylinder or disk, radius \(R\)</th><td>the cylinder’s own axis</td><td class="it-f">\(\dfrac12MR^2\)</td><td class="it-f">\(\dfrac12\)</td><td>Parts 1, 2 and 3</td></tr>
+<tr><td class="it-pic"><svg class="svgfig it-svg" viewBox="0 0 180 150" role="img" aria-label="A solid sphere with a vertical axis through its center" focusable="false"><defs><marker id="mit8" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--A)"/></marker><radialGradient id="git8" cx="38%" cy="35%" r="70%"><stop offset="0%" style="stop-color:var(--x);stop-opacity:.12"/><stop offset="100%" style="stop-color:var(--x);stop-opacity:.75"/></radialGradient></defs><circle cx="90" cy="82" r="50" fill="url(#git8)" style="stroke:var(--x)" stroke-width="2"/><ellipse cx="90" cy="82" rx="50" ry="13" fill="none" class="dim" stroke-dasharray="3 3"/><line x1="90" y1="14" x2="90" y2="140" style="stroke:var(--A)" stroke-width="2.4" stroke-dasharray="7 4"/><path d="M70,27 A20,6 0 0 0 110,27" fill="none" style="stroke:var(--A)" stroke-width="2" marker-end="url(#mit8)"/><text x="96" y="16" font-size="11" class="txt-A" style="font-style:normal">axis</text><line x1="90" y1="82" x2="140" y2="82" class="dim"/><text x="116" y="77" font-size="13" font-style="italic" text-anchor="middle" style="paint-order:stroke" stroke="var(--surface)" stroke-width="3">R</text></svg></td><th scope="row">Solid sphere, radius \(R\)</th><td>any diameter</td><td class="it-f">\(\dfrac25MR^2\)</td><td class="it-f">\(\dfrac25\)</td><td>Parts 1 and 3</td></tr>
+<tr><td class="it-pic"><svg class="svgfig it-svg" viewBox="0 0 180 150" role="img" aria-label="Thin rod with a perpendicular axis through one end" focusable="false"><defs><marker id="mit1" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--A)"/></marker><radialGradient id="git1" cx="38%" cy="35%" r="70%"><stop offset="0%" style="stop-color:var(--x);stop-opacity:.12"/><stop offset="100%" style="stop-color:var(--x);stop-opacity:.75"/></radialGradient></defs><rect x="40" y="76" width="124" height="9" rx="4" style="fill:var(--x);fill-opacity:.28;stroke:var(--x)" stroke-width="2"/><line x1="40" y1="14" x2="40" y2="140" style="stroke:var(--A)" stroke-width="2.4" stroke-dasharray="7 4"/><path d="M20,27 A20,6 0 0 0 60,27" fill="none" style="stroke:var(--A)" stroke-width="2" marker-end="url(#mit1)"/><text x="46" y="16" font-size="11" class="txt-A" style="font-style:normal">axis</text><line x1="40" y1="108" x2="164" y2="108" class="dim"/><text x="102" y="124" font-size="13" font-style="italic" text-anchor="middle" style="paint-order:stroke" stroke="var(--surface)" stroke-width="3">L</text><line x1="164" y1="102" x2="164" y2="114" class="dim"/></svg></td><th scope="row">Thin rod, length \(L\)</th><td>perpendicular to the rod, through one end</td><td class="it-f">\(\dfrac{1}{3}ML^2\)</td><td class="it-f">—</td><td>Part 2 (the bar)</td></tr>
+<tr><td class="it-pic"><svg class="svgfig it-svg" viewBox="0 0 180 150" role="img" aria-label="Thin rod with a perpendicular axis through its center" focusable="false"><defs><marker id="mit0" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="4.5" markerHeight="4.5" orient="auto-start-reverse"><path d="M0,0 L10,5 L0,10 z" style="fill:var(--A)"/></marker><radialGradient id="git0" cx="38%" cy="35%" r="70%"><stop offset="0%" style="stop-color:var(--x);stop-opacity:.12"/><stop offset="100%" style="stop-color:var(--x);stop-opacity:.75"/></radialGradient></defs><rect x="28" y="76" width="124" height="9" rx="4" style="fill:var(--x);fill-opacity:.28;stroke:var(--x)" stroke-width="2"/><line x1="90" y1="14" x2="90" y2="140" style="stroke:var(--A)" stroke-width="2.4" stroke-dasharray="7 4"/><path d="M70,27 A20,6 0 0 0 110,27" fill="none" style="stroke:var(--A)" stroke-width="2" marker-end="url(#mit0)"/><text x="96" y="16" font-size="11" class="txt-A" style="font-style:normal">axis</text><line x1="28" y1="108" x2="152" y2="108" class="dim"/><text x="60" y="124" font-size="13" font-style="italic" text-anchor="middle" style="paint-order:stroke" stroke="var(--surface)" stroke-width="3">L</text><line x1="28" y1="102" x2="28" y2="114" class="dim"/><line x1="152" y1="102" x2="152" y2="114" class="dim"/></svg></td><th scope="row">Thin rod, length \(L\)</th><td>perpendicular to the rod, through its center</td><td class="it-f">\(\dfrac{1}{12}ML^2\)</td><td class="it-f">—</td><td>reference</td></tr>
+</tbody></table></div>
+      <div class="callout key"><span class="tag">The rolling factor \(c\)</span>
+        <p>For round objects it is handy to write \(I = c\,MR^2\), where the number \(c = I/(MR^2)\) depends only on the shape. The more mass sits near the rim, the closer \(c\) is to 1. This one number decides how a round object shares its kinetic energy between translation and rotation when it rolls (<a href="#r-ke">Part 3</a>).</p></div>
+      <div class="callout think"><span class="tag">Reminder: parallel-axis theorem</span>
+        <p>For an axis parallel to one through the center of mass, a distance \(d\) away: \(I = I_\text{cm} + Md^2\). We use it in Part 3 to see a rolling object as one turning about its contact point.</p></div>
+      <p><a href="#overview">Go to the overview</a></p>
+    </section>
+  </main>
+</div>
+</div>
+
+<!-- ======================= OVERVIEW ======================= -->
+<div class="page" data-page="overview">
+<section class="hero" aria-labelledby="h-over">
+  <div class="hero-inner">
+    <p class="part-num">PHY2048 notes: overview</p>
+    <h1 id="h-over" tabindex="-1">Rotational kinetic energy and&nbsp;rolling</h1>
+    <p class="lede">A spinning wheel stores energy even if it goes nowhere. These notes find out how much, connect it to the work done by a torque, and then put translation and rotation together for objects that roll.</p>
+    <figure class="hero-strip">
+      <svg class="svgfig" viewBox="0 0 640 230" role="img" aria-labelledby="heroT heroD" focusable="false" style="max-width:640px">
+        <title id="heroT">Four round objects racing down a ramp</title>
+        <desc id="heroD">A ramp with four round objects released together from the top: a solid sphere is furthest ahead, then a solid cylinder, then a hollow sphere, and a hoop is last.</desc>
+        <polygon points="20,40 600,200 20,200" class="solid"/>
+        <g>
+          <circle cx="330" cy="106.8" r="18" class="f-x"/><line x1="330" y1="106.8" x2="342" y2="93.8" stroke="var(--surface)" stroke-width="3"/>
+          <circle cx="262" cy="88" r="18" class="f-B"/><line x1="262" y1="88" x2="278" y2="86" stroke="var(--surface)" stroke-width="3"/>
+          <circle cx="195" cy="69.6" r="16.5" fill="var(--surface)" class="c-A" stroke-width="3.5"/><circle cx="195" cy="69.6" r="11" fill="none" class="c-A" stroke-width="1.5" stroke-dasharray="3 3"/>
+          <circle cx="135" cy="53" r="16" fill="none" class="c-cm" stroke-width="5"/>
+        </g>
+        <g font-size="13" text-anchor="middle">
+          <text x="135" y="98">hoop</text><text x="195" y="116">hollow sphere</text><text x="262" y="134">solid cylinder</text><text x="330" y="152">solid sphere</text>
+        </g>
+        <text x="390" y="40" font-size="17" font-weight="700">Same height, same start.</text>
+        <text x="390" y="64" font-size="16" class="muted">Why always this order?</text>
+      </svg>
+      <figcaption>Released together from rest, round objects never tie unless they have the same shape. Part 3 explains why, and its simulation lets you run the race.</figcaption>
+    </figure>
+  </div>
+</section>
+<div class="layout">
+  <nav class="toc" aria-label="On this page"><details class="toc-details" open><summary>On this page</summary><h2>On this page</h2><ol>
+    <li><a href="#o-how">How to use these notes</a></li><li><a href="#o-rules">Ground rules</a></li><li><a href="#o-sources">Sources and research</a></li></ol></details></nav>
+  <main id="main-overview" tabindex="-1">
+    <section class="prose" aria-label="Overview">
+      <h2 id="o-how">How to use these notes</h2>
+      <p>These notes follow <cite>Rigid bodies: Kinematics and Dynamics</cite>. You will need torque, \(\tau_\text{net} = I\alpha\), the moment of inertia and the work–kinetic energy theorem for a particle.</p>
+      <p>When you see a <strong>Predict</strong> box, commit to an answer before you touch the simulation. Derivations sit behind “Show the derivation” links. Each part ends with a quick check: questions about ideas first, then calculations, each with a hint and a full explanation.</p>
+      <p>The pages:</p>
+      <ul>
+        <li><a href="#itable">Moments of inertia</a>: every formula for \(I\) used here, with pictures (always available from the top bar);</li>
+        <li><a href="#rot">Part 1: Rotational kinetic energy</a>, from \(\tfrac12 mv^2\) to \(\tfrac12 I\omega^2\), with a 3-D simulation of spinning shapes;</li>
+        <li><a href="#work">Part 2: The work–energy theorem</a>, for a particle and then for rotation, linking torque to rotational kinetic energy;</li>
+        <li><a href="#roll">Part 3: Rolling motion</a>, on a level floor and on inclines, with a race simulation;</li>
+        <li>a side tab, <a href="#slip">Slipping before rolling</a>, for objects that skid before they roll;</li>
+        <li>a <a href="#summary">Summary</a> of the main points and equations, ending with your certificate of completion.</li>
+      </ul>
+      <div class="callout key"><span class="tag">How the questions work</span>
+        <p>Each question allows <strong>3 attempts</strong>; hints are free and do not use an attempt. After a correct answer, or after the third attempt, the answer and full explanation are shown. The parts open in order: finish every question in Part 1 to unlock Part 2, Part 2 to unlock Part 3 and the slipping tab, and Part 3 to unlock the Summary. The Overview and the Moments of inertia table are always open. Your progress is saved in this browser.</p></div>
+      <div class="callout key"><span class="tag">What you will be tested on</span>
+        <p>As before, you will not be asked to compute an integral for a moment of inertia: use the table. Boxes labelled <span class="nt">For information, not tested</span> show where results come from.</p></div>
+
+      <h2 id="o-rules">Ground rules</h2>
+      <ul>
+        <li>SI units throughout; \(g = 9.8\ \text{m/s}^2\). Energies in joules (J).</li>
+        <li>Angles in radians whenever they appear in a formula: \(1\ \text{rev} = 2\pi\ \text{rad}\).</li>
+        <li>Unit vectors \(\hat\imath, \hat\jmath, \hat k\); counterclockwise rotation is positive.</li>
+        <li>Unless a problem says otherwise, round objects <strong>roll without slipping</strong> and air drag is ignored.</li>
+        <li>Colour code, always paired with a label, pattern or line style: <span class="qx">translation</span> (blue, solid), <span class="qA">rotation</span> (purple, hatched), <span class="qU">gravitational potential energy</span> (orange, dotted).</li>
+      </ul>
+
+      <section id="o-sources" class="part" aria-labelledby="sources-h" style="margin-top:2.5rem">
+        <p class="part-num">Further reading</p>
+        <h2 id="sources-h">Sources and research</h2>
+        <ul>
+          <li>OpenStax, <cite><a href="https://openstax.org/books/university-physics-volume-1/pages/1-introduction" target="_blank" rel="noopener">University Physics Volume 1</a></cite> (opens in a new tab): section 7.2 (kinetic energy), 7.3 (work–energy theorem), 10.4 (rotational kinetic energy), 10.8 (work and power for rotational motion) and 11.1 (rolling motion).</li>
+          <li>R. G. Brown, <cite><a href="https://webhome.phy.duke.edu/~rgb/Class/intro_physics_1/intro_physics_1.pdf" target="_blank" rel="noopener">Introductory Physics I: Elementary Mechanics</a></cite> (Duke University; PDF, opens in a new tab): section 3.2 (the work–kinetic energy theorem) and Week 5, sections 5.6–5.7 (rolling problems, rotational work and energy, the rolling constraint and work; Example 5.6.1, a disk rolling down an incline).</li>
+          <li>K. Diff, <cite>Rotational Dynamics: A Worked Example</cite> (PHY2048 guided exercise, Santa Fe College): the bar problem revisited with energy in Section 2.3.</li>
+          <li><cite>Rigid bodies: Kinematics and Dynamics</cite> (the previous PHY2048 notes) for torque, \(\tau = I\alpha\) and the moments of inertia.</li>
+        </ul>
+        <details class="deeper"><summary>For instructors: how physics education research shaped these notes</summary>
+          <ul>
+            <li><strong>Energy split in rolling.</strong> Students often assume the heavier or larger object wins a rolling race, or that all round objects tie. The race simulation lets them test mass, size and shape separately, and shows the translation/rotation split live (Rimoldini and Singh found many students do not account for rotational kinetic energy in rolling).</li>
+            <li><strong>Work by static friction.</strong> The claim that static friction does no work on a rolling object surprises students; it is stated, justified with the stationary contact point, and contrasted with slipping, where kinetic friction does dissipate energy (Brown, section 5.7.2).</li>
+            <li><strong>Same work, different outcomes.</strong> A torque doing the same work on two objects gives them the same kinetic energy but not the same angular speed; quick-check questions separate these two ideas.</li>
+            <li><strong>Accessibility.</strong> Colour is always paired with labels, patterns or line styles; every graphic has a text description; the simulations work from the keyboard and report their values in text.</li>
+          </ul>
+          <p>Reference: L. G. Rimoldini and C. Singh, <cite>Phys. Rev. ST Phys. Educ. Res.</cite> 1, 010102 (2005).</p>
+        </details>
+      </section>
+    </section>
+    <nav class="pager" aria-label="Previous and next page"><a class="prev" href="#itable"><span>Reference</span>Moments of inertia</a><a class="next" href="#rot"><span>Next page</span>Part 1: Rotational kinetic energy</a></nav>
+  </main>
+</div>
+</div>
+
+<!-- ======================= PART 1: ROTATIONAL KE ======================= -->
+<div class="page" data-page="rot" hidden>
+<div class="layout">
+  <nav class="toc" aria-label="On this page"><details class="toc-details" open><summary>On this page</summary><h2>On this page</h2><ol>
+    <li><a href="#k-lin">1.1 Kinetic energy of a particle</a></li><li><a href="#k-rot">1.2 A spinning object</a></li><li><a href="#k-shapes">1.3 Shapes and \(c\)</a></li><li><a href="#k-lab">1.4 3-D simulation</a></li><li><a href="#k-rank">1.5 Ranking</a></li><li><a href="#practice-rot">Quick check</a></li></ol></details></nav>
+  <main id="main-rot" tabindex="-1">
+    <p class="part-num">Part 1</p>
+    <h1 tabindex="-1">Rotational kinetic energy</h1>
+    <div class="goals"><h2>After this part you can</h2><ul>
+      <li>explain why a spinning object has kinetic energy even when its center of mass is at rest;</li>
+      <li>derive \(K_\text{rot} = \tfrac12 I\omega^2\) from \(\tfrac12 mv^2\);</li>
+      <li>compute the rotational kinetic energy of hoops, cylinders and spheres;</li>
+      <li>rank shapes by kinetic energy or by angular speed in different scenarios.</li></ul></div>
+
+    <section class="prose">
+      <h2 id="k-lin">1.1 Reminder: kinetic energy of a particle</h2>
+      <p>A particle of mass \(m\) moving at speed \(v\) has kinetic energy</p>
+      \[ K = \tfrac12 mv^2 . \]
+      <ul>
+        <li>It is a <strong>scalar</strong>: it depends on the speed, not on the direction of motion, and it is never negative.</li>
+        <li>Its unit is the joule: \(1\ \text{J} = 1\ \text{kg·m}^2/\text{s}^2\).</li>
+        <li>For a system of particles, the kinetic energies simply add: \(K = \sum_i \tfrac12 m_i v_i^2\).</li>
+      </ul>
+      <p><strong>Example.</strong> A 1500&nbsp;kg car at 20&nbsp;m/s has \(K = \tfrac12(1500)(20)^2 = 3.0\times10^5\ \text{J}\). Double the speed and \(K\) is four times larger.</p>
+
+      <h2 id="k-rot">1.2 A spinning object has kinetic energy</h2>
+      <p>A spinning wheel with its axle fixed goes nowhere: its center of mass is at rest, so \(\tfrac12 Mv_\text{cm}^2 = 0\). Yet every piece of the wheel is moving. Each piece is a particle, so each has kinetic energy, and the total is not zero.</p>
+    </section>
+    <figure class="fig">
+      <svg class="svgfig narrow" viewBox="0 0 520 300" role="img" aria-labelledby="f11t f11d" focusable="false">
+        <title id="f11t">Pieces of a spinning disk move at different speeds</title>
+        <desc id="f11d">A disk spinning counterclockwise about its center with angular velocity omega. Three small pieces are marked at distances r1, r2 and r3 from the axis along the same radius. Each has a velocity arrow perpendicular to the radius, and the arrows get longer with distance: v equals r omega.</desc>
+        <circle cx="200" cy="150" r="120" class="solid"/>
+        <circle cx="200" cy="150" r="5" class="f-ink"/>
+        <path d="M262,58 A110,110 0 0 0 140,58" fill="none" class="c-A" stroke-width="2.5"/><polygon points="132,62 146,50 147,66" class="f-A"/>
+        <text x="200" y="28" font-size="17" text-anchor="middle" class="txt-A">ω</text>
+        <line x1="200" y1="150" x2="320" y2="150" class="dim" stroke-dasharray="4 4"/>
+        <g>
+          <circle cx="240" cy="150" r="6" class="f-x"/><line x1="240" y1="150" x2="240" y2="125" class="c-x" stroke-width="3"/><polygon points="234,127 246,127 240,115" class="f-x"/>
+          <circle cx="280" cy="150" r="6" class="f-x"/><line x1="280" y1="150" x2="280" y2="105" class="c-x" stroke-width="3"/><polygon points="274,107 286,107 280,95" class="f-x"/>
+          <circle cx="315" cy="150" r="6" class="f-x"/><line x1="315" y1="150" x2="315" y2="85" class="c-x" stroke-width="3"/><polygon points="309,87 321,87 315,75" class="f-x"/>
+        </g>
+        <g font-size="14" font-style="italic"><text x="232" y="175">r₁</text><text x="272" y="175">r₂</text><text x="308" y="175">r₃</text></g>
+        <text x="352" y="96" font-size="15" class="txt-x">v = rω</text>
+        <text x="352" y="120" font-size="14" class="muted">farther out,</text>
+        <text x="352" y="138" font-size="14" class="muted">faster</text>
+      </svg>
+      <figcaption><b>Figure 1.1.</b> Every piece turns with the same \(\omega\), but a piece at distance \(r\) from the axis moves at \(v = r\omega\): the farther out, the faster.</figcaption>
+    </figure>
+    <section class="prose">
+      <p>Add up the kinetic energies of all the pieces. Piece \(i\), at distance \(r_i\) from the axis, moves at \(v_i = r_i\omega\):</p>
+      \[ K_\text{rot} = \sum_i \tfrac12 m_i v_i^2 = \sum_i \tfrac12 m_i r_i^2\omega^2 = \tfrac12\Big(\sum_i m_i r_i^2\Big)\omega^2 . \]
+      <p>\(\omega\) is the same for every piece, so it comes out of the sum, and what is left in the brackets is the moment of inertia:</p>
+      \[ \boxed{\ K_\text{rot} = \tfrac12 I\omega^2\ } \qquad (\omega \text{ in rad/s}). \]
+      <div class="table-wrap"><table>
+        <caption>The same pattern as before: \(m \to I\), \(v \to \omega\)</caption>
+        <thead><tr><th scope="col">Translation</th><th scope="col">Rotation about a fixed axis</th></tr></thead>
+        <tbody><tr><td>\(K = \tfrac12 mv^2\)</td><td>\(K_\text{rot} = \tfrac12 I\omega^2\)</td></tr>
+        <tr><td>\(F_\text{net} = ma\)</td><td>\(\tau_\text{net} = I\alpha\)</td></tr></tbody></table></div>
+      <div class="callout key"><span class="tag">Key idea</span>
+        <p>Rotational kinetic energy is not a new kind of energy. It is the ordinary kinetic energy of all the pieces, added up; \(\tfrac12 I\omega^2\) is a shortcut for that sum.</p></div>
+      <h3>Example: a dumbbell</h3>
+      <p>Two 0.50&nbsp;kg balls sit at the ends of a light 1.0&nbsp;m rod spinning at 4.0&nbsp;rad/s about its center. Then \(I = 2(0.50)(0.50)^2 = 0.25\ \text{kg·m}^2\) and \(K_\text{rot} = \tfrac12(0.25)(4.0)^2 = 2.0\ \text{J}\).</p>
+      <div class="widget" aria-labelledby="dbH">
+        <h3 id="dbH" style="margin-top:0">Explore: the dumbbell</h3>
+        <div class="predict"><p><strong>Predict.</strong> If you double the length of the rod, by what factor does the kinetic energy change? What if you double \(\omega\) instead? What if only one ball is made heavier?</p></div>
+        <div data-widget="dumbbell"></div>
+      </div>
+      <p>Check by adding particle energies: each ball moves at \(v = r\omega = (0.50)(4.0) = 2.0\ \text{m/s}\), so each has \(\tfrac12(0.50)(2.0)^2 = 1.0\ \text{J}\). Two balls: 2.0&nbsp;J. Same answer.</p>
+      <div class="callout trap"><span class="tag">Common trap</span>
+        <p>Use \(\omega\) in rad/s. A wheel at 3000&nbsp;rpm has \(\omega = 3000 \times \tfrac{2\pi\ \text{rad}}{60\ \text{s}} = 314\ \text{rad/s}\), not 3000 or 50.</p></div>
+
+      <h2 id="k-shapes">1.3 Hoops, cylinders and spheres</h2>
+      <p>For round objects of mass \(M\) and radius \(R\), the table on the <a href="#itable">Moments of inertia</a> tab gives \(I = c\,MR^2\), so</p>
+      \[ K_\text{rot} = \tfrac12\,c\,MR^2\omega^2 = c \times \tfrac12 M(R\omega)^2 . \]
+      <p>\(\tfrac12 M(R\omega)^2\) is the energy the object would have if <em>all</em> its mass moved at the rim speed \(R\omega\). The factor \(c\) says what fraction of that it really has:</p>
+      <div class="table-wrap"><table>
+        <caption>Rotational kinetic energy of round objects</caption>
+        <thead><tr><th scope="col">Shape (about its symmetry axis)</th><th scope="col">\(I\)</th><th scope="col" class="num">\(c\)</th><th scope="col">Why</th></tr></thead>
+        <tbody>
+          <tr><td>hoop, or thin-walled hollow cylinder</td><td>\(MR^2\)</td><td class="num">1</td><td>all mass at the rim</td></tr>
+          <tr><td>hollow sphere (thin shell)</td><td>\(\tfrac23MR^2\)</td><td class="num">0.67</td><td>all mass at distance \(R\) from the center, but less from the axis near the poles</td></tr>
+          <tr><td>solid cylinder or disk</td><td>\(\tfrac12MR^2\)</td><td class="num">0.50</td><td>mass spread from the axis to the rim</td></tr>
+          <tr><td>solid sphere</td><td>\(\tfrac25MR^2\)</td><td class="num">0.40</td><td>most mass closer to the axis</td></tr>
+        </tbody></table></div>
+      <h3>Example: a flywheel</h3>
+      <p>A flywheel is a solid steel cylinder, \(M = 20\ \text{kg}\), \(R = 0.30\ \text{m}\), spinning at 3000&nbsp;rpm (\(\omega = 314\ \text{rad/s}\)). Then \(I = \tfrac12(20)(0.30)^2 = 0.90\ \text{kg·m}^2\) and</p>
+      \[ K_\text{rot} = \tfrac12(0.90)(314)^2 = 4.4\times10^4\ \text{J}, \]
+      <p>about the kinetic energy of a 1500&nbsp;kg car at 7.7&nbsp;m/s, stored in an object that is not going anywhere. Flywheels are used to store energy in exactly this way.</p>
+    </section>
+
+    <section class="lab" id="k-lab" aria-labelledby="k-lab-h">
+      <h2 id="k-lab-h">1.4 3-D simulation: spinning shapes</h2>
+      <div class="lab-intro">
+        <p>Choose a shape and set its mass, radius and angular velocity. The purple dashed line is the axis of rotation; the crimson marker on the rim shows the spin. Values are hidden until you press <strong>Reveal values</strong>.</p>
+        <div class="predict"><p><strong>Predict.</strong> Keep \(M\), \(R\) and \(\omega\) fixed and switch between the four shapes. Which one has the most kinetic energy? Which has the least? Then double \(\omega\): by what factor does \(K\) change?</p></div>
+      </div>
+      <div data-widget="spin3d"></div>
+    </section>
+
+    <section class="prose">
+      <h2 id="k-rank">1.5 Ranking shapes: it depends on what is held equal</h2>
+      <p>Comparing shapes only makes sense once you say what they have in common. Three common scenarios:</p>
+      <ul>
+        <li><strong>Same \(M\), same \(R\), same \(\omega\).</strong> Then \(K_\text{rot} \propto c\): hoop \(>\) hollow sphere \(>\) solid cylinder \(>\) solid sphere.</li>
+        <li><strong>Same \(M\), same \(\omega\), different sizes.</strong> Then \(K_\text{rot} \propto cR^2\). Size can beat shape: a solid sphere twice as wide as a hoop has \(0.40 \times 2^2 = 1.6\) times the hoop’s energy.</li>
+        <li><strong>Same \(K_\text{rot}\), same \(M\) and \(R\).</strong> Then \(\omega = \sqrt{2K/(cMR^2)}\): the shape with the smallest \(c\) (the solid sphere) spins fastest.</li>
+      </ul>
+      <div class="callout think"><span class="tag">Try it</span>
+        <p>Set up each scenario in the simulation, then tick <em>Compare all four shapes</em> to check your ranking.</p></div>
+    </section>
+
+    <section class="practice" id="practice-rot" aria-labelledby="prH">
+      <h2 id="prH" tabindex="-1">Quick check</h2>
+      <div data-practice="rot"></div>
+    </section>
+    <nav class="pager" aria-label="Previous and next page"><a class="prev" href="#overview"><span>Previous page</span>Overview</a><a class="next" href="#work"><span>Next page</span>Part 2: Work and energy</a></nav>
+  </main>
+</div>
+</div>
+
+<!-- ======================= PART 2: WORK–ENERGY ======================= -->
+<div class="page" data-page="work" hidden>
+<div class="layout">
+  <nav class="toc" aria-label="On this page"><details class="toc-details" open><summary>On this page</summary><h2>On this page</h2><ol>
+    <li><a href="#w-lin">2.1 Work–energy for a particle</a></li><li><a href="#w-rot">2.2 Work done by a torque</a></li><li><a href="#w-tie">2.3 Torque and energy together</a></li><li><a href="#w-neg">2.4 Negative work: braking</a></li><li><a href="#w-pow">2.5 Rotational power</a></li><li><a href="#practice-work">Quick check</a></li></ol></details></nav>
+  <main id="main-work" tabindex="-1">
+    <p class="part-num">Part 2</p>
+    <h1 tabindex="-1">The work–energy theorem, linear and rotational</h1>
+    <div class="goals"><h2>After this part you can</h2><ul>
+      <li>state the work–kinetic energy theorem for a particle;</li>
+      <li>compute the work done by a constant torque, \(W = \tau\,\Delta\theta\);</li>
+      <li>use \(W_\text{net} = \Delta K_\text{rot}\) to find angular speeds without time;</li>
+      <li>connect torque, angle, work, power and rotational kinetic energy.</li></ul></div>
+
+    <section class="prose">
+      <h2 id="w-lin">2.1 Reminder: the work–energy theorem for a particle</h2>
+      <p>A constant force \(\vec F\) acting on a particle that moves through a displacement \(\Delta\vec r\) does work</p>
+      \[ W = \vec F\cdot\Delta\vec r = F\,\Delta r\cos\phi . \]
+      <p>Only the part of the force along the motion does work. The <strong>work–kinetic energy theorem</strong> says that the net work done on the particle equals the change in its kinetic energy:</p>
+      \[ W_\text{net} = \Delta K = \tfrac12 mv_f^2 - \tfrac12 mv_i^2 . \]
+      <p><strong>Example.</strong> A net force of 10&nbsp;N pushes a 2.0&nbsp;kg block from rest through 3.0&nbsp;m. Then \(W_\text{net} = (10)(3.0) = 30\ \text{J} = \tfrac12(2.0)v_f^2\), so \(v_f = 5.5\ \text{m/s}\), found without knowing the time.</p>
+
+      <h2 id="w-rot">2.2 Work done by a torque</h2>
+      <p>Push tangentially on the rim of a wheel of radius \(r\) with a force \(F_\perp\). As the wheel turns through a small angle \(d\theta\), the point where you push moves along an arc \(ds = r\,d\theta\), in the direction of the force. The work you do is</p>
+      \[ dW = F_\perp\,ds = F_\perp\,r\,d\theta = \tau\,d\theta . \]
+      <p>For a constant torque turning an object through an angle \(\Delta\theta\) (in radians),</p>
+      \[ \boxed{\ W = \tau\,\Delta\theta\ } \]
+      <p>just as \(W = F\,\Delta x\) for a constant force. A force component along the radius (through the axis) has no torque and does no rotational work.</p>
+      <h3>The rotational work–energy theorem</h3>
+      \[ \boxed{\ W_\text{net} = \Delta K_\text{rot} = \tfrac12 I\omega_f^2 - \tfrac12 I\omega_i^2\ } \]
+      <details class="deeper"><summary>Show the derivation</summary>
+        <p>Start from \(\tau_\text{net} = I\alpha\) and use the chain rule: \(\alpha = \dfrac{d\omega}{dt} = \dfrac{d\omega}{d\theta}\dfrac{d\theta}{dt} = \omega\dfrac{d\omega}{d\theta}\). Then</p>
+        \[ W_\text{net} = \int \tau_\text{net}\,d\theta = \int I\omega\,\frac{d\omega}{d\theta}\,d\theta = \int_{\omega_i}^{\omega_f} I\omega\,d\omega = \tfrac12 I\omega_f^2 - \tfrac12 I\omega_i^2 . \]
+        <p>This is the same calculation that turns \(F = ma\) into the work–energy theorem for a particle, with \(m \to I\), \(v \to \omega\), \(x \to \theta\).</p>
+      </details>
+      <div class="table-wrap"><table>
+        <caption>Linear and rotational work and energy</caption>
+        <thead><tr><th scope="col">Particle</th><th scope="col">Rotation about a fixed axis</th></tr></thead>
+        <tbody>
+          <tr><td>work of a constant force: \(W = F\,\Delta x\)</td><td>work of a constant torque: \(W = \tau\,\Delta\theta\)</td></tr>
+          <tr><td>\(W_\text{net} = \Delta\big(\tfrac12 mv^2\big)\)</td><td>\(W_\text{net} = \Delta\big(\tfrac12 I\omega^2\big)\)</td></tr>
+          <tr><td>power: \(P = Fv\)</td><td>power: \(P = \tau\omega\)</td></tr>
+        </tbody></table></div>
+
+      <h2 id="w-tie">2.3 Tying torque and energy together: the bar, again</h2>
+      <p>In the guided exercise a 4.0&nbsp;N force, always perpendicular, acts at the end of a bar (\(L = 1.2\ \text{m}\), \(M = 2.4\ \text{kg}\)) pivoted at the other end, for 3.0&nbsp;s from rest. With torques we found \(|\tau| = 4.8\ \text{N·m}\), \(I = \tfrac13ML^2 = 1.152\ \text{kg·m}^2\), \(|\alpha| = 4.17\ \text{rad/s}^2\), an angle of \(18.75\ \text{rad}\) and a final \(|\omega| = 12.5\ \text{rad/s}\). Now look at energy two ways.</p>
+      <div class="worked">
+        <div class="card"><h4>Route 1: work done by the torque</h4>
+          <p>\(W = \tau\,\Delta\theta = (4.8)(18.75) = 90\ \text{J}\).</p></div>
+        <div class="card"><h4>Route 2: kinetic energy at the end</h4>
+          <p>\(K_\text{rot} = \tfrac12 I\omega^2 = \tfrac12(1.152)(12.5)^2 = 90\ \text{J}\).</p></div>
+      </div>
+      <p>They agree, as the theorem says they must: all the work done by the torque went into rotational kinetic energy. The energy route also answers a question without time: “how fast is the bar turning after 3 full turns?” \(W = (4.8)(3 \times 2\pi) = 90.5\ \text{J}\), so \(\omega = \sqrt{2(90.5)/1.152} = 12.5\ \text{rad/s}\).</p>
+      <div class="callout key"><span class="tag">Key idea</span>
+        <p>Torque and time give \(\alpha\) and \(\omega(t)\) (Newton’s second law). Torque and <em>angle</em> give the work, and so the kinetic energy (work–energy theorem). Use whichever matches the information you have.</p></div>
+
+      <h2 id="w-neg">2.4 Negative work: braking a grinding wheel</h2>
+      <p>A grinding wheel (solid disk, \(M = 1.6\ \text{kg}\), \(R = 0.10\ \text{m}\)) spins at 120&nbsp;rad/s. When the motor is switched off, friction in the bearings exerts a constant torque of 0.40&nbsp;N·m against the rotation. How many turns does it make before stopping?</p>
+      <p>\(I = \tfrac12(1.6)(0.10)^2 = 0.0080\ \text{kg·m}^2\), so \(K_i = \tfrac12(0.0080)(120)^2 = 57.6\ \text{J}\). The friction torque does negative work \(W = -\tau\,\Delta\theta\) until \(K = 0\):</p>
+      \[ -(0.40)\,\Delta\theta = 0 - 57.6 \quad\Rightarrow\quad \Delta\theta = 144\ \text{rad} = 22.9\ \text{rev}. \]
+      <p>The 57.6&nbsp;J does not vanish: it heats the bearings.</p>
+
+      <h2 id="w-pow">2.5 Rotational power</h2>
+      <p>Dividing \(dW = \tau\,d\theta\) by \(dt\) gives the rate at which a torque does work: \(P = \tau\omega\). An electric motor delivering 0.80&nbsp;N·m at 300&nbsp;rad/s supplies \(P = (0.80)(300) = 240\ \text{W}\). For a car engine this is why both torque and rotation rate matter.</p>
+    </section>
+
+    <section class="practice" id="practice-work" aria-labelledby="pwH">
+      <h2 id="pwH" tabindex="-1">Quick check</h2>
+      <div data-practice="work"></div>
+    </section>
+    <nav class="pager" aria-label="Previous and next page"><a class="prev" href="#rot"><span>Previous page</span>Part 1: Rotational kinetic energy</a><a class="next" href="#roll"><span>Next page</span>Part 3: Rolling motion</a></nav>
+  </main>
+</div>
+</div>
+
+<!-- ======================= PART 3: ROLLING ======================= -->
+<div class="page" data-page="roll" hidden>
+<div class="layout">
+  <nav class="toc" aria-label="On this page"><details class="toc-details" open><summary>On this page</summary><h2>On this page</h2><ol>
+    <li><a href="#r-cond">3.1 Rolling without slipping</a></li><li><a href="#r-ke">3.2 Kinetic energy of rolling</a></li><li><a href="#r-flat">3.3 On a level surface</a></li><li><a href="#r-down">3.4 Rolling downhill</a></li><li><a href="#r-up">3.5 Rolling uphill</a></li><li><a href="#r-lab">3.6 The race</a></li><li><a href="#practice-roll">Quick check</a></li></ol></details></nav>
+  <main id="main-roll" tabindex="-1">
+    <p class="part-num">Part 3</p>
+    <h1 tabindex="-1">Rolling motion</h1>
+    <div class="goals"><h2>After this part you can</h2><ul>
+      <li>use the rolling condition \(v_\text{cm} = R\omega\);</li>
+      <li>write the kinetic energy of a rolling object as translation plus rotation;</li>
+      <li>find the share of kinetic energy in rotation for each shape;</li>
+      <li>use energy conservation for objects rolling down or up an incline and predict who wins a race.</li></ul></div>
+
+    <section class="prose">
+      <h2 id="r-cond">3.1 Rolling without slipping</h2>
+      <p>A rolling wheel does two things at once: its center moves forward at \(v_\text{cm}\), and it spins at \(\omega\). <strong>Rolling without slipping</strong> means the point touching the ground is momentarily at rest: it does not skid. In one turn the wheel moves forward exactly one circumference, \(2\pi R\), so</p>
+      \[ v_\text{cm} = R\omega, \qquad a_\text{cm} = R\alpha, \qquad x_\text{cm} = R\theta . \]
+      <p>These are constraints that hold only while the object rolls without slipping. A skidding bowling ball, for instance, does not obey them (see the <a href="#slip">Slipping before rolling</a> tab).</p>
+    </section>
+    <figure class="fig">
+      <svg class="svgfig" viewBox="0 0 660 230" role="img" aria-labelledby="f31t f31d" focusable="false">
+        <title id="f31t">Rolling equals translation plus rotation</title>
+        <desc id="f31d">Three wheels side by side. First, pure translation: the top, center and bottom all move right at speed v. Second, pure rotation about the center at omega equals v over R: the top moves right at v, the bottom moves left at v, the center is at rest. Third, the sum, rolling: the top moves right at 2v, the center at v, and the bottom contact point is at rest.</desc>
+        <g font-size="15" font-weight="700" text-anchor="middle"><text x="110" y="24">Translation</text><text x="330" y="24">Rotation about the center</text><text x="550" y="24">Rolling = sum</text></g>
+        <g font-size="22" font-weight="700" text-anchor="middle"><text x="220" y="125">+</text><text x="440" y="125">=</text></g>
+        <g>
+          <line x1="20" y1="200" x2="200" y2="200" class="c-ink" stroke-width="2"/>
+          <circle cx="110" cy="120" r="80" class="solid"/>
+          <line x1="110" y1="40" x2="160" y2="40" class="c-x" stroke-width="3"/><polygon points="160,34 172,40 160,46" class="f-x"/>
+          <line x1="110" y1="120" x2="160" y2="120" class="c-x" stroke-width="3"/><polygon points="160,114 172,120 160,126" class="f-x"/>
+          <line x1="110" y1="200" x2="160" y2="200" class="c-x" stroke-width="3"/><polygon points="160,194 172,200 160,206" class="f-x"/>
+          <g font-size="14" class="txt-x"><text x="176" y="44">v</text><text x="176" y="124">v</text><text x="176" y="216">v</text></g>
+        </g>
+        <g>
+          <line x1="240" y1="200" x2="420" y2="200" class="c-ink" stroke-width="2"/>
+          <circle cx="330" cy="120" r="80" class="solid"/><circle cx="330" cy="120" r="4" class="f-ink"/>
+          <line x1="330" y1="40" x2="380" y2="40" class="c-A" stroke-width="3" stroke-dasharray="6 3"/><polygon points="380,34 392,40 380,46" class="f-A"/>
+          <line x1="330" y1="200" x2="280" y2="200" class="c-A" stroke-width="3" stroke-dasharray="6 3"/><polygon points="280,194 268,200 280,206" class="f-A"/>
+          <g font-size="14" class="txt-A"><text x="396" y="44">v</text><text x="256" y="190">v</text><text x="340" y="116">0</text></g>
+          <path d="M300,70 A55,55 0 0 1 362,72" fill="none" class="c-A" stroke-width="2"/><polygon points="366,66 368,80 356,76" class="f-A"/>
+          <text x="330" y="96" font-size="13" text-anchor="middle" class="txt-A">ω = v/R</text>
+        </g>
+        <g>
+          <line x1="460" y1="200" x2="640" y2="200" class="c-ink" stroke-width="2"/>
+          <circle cx="550" cy="120" r="80" class="solid"/><circle cx="550" cy="120" r="4" class="f-ink"/>
+          <line x1="550" y1="40" x2="632" y2="40" class="c-ink" stroke-width="3.5"/><polygon points="630,34 644,40 630,46" class="f-ink"/>
+          <line x1="550" y1="120" x2="592" y2="120" class="c-ink" stroke-width="3.5"/><polygon points="590,114 604,120 590,126" class="f-ink"/>
+          <circle cx="550" cy="200" r="6" fill="var(--surface)" class="c-ink" stroke-width="3"/>
+          <g font-size="14" font-weight="700"><text x="596" y="62">2v</text><text x="608" y="116">v</text><text x="550" y="224" text-anchor="middle">contact point: v = 0</text></g>
+        </g>
+      </svg>
+      <figcaption><b>Figure 3.1.</b> Rolling without slipping is translation at \(v\) plus rotation at \(\omega = v/R\). The top moves at \(2v\); the contact point is momentarily at rest.</figcaption>
+    </figure>
+
+    <section class="prose">
+      <h2 id="r-ke">3.2 Kinetic energy of a rolling object</h2>
+      <p>The kinetic energy of any rigid body is the kinetic energy of its center of mass plus the kinetic energy of its rotation about the center of mass (Brown, section 5.7):</p>
+      \[ K = \underbrace{\tfrac12 Mv_\text{cm}^2}_{\text{translation}} + \underbrace{\tfrac12 I_\text{cm}\omega^2}_{\text{rotation}} . \]
+      <p>For rolling without slipping, \(\omega = v_\text{cm}/R\) and \(I_\text{cm} = cMR^2\):</p>
+      \[ K = \tfrac12 Mv^2 + \tfrac12 cMR^2\frac{v^2}{R^2} = \boxed{\ \tfrac12 Mv^2\,(1 + c)\ } \]
+      <p>So a rolling object carries \((1+c)\) times the kinetic energy of the same object sliding at the same speed. The shares are fixed by the shape alone:</p>
+      \[ \frac{K_\text{trans}}{K} = \frac{1}{1+c}, \qquad \frac{K_\text{rot}}{K} = \frac{c}{1+c} . \]
+      <div class="table-wrap"><table>
+        <caption>How rolling objects split their kinetic energy</caption>
+        <thead><tr><th scope="col">Shape</th><th scope="col" class="num">\(c\)</th><th scope="col" class="num">translation</th><th scope="col" class="num">rotation</th></tr></thead>
+        <tbody>
+          <tr><td>hoop (thin-walled hollow cylinder)</td><td class="num">1</td><td class="num">50%</td><td class="num">50%</td></tr>
+          <tr><td>hollow sphere</td><td class="num">2/3</td><td class="num">60%</td><td class="num">40%</td></tr>
+          <tr><td>solid cylinder</td><td class="num">1/2</td><td class="num">66.7%</td><td class="num">33.3%</td></tr>
+          <tr><td>solid sphere</td><td class="num">2/5</td><td class="num">71.4%</td><td class="num">28.6%</td></tr>
+        </tbody></table></div>
+      <details class="deeper"><summary>Another view: pure rotation about the contact point</summary>
+        <p>At each instant the contact point P is at rest, so the object is turning about P. By the parallel-axis theorem, \(I_P = I_\text{cm} + MR^2 = (1+c)MR^2\), and</p>
+        \[ K = \tfrac12 I_P\omega^2 = \tfrac12(1+c)MR^2\omega^2 = \tfrac12 Mv^2(1+c), \]
+        <p>the same result. This also explains Figure 3.1: a point at distance \(d\) from P moves at \(d\omega\), so the top (\(d = 2R\)) moves at \(2v\).</p>
+      </details>
+
+      <h2 id="r-flat">3.3 Rolling on a level surface</h2>
+      <p>On a level floor, with no drag, a rolling object keeps rolling at constant speed. No horizontal force is needed: the floor’s static friction is zero. Even when static friction does act (speeding up, slowing down, on a slope), it does <strong>no work</strong> on an object that rolls without slipping, because it acts at the contact point, which is not moving (Brown, section 5.7.2).</p>
+      <h3>Example: a bowling ball</h3>
+      <p>A 7.0&nbsp;kg bowling ball (solid sphere) rolls at 8.0&nbsp;m/s.</p>
+      \[ K_\text{trans} = \tfrac12(7.0)(8.0)^2 = 224\ \text{J}, \quad K_\text{rot} = \tfrac12\cdot\tfrac25(7.0)(8.0)^2 = 89.6\ \text{J}, \quad K = 314\ \text{J}. \]
+      <p>The ratio is \(89.6/314 = 28.6\%\), as the table predicts. Its radius was not needed.</p>
+      <div class="callout think"><span class="tag">Side tab</span>
+        <p>A bowling ball is not thrown rolling: it is released sliding, and friction makes it roll. What happens in between, and where does energy go? See <a href="#slip">Slipping before rolling</a>.</p></div>
+
+      <h2 id="r-down">3.4 Rolling downhill</h2>
+      <p>An object rolls from rest down an incline, its center dropping a height \(h\). Gravity does work \(Mgh\); the normal force does none (it is perpendicular to the motion); static friction does none (it acts at the stationary contact point). So mechanical energy is conserved:</p>
+      \[ Mgh = \tfrac12 Mv^2(1+c) \quad\Longrightarrow\quad v = \sqrt{\frac{2gh}{1+c}} . \]
+      <p>A frictionless sliding block would reach \(\sqrt{2gh}\). A rolling object is slower at the bottom because part of the energy goes into spinning. Its acceleration along the slope is also smaller:</p>
+      \[ a = \frac{g\sin\theta}{1+c} \qquad\text{(e.g. } \tfrac23 g\sin\theta \text{ for a disk, Brown Example 5.6.1).} \]
+    </section>
+    <figure class="fig">
+      <svg class="svgfig narrow" viewBox="0 0 540 260" role="img" aria-labelledby="f32t f32d" focusable="false">
+        <title id="f32t">Forces on an object rolling down an incline</title>
+        <desc id="f32d">A wheel on a slope inclined at angle theta, rolling down to the right. Three forces act: its weight Mg straight down from the center, the normal force N perpendicular to the slope from the contact point, and static friction f s along the slope, pointing up the slope, at the contact point.</desc>
+        <polygon points="30,60 510,230 30,230" class="solid"/>
+        <path d="M455,230 A55,55 0 0 1 458.2,211.6" fill="none" class="c-ink" stroke-width="1.5"/><text x="428" y="224" font-size="15" font-style="italic">θ</text>
+        <circle cx="256.7" cy="87.3" r="50" fill="var(--surface)" class="c-B" stroke-width="4"/>
+        <circle cx="256.7" cy="87.3" r="4" class="f-ink"/>
+        <line x1="256.7" y1="87.3" x2="256.7" y2="176" class="c-F" stroke-width="3"/><polygon points="249.7,174 263.7,174 256.7,191" class="f-F"/><text x="266" y="186" font-size="16" font-style="italic" class="txt-F">Mg</text>
+        <line x1="240" y1="134.4" x2="276.7" y2="30.7" class="c-ink" stroke-width="3" stroke-dasharray="7 4"/><polygon points="283.3,33.0 270.1,28.4 281.7,16.6" class="f-ink"/><text x="292" y="26" font-size="16" font-style="italic">N</text>
+        <line x1="240" y1="134.4" x2="183.4" y2="114.4" class="c-A" stroke-width="3"/><polygon points="185.7,107.8 181.1,121.0 167.9,108.9" class="f-A"/><text x="146" y="104" font-size="16" font-style="italic" class="txt-A">fₛ</text>
+        <circle cx="240" cy="134.4" r="4" class="f-A"/>
+        <line x1="318" y1="116.3" x2="358.4" y2="130.6" class="c-x" stroke-width="2.5"/><polygon points="360.7,124.0 356.1,137.2 372.6,134.8" class="f-x"/><text x="350" y="116" font-size="14" class="txt-x">motion</text>
+      </svg>
+      <figcaption><b>Figure 3.2.</b> Static friction points up the slope. It provides the torque that spins the object up, but it does no work because the contact point does not slide.</figcaption>
+    </figure>
+    <section class="prose">
+      <div class="callout key"><span class="tag">Who wins the race?</span>
+        <p>Released together from the same height, the object with the <strong>smallest \(c\)</strong> wins: solid sphere, then solid cylinder, then hollow sphere, then hoop. Mass and radius cancel out, so a big heavy solid cylinder and a small light one tie.</p></div>
+      <details class="deeper"><summary>How much friction is needed to roll without slipping?</summary>
+        <p>Newton’s second law along the slope, \(Mg\sin\theta - f_s = Ma\), with \(a = g\sin\theta/(1+c)\), gives \(f_s = Mg\sin\theta\,\dfrac{c}{1+c}\). Rolling without slipping requires \(f_s \le \mu_s N = \mu_s Mg\cos\theta\):</p>
+        \[ \mu_s \ \ge\ \frac{c}{1+c}\tan\theta \]
+        <p>For a disk this is \(\tfrac13\tan\theta\) (Brown, Example 5.6.1). On a steep or icy slope the object slips, and energy is lost to kinetic friction.</p>
+      </details>
+
+      <h2 id="r-up">3.5 Rolling uphill</h2>
+      <p>Now an object rolls <em>up</em> an incline with initial speed \(v_0\) and slows down. Energy conservation gives the highest point reached:</p>
+      \[ \tfrac12 Mv_0^2(1+c) = Mgh_\text{max} \quad\Longrightarrow\quad h_\text{max} = \frac{v_0^2\,(1+c)}{2g} . \]
+      <ul>
+        <li><strong>Same initial speed:</strong> the hoop goes highest. At the same speed it carries the most kinetic energy, because half of it is in rotation, and on the way up the rotational energy is converted into height too.</li>
+        <li><strong>Same initial kinetic energy (same mass):</strong> they all reach the same height, \(h = K_0/(Mg)\). Shape decides only how the energy is shared, not how much there is.</li>
+      </ul>
+      <div class="callout trap"><span class="tag">Common trap</span>
+        <p>“Friction always points against the motion.” For an object rolling uphill and slowing down, static friction points <strong>up</strong> the slope, along the motion: it must slow the spin, and only a force pointing up the slope at the contact point does that. Downhill it also points up the slope. In both cases it does no work.</p></div>
+    </section>
+
+    <section class="lab" id="r-lab" aria-labelledby="r-lab-h">
+      <h2 id="r-lab-h">3.6 Simulation: the race</h2>
+      <div class="lab-intro">
+        <p>Each shape gets its own lane on identical inclines. Choose <strong>Downhill</strong> (released from rest at the same height) or <strong>Uphill</strong> (launched up the slope). The bars under the race show how each object’s energy is shared, live: gravitational potential energy (dotted), translational kinetic energy (solid) and rotational kinetic energy (hatched). Results stay hidden until the race ends or you press <strong>Reveal results</strong>.</p>
+        <div class="predict"><p><strong>Predict.</strong> Downhill: in what order will they finish? Will the big heavy cylinder beat the small one? Uphill with the same initial speed: which goes highest? And with the same initial kinetic energy?</p></div>
+      </div>
+      <div data-widget="race"></div>
+    </section>
+
+    <section class="practice" id="practice-roll" aria-labelledby="plH">
+      <h2 id="plH" tabindex="-1">Quick check</h2>
+      <div data-practice="roll"></div>
+    </section>
+    <nav class="pager" aria-label="Previous and next page"><a class="prev" href="#work"><span>Previous page</span>Part 2: Work and energy</a><a class="next" href="#summary"><span>Next page</span>Summary</a></nav>
+  </main>
+</div>
+</div>
+
+<!-- ======================= SIDE TAB: SLIPPING ======================= -->
+<div class="page" data-page="slip" hidden>
+<div class="layout">
+  <nav class="toc" aria-label="On this page"><details class="toc-details" open><summary>On this page</summary><h2>On this page</h2><ol>
+    <li><a href="#s-what">What happens</a></li><li><a href="#s-math">When does it start rolling?</a></li><li><a href="#s-energy">Where the energy goes</a></li><li><a href="#s-lab">Explore</a></li></ol></details></nav>
+  <main id="main-slip" tabindex="-1">
+    <p class="part-num">Side tab</p>
+    <h1 tabindex="-1">Slipping before rolling</h1>
+    <section class="prose">
+      <h2 id="s-what">What happens</h2>
+      <p>A bowling ball leaves the hand sliding, with little or no spin: \(v_0 \ne R\omega\). The contact point skids along the lane, so <strong>kinetic</strong> friction \(f_k = \mu_k Mg\) acts on it, pointing backward. That one force does two things at once:</p>
+      <ul>
+        <li>it slows the translation: \(a_\text{cm} = -\mu_k g\);</li>
+        <li>its torque about the center spins the ball up: \(\alpha = \dfrac{f_k R}{I} = \dfrac{\mu_k g}{cR}\).</li>
+      </ul>
+      <p>So \(v\) goes down while \(R\omega\) goes up. The moment they are equal, the contact point stops skidding: the ball rolls without slipping, kinetic friction switches off, and the ball keeps rolling at constant speed.</p>
+
+      <h2 id="s-math">When does it start rolling?</h2>
+      <p>Starting with \(v = v_0\) and \(\omega = 0\): \(v(t) = v_0 - \mu_k g\,t\) and \(R\omega(t) = \dfrac{\mu_k g}{c}\,t\). Setting them equal:</p>
+      \[ t_\text{roll} = \frac{c}{1+c}\,\frac{v_0}{\mu_k g}, \qquad v_\text{roll} = \frac{v_0}{1+c} . \]
+      <p>For a solid sphere (\(c = \tfrac25\)), the ball ends up rolling at \(\tfrac57 v_0\), whatever the friction coefficient: \(\mu_k\) only sets how long it takes.</p>
+
+      <h2 id="s-energy">Where the energy goes</h2>
+      <p>Here friction <em>does</em> work, because the contact point slides. Kinetic energy is lost to heat (and the lane wears):</p>
+      \[ \frac{K_\text{rolling}}{K_0} = \frac{\tfrac12 M v_\text{roll}^2 (1+c)}{\tfrac12 Mv_0^2} = \frac{1}{1+c} . \]
+      <p>A solid sphere keeps \(\tfrac57 \approx 71\%\) of its kinetic energy and loses about 29%. Compare with rolling without slipping, where static friction does no work and no energy is lost.</p>
+      <div class="callout key"><span class="tag">Example</span>
+        <p>A bowling ball released at \(v_0 = 8.0\ \text{m/s}\) with no spin, \(\mu_k = 0.20\): it starts rolling after \(t = \tfrac{0.4}{1.4}\cdot\tfrac{8.0}{(0.20)(9.8)} = 1.17\ \text{s}\), at \(v = 5.7\ \text{m/s}\), having slid about 8.0&nbsp;m.</p></div>
+    </section>
+
+    <section class="lab" id="s-lab" aria-labelledby="s-lab-h">
+      <h2 id="s-lab-h">Explore: sliding until it rolls</h2>
+      <div data-widget="slip"></div>
+    </section>
+    <section class="prose">
+      <div class="callout think"><span class="tag">The other way round</span>
+        <p>A ball with backspin (\(\omega\) opposite to rolling) slows down even faster and can even come back toward you: kinetic friction now has to reverse the spin before rolling can begin. Billiard players use this for the “draw” shot.</p></div>
+      <p><a href="#r-flat">Back to Part 3, section 3.3</a></p>
+    </section>
+    <nav class="pager" aria-label="Previous and next page"><a class="prev" href="#roll"><span>Back to</span>Part 3: Rolling motion</a><a class="next" href="#summary"><span>Next page</span>Summary</a></nav>
+  </main>
+</div>
+</div>
+
+<!-- ======================= LOCKED NOTICE ======================= -->
+<div class="page" data-page="locked" hidden>
+<div class="layout">
+  <main id="main-locked" tabindex="-1" style="grid-column:1/-1">
+    <p class="part-num">Locked</p>
+    <h1 tabindex="-1"><span aria-hidden="true">🔒 </span><span class="lock-title">This page is locked</span></h1>
+    <section class="prose lock-body" style="max-width:62ch"></section>
+  </main>
+</div>
+</div>
+
+<!-- ======================= SUMMARY ======================= -->
+<div class="page" data-page="summary" hidden>
+<div class="layout">
+  <nav class="toc" aria-label="On this page"><details class="toc-details" open><summary>On this page</summary><h2>On this page</h2><ol>
+    <li><a href="#sm-1">Rotational kinetic energy</a></li><li><a href="#sm-2">Work and energy</a></li><li><a href="#sm-3">Rolling</a></li><li><a href="#sm-slip">Slipping</a></li><li><a href="#sm-eq">Key equations</a></li><li><a href="#sm-traps">Common traps</a></li></ol></details></nav>
+  <main id="main-summary" tabindex="-1">
+    <p class="part-num">Wrap-up</p>
+    <h1 tabindex="-1">Summary: the main points</h1>
+    <section class="prose">
+      <h2 id="sm-1">1. Rotational kinetic energy</h2>
+      <ul>
+        <li>A spinning object has kinetic energy even when its center of mass is at rest: every piece moves, at \(v = r\omega\).</li>
+        <li>Adding \(\tfrac12 m_i v_i^2\) over all the pieces gives \(K_\text{rot} = \tfrac12 I\omega^2\), with \(\omega\) in rad/s. It is the same pattern as \(\tfrac12 mv^2\), with \(m \to I\) and \(v \to \omega\).</li>
+        <li>For round objects \(I = cMR^2\): \(c = 1\) (hoop), \(\tfrac23\) (hollow sphere), \(\tfrac12\) (solid cylinder), \(\tfrac25\) (solid sphere). The more mass near the rim, the larger \(c\).</li>
+        <li>Rankings depend on what is held equal: with the same \(M\), \(R\) and \(\omega\), \(K_\text{rot} \propto c\); with the same \(M\) and \(\omega\), \(K_\text{rot} \propto cR^2\); with the same energy, the smallest \(I\) spins fastest.</li>
+      </ul>
+      <h2 id="sm-2">2. The work–energy theorem</h2>
+      <ul>
+        <li>For a particle: \(W_\text{net} = \Delta K = \tfrac12 mv_f^2 - \tfrac12 mv_i^2\).</li>
+        <li>A torque does work as the object turns: \(W = \tau\,\Delta\theta\) for a constant torque (angle in radians). A force along the radius does no rotational work.</li>
+        <li>For rotation: \(W_\text{net} = \Delta K_\text{rot} = \tfrac12 I\omega_f^2 - \tfrac12 I\omega_i^2\). Torque and <em>time</em> give \(\omega(t)\); torque and <em>angle</em> give the energy.</li>
+        <li>The same work on two objects gives the same kinetic energy, but not the same \(\omega\).</li>
+        <li>Negative work (a friction or braking torque) removes kinetic energy, which becomes heat. Rotational power is \(P = \tau\omega\).</li>
+      </ul>
+      <h2 id="sm-3">3. Rolling motion</h2>
+      <ul>
+        <li>Rolling without slipping: \(v_\text{cm} = R\omega\); the contact point is momentarily at rest and the top moves at \(2v\).</li>
+        <li>Kinetic energy = translation + rotation: \(K = \tfrac12 Mv^2 + \tfrac12 I_\text{cm}\omega^2 = \tfrac12 Mv^2(1 + c)\).</li>
+        <li>The shape fixes the split: \(\tfrac{1}{1+c}\) in translation and \(\tfrac{c}{1+c}\) in rotation (hoop 50/50, hollow sphere 60/40, solid cylinder 67/33, solid sphere 71/29).</li>
+        <li>Static friction on a rolling object does no work, so mechanical energy is conserved.</li>
+        <li>Downhill from rest: \(v = \sqrt{2gh/(1+c)}\) and \(a = g\sin\theta/(1+c)\). The smallest \(c\) wins: solid sphere, solid cylinder, hollow sphere, hoop. Mass and radius do not matter.</li>
+        <li>Uphill: \(h_\text{max} = v_0^2(1+c)/2g\). With the same initial speed the hoop climbs highest; with the same initial kinetic energy they all reach the same height.</li>
+        <li>On a slope, static friction points up the slope whether the object rolls up or down.</li>
+      </ul>
+      <h2 id="sm-slip">Slipping before rolling</h2>
+      <ul>
+        <li>An object launched sliding without spin skids: kinetic friction slows \(v\) and spins up \(R\omega\) until \(v = R\omega\), then it rolls.</li>
+        <li>It ends up rolling at \(v_0/(1+c)\) (\(\tfrac57 v_0\) for a solid sphere) and loses the fraction \(\tfrac{c}{1+c}\) of its kinetic energy to heat: kinetic friction does work because the contact point slides.</li>
+      </ul>
+    </section>
+    <section class="prose">
+      <h2 id="sm-eq">Key equations at a glance</h2>
+      <div class="table-wrap"><table>
+        <caption>Linear motion and its rotational counterpart</caption>
+        <thead><tr><th scope="col">Idea</th><th scope="col">Linear</th><th scope="col">Rotational (fixed axis)</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">kinetic energy</th><td>\(K = \tfrac12 mv^2\)</td><td>\(K_\text{rot} = \tfrac12 I\omega^2\)</td></tr>
+          <tr><th scope="row">work (constant)</th><td>\(W = F\,\Delta x\)</td><td>\(W = \tau\,\Delta\theta\)</td></tr>
+          <tr><th scope="row">work–energy theorem</th><td>\(W_\text{net} = \Delta\big(\tfrac12 mv^2\big)\)</td><td>\(W_\text{net} = \Delta\big(\tfrac12 I\omega^2\big)\)</td></tr>
+          <tr><th scope="row">power</th><td>\(P = Fv\)</td><td>\(P = \tau\omega\)</td></tr>
+        </tbody></table></div>
+      <div class="table-wrap"><table>
+        <caption>Rolling without slipping (\(I_\text{cm} = cMR^2\))</caption>
+        <thead><tr><th scope="col">Quantity</th><th scope="col">Formula</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">rolling condition</th><td>\(v_\text{cm} = R\omega,\ \ a_\text{cm} = R\alpha\)</td></tr>
+          <tr><th scope="row">total kinetic energy</th><td>\(K = \tfrac12 Mv^2(1+c)\)</td></tr>
+          <tr><th scope="row">share in rotation</th><td>\(c/(1+c)\)</td></tr>
+          <tr><th scope="row">speed after dropping \(h\) from rest</th><td>\(v = \sqrt{2gh/(1+c)}\)</td></tr>
+          <tr><th scope="row">acceleration on an incline</th><td>\(a = g\sin\theta/(1+c)\)</td></tr>
+          <tr><th scope="row">highest point from speed \(v_0\)</th><td>\(h = v_0^2(1+c)/2g\)</td></tr>
+          <tr><th scope="row">friction needed to roll</th><td>\(\mu_s \ge \tfrac{c}{1+c}\tan\theta\)</td></tr>
+        </tbody></table></div>
+      <h2 id="sm-traps">Common traps</h2>
+      <ul>
+        <li>Using \(\omega\) in rpm or rev/s instead of rad/s, or an angle in revolutions in \(W = \tau\,\Delta\theta\).</li>
+        <li>Forgetting the rotational term for a rolling object, which gives the frictionless-block answer \(\sqrt{2gh}\).</li>
+        <li>Using the wrong \(I\) for the shape (a basketball is a <em>hollow</em> sphere), or about the wrong axis.</li>
+        <li>Thinking that heavier or bigger objects roll down faster: only the shape factor \(c\) matters.</li>
+        <li>Thinking static friction must point against the motion, or that it does work on an object rolling without slipping.</li>
+      </ul>
+      <div class="callout think"><span class="tag">Check yourself</span>
+        <p>Can you explain, without equations, why a hoop loses a downhill race but wins an uphill one at the same starting speed? If not, revisit <a href="#r-up">section 3.5</a> and run the race again.</p></div>
+      <p>For every moment of inertia used here, see the <a href="#itable">Moments of inertia</a> tab.</p>
+    </section>
+    <section class="finish" id="finish" aria-labelledby="finH" hidden>
+      <h2 id="finH">Certificate of completion</h2>
+      <p>You have finished all three parts. Enter your name, and your partner’s name if you worked in a pair, then create your certificate. Save it and upload it for credit.</p>
+      <div class="form-row"><label for="stuName">Student name (required)</label><input type="text" id="stuName" autocomplete="name" aria-required="true" aria-describedby="stuNameErr"><p id="stuNameErr" class="field-err" hidden>Please enter at least one name to create the certificate.</p></div>
+      <div class="form-row"><label for="partnerName">Second student name (optional, if you worked in a pair)</label><input type="text" id="partnerName" autocomplete="off"></div>
+      <div class="btns"><button type="button" class="primary" id="mkCard">Create the certificate</button></div>
+      <div id="cardOut" hidden>
+        <h3 id="cardH" tabindex="-1">Your certificate</h3>
+        <canvas id="cardCanvas" width="1200" height="780" role="img" aria-label="Certificate of completion"></canvas>
+        <div class="btns"><button type="button" class="primary" id="saveCard">Save the certificate as an image (PNG)</button></div>
+        <p id="saveStatus" role="status"></p>
+        <p class="help3d">If saving does not work on your device, take a screenshot of the certificate instead. Editing a name and creating the certificate again updates it.</p>
+      </div>
+    </section>
+    <nav class="pager" aria-label="Previous and next page"><a class="prev" href="#roll"><span>Previous page</span>Part 3: Rolling motion</a><a class="next" href="#overview"><span>Back to the start</span>Overview</a></nav>
+  </main>
+</div>
+</div>
+
+<footer><div class="inner"><p>PHY2048 notes: Rotational kinetic energy and rolling. Uses \(g = 9.8\ \text{m/s}^2\) throughout.</p></div></footer>
+
+<script>
+/* ===================== utilities ===================== */
+const R = String.raw;
+const $ = (s, r = document) => r.querySelector(s);
+const $$ = (s, r = document) => Array.from(r.querySelectorAll(s));
+let UID = 0;
+const uid = p => `${p}${++UID}`;
+const MINUS = '\u2212';
+function fmt(n, d = 1, plus = false) {
+  if (!isFinite(n)) return '–';
+  let s = n.toFixed(d);
+  if (parseFloat(s) === 0) s = (0).toFixed(d);
+  if (s.startsWith('-')) return MINUS + s.slice(1);
+  return (plus && parseFloat(s) > 0 ? '+' : '') + s;
+}
+function esc(s) { return String(s).replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;'); }
+const clamp = (v, a, b) => Math.min(b, Math.max(a, v));
+const cssVar = n => getComputedStyle(document.documentElement).getPropertyValue(n).trim();
+function parseNum(s) {
+  s = String(s).trim().replace(/[\u2212\u2013]/g, '-').replace(/\s+/g, '');
+  if (/^-?\d+,\d+/.test(s)) s = s.replace(',', '.');
+  const m = s.match(/^[-+]?(\d+\.?\d*|\.\d+)([eE][-+]?\d+)?/);
+  return m ? parseFloat(m[0]) : NaN;
+}
+function close(val, target, q) {
+  const tol = q.tolAbs ?? Math.max(Math.abs(target) * (q.tolRel ?? 0.02), 0.001);
+  return Math.abs(val - target) <= tol;
+}
+function typeset(el) { if (window.MathJax && MathJax.typesetPromise) MathJax.typesetPromise([el]).catch(() => {}); }
+function debounce(fn, ms) { let t = null; return (...a) => { clearTimeout(t); t = setTimeout(() => fn(...a), ms); }; }
+const reducedMotion = () => window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+function sliderCtrl(p) {
+  // p: {label,min,max,step,val,unit,d,spoken,onInput}
+  const sid = uid('sl');
+  const div = document.createElement('div'); div.className = 'ctrl';
+  div.innerHTML = `<label for="${sid}"><span>${p.label}</span><output for="${sid}"></output></label><input type="range" id="${sid}" min="${p.min}" max="${p.max}" step="${p.step}" value="${p.val}">`;
+  const inp = $('input', div), out = $('output', div);
+  const show = () => { const v = parseFloat(inp.value); const t = `${fmt(v, p.d ?? 1)} ${p.unit}`; out.textContent = t; inp.setAttribute('aria-valuetext', `${fmt(v, p.d ?? 1)} ${p.spoken || p.unit}`); };
+  inp.addEventListener('input', () => { show(); p.onInput && p.onInput(parseFloat(inp.value)); });
+  show();
+  return { el: div, input: inp, get value() { return parseFloat(inp.value); }, set(v) { inp.value = v; show(); } };
+}
+function checkCtrl(label, checked, onChange) {
+  const id = uid('ck');
+  const div = document.createElement('div'); div.className = 'check';
+  div.innerHTML = `<input type="checkbox" id="${id}"${checked ? ' checked' : ''}><label for="${id}">${label}</label>`;
+  const inp = $('input', div); inp.addEventListener('change', () => onChange(inp.checked));
+  return { el: div, input: inp };
+}
+
+
+/* ===================== 3-D helpers (three.js r128) ===================== */
+const VIEWS = [];
+function webglOK() { try { const c = document.createElement('canvas'); return !!(window.WebGLRenderingContext && (c.getContext('webgl') || c.getContext('experimental-webgl'))); } catch (e) { return false; } }
+function View3D(host, o) {
+  const v = { ok: false, mats: [], sprites: [], render() {}, refresh() {} };
+  if (!window.THREE || !THREE.OrbitControls || !webglOK()) {
+    host.innerHTML = `<p class="no3d">The 3-D view could not start in this browser (WebGL is off or the 3-D library did not load). Every quantity is still listed in the readouts and the description below.</p>`;
+    return v;
+  }
+  let renderer;
+  try { renderer = new THREE.WebGLRenderer({ antialias: true }); }
+  catch (e) {
+    host.innerHTML = `<p class="no3d">The 3-D view could not start in this browser (WebGL is off or unavailable). Every quantity is still listed in the readouts and the description below.</p>`;
+    return v;
+  }
+  v.ok = true;
+  renderer.setPixelRatio(Math.min(2, window.devicePixelRatio || 1));
+  const cv = renderer.domElement;
+  cv.tabIndex = 0; cv.setAttribute('role', 'img'); cv.setAttribute('aria-label', o.label);
+  if (o.describedby) cv.setAttribute('aria-describedby', o.describedby);
+  host.appendChild(cv);
+  const scene = new THREE.Scene(), camera = new THREE.PerspectiveCamera(38, 1.6, 0.01, 60);
+  camera.up.set(0, 0, 1);
+  const target = new THREE.Vector3(...o.target);
+  const controls = new THREE.OrbitControls(camera, cv);
+  controls.target.copy(target); controls.enablePan = false; controls.minDistance = 1.2; controls.maxDistance = 9;
+  scene.add(new THREE.AmbientLight(0xffffff, 0.6));
+  const dl = new THREE.DirectionalLight(0xffffff, 0.7); dl.position.set(2, -3, 5); scene.add(dl);
+  const dl2 = new THREE.DirectionalLight(0xffffff, 0.25); dl2.position.set(-3, 2, -1); scene.add(dl2);
+  Object.assign(v, { renderer, scene, camera, controls, target, canvas: cv });
+  v.setView = (az, el, dist) => {
+    el = clamp(el, -89, 89.5);
+    const a = az * Math.PI / 180, e = el * Math.PI / 180;
+    camera.position.set(target.x + dist * Math.cos(e) * Math.cos(a), target.y + dist * Math.cos(e) * Math.sin(a), target.z + dist * Math.sin(e));
+    camera.lookAt(target); controls.update(); v.render();
+  };
+  v.getView = () => { const d = camera.position.clone().sub(target), r = d.length(); return { az: Math.atan2(d.y, d.x) * 180 / Math.PI, el: Math.asin(d.z / r) * 180 / Math.PI, dist: r }; };
+  v.render = () => renderer.render(scene, camera);
+  controls.addEventListener('change', () => v.render());
+  cv.addEventListener('keydown', e => {
+    const s = v.getView();
+    const map = { ArrowLeft: [-10, 0, 1], ArrowRight: [10, 0, 1], ArrowUp: [0, 8, 1], ArrowDown: [0, -8, 1], '+': [0, 0, 0.9], '=': [0, 0, 0.9], '-': [0, 0, 1.1], '_': [0, 0, 1.1] }[e.key];
+    if (!map) return; e.preventDefault();
+    v.setView(s.az + map[0], s.el + map[1], clamp(s.dist * map[2], 1.2, 9));
+  });
+  v.mat = (varName, extra = {}) => { const m = new THREE.MeshStandardMaterial(Object.assign({ color: cssVar(varName), roughness: 0.55, metalness: 0.05 }, extra)); v.mats.push([m, varName]); return m; };
+  v.line = (varName, extra = {}) => { const m = new (extra.dashSize ? THREE.LineDashedMaterial : THREE.LineBasicMaterial)(Object.assign({ color: cssVar(varName) }, extra)); v.mats.push([m, varName]); return m; };
+  v.label = (text, varName, h = 0.12) => { const sp = textSprite(text, varName, h); v.sprites.push(sp); scene.add(sp); return sp; };
+  v.refresh = () => {
+    renderer.setClearColor(new THREE.Color(cssVar('--surface-2')));
+    v.mats.forEach(([m, n]) => m.color.set(cssVar(n)));
+    v.sprites.forEach(s => s.redraw());
+    v.render();
+  };
+  const resize = () => { const w = host.clientWidth; if (!w) return; const h = Math.round(clamp(w * 0.68, 280, 470)); renderer.setSize(w, h); camera.aspect = w / h; camera.updateProjectionMatrix(); v.render(); };
+  new ResizeObserver(resize).observe(host);
+  renderer.setClearColor(new THREE.Color(cssVar('--surface-2')));
+  VIEWS.push(v);
+  return v;
+}
+function textSprite(text, varName, h) {
+  const c = document.createElement('canvas'), tex = new THREE.CanvasTexture(c);
+  const mat = new THREE.SpriteMaterial({ map: tex, depthTest: false, transparent: true });
+  const sp = new THREE.Sprite(mat); sp.renderOrder = 20;
+  sp.redraw = () => {
+    const g = c.getContext('2d'), font = 'bold 56px "Atkinson Hyperlegible Next", Verdana, sans-serif';
+    g.font = font; const tw = Math.ceil(g.measureText(text).width) + 28;
+    c.width = tw; c.height = 80; g.font = font;
+    g.textAlign = 'center'; g.textBaseline = 'middle'; g.lineJoin = 'round';
+    g.lineWidth = 10; g.strokeStyle = cssVar('--surface'); g.strokeText(text, tw / 2, 42);
+    g.fillStyle = cssVar(varName); g.fillText(text, tw / 2, 42);
+    tex.needsUpdate = true; sp.scale.set(h * tw / 80, h, 1);
+  };
+  sp.redraw();
+  return sp;
+}
+class Arrow3 {
+  constructor(v, varName, radius, head = 0.08) {
+    const m = v.mat(varName);
+    this.g = new THREE.Group();
+    this.shaft = new THREE.Mesh(new THREE.CylinderGeometry(radius, radius, 1, 18), m);
+    this.head = new THREE.Mesh(new THREE.ConeGeometry(radius * 2.7, 1, 22), m);
+    this.g.add(this.shaft, this.head); this.headLen = head; v.scene.add(this.g);
+  }
+  set(origin, vec) {
+    const L = vec.length();
+    if (L < 1e-4) { this.g.visible = false; return; }
+    this.g.visible = true; this.g.position.copy(origin);
+    this.g.quaternion.setFromUnitVectors(new THREE.Vector3(0, 1, 0), vec.clone().normalize());
+    const hl = Math.min(this.headLen, L * 0.45), sl = L - hl;
+    this.shaft.scale.set(1, sl, 1); this.shaft.position.set(0, sl / 2, 0);
+    this.head.scale.set(1, hl, 1); this.head.position.set(0, sl + hl / 2, 0);
+  }
+}
+function addAxes(v, len = 1.25) {
+  const m = v.line('--muted');
+  [[1, 0, 0, 'x'], [0, 1, 0, 'y'], [0, 0, 1, 'z']].forEach(a => {
+    const d = new THREE.Vector3(a[0], a[1], a[2]);
+    v.scene.add(new THREE.Line(new THREE.BufferGeometry().setFromPoints([d.clone().multiplyScalar(-len * 0.35), d.clone().multiplyScalar(len)]), m));
+    const lb = v.label(a[3], '--muted', 0.1); lb.position.copy(d.clone().multiplyScalar(len + 0.08));
+  });
+}
+function addGridXY(v, half = 1.2, step = 0.2) {
+  const pts = [];
+  for (let x = -half; x <= half + 1e-9; x += step) { pts.push(new THREE.Vector3(x, -half, 0), new THREE.Vector3(x, half, 0)); pts.push(new THREE.Vector3(-half, x, 0), new THREE.Vector3(half, x, 0)); }
+  const ls = new THREE.LineSegments(new THREE.BufferGeometry().setFromPoints(pts), v.line('--rule', { transparent: true, opacity: 0.7 }));
+  v.scene.add(ls); return ls;
+}
+function mkLine(mat) { return new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(), new THREE.Vector3(0, 0, 0.001)]), mat); }
+function setLine(line, pts, dashed) { line.geometry.setFromPoints(pts); line.geometry.attributes.position.needsUpdate = true; if (dashed) line.computeLineDistances(); line.geometry.computeBoundingSphere(); }
+
+
+/* ===================== shared data ===================== */
+const WIDGETS = {};
+const SHAPES = {
+  hoop: { name: 'Hoop', long: 'hoop (thin-walled hollow cylinder)', c: 1, If: 'MR²' },
+  hsph: { name: 'Hollow sphere', long: 'hollow sphere', c: 2 / 3, If: '⅔MR²' },
+  scyl: { name: 'Solid cylinder', long: 'solid cylinder (disk)', c: 1 / 2, If: '½MR²' },
+  ssph: { name: 'Solid sphere', long: 'solid sphere', c: 2 / 5, If: '⅖MR²' }
+};
+const G = 9.8;
+function toolbar(host) {
+  const tb = document.createElement('div'); tb.className = 'sim-toolbar'; tb.setAttribute('role', 'group'); tb.setAttribute('aria-label', 'Simulation controls');
+  host.prepend(tb); return tb;
+}
+function radioGroup(legend, name, opts, val, onChange) {
+  const fs = document.createElement('fieldset'); fs.className = 'radio-row';
+  fs.innerHTML = `<legend>${legend}</legend>` + opts.map(([v, l]) => `<label><input type="radio" name="${name}" value="${v}"${v === val ? ' checked' : ''}> ${l}</label>`).join('');
+  $$('input', fs).forEach(r => r.addEventListener('change', () => onChange(r.value)));
+  return fs;
+}
+function speedCtrl(onChange, opts = [['1', 'Real time (1×)'], ['0.5', 'Slow motion (0.5×)'], ['0.25', 'Slow motion (0.25×)']]) {
+  const id = uid('sp'), d = document.createElement('div'); d.className = 'ctrl';
+  d.innerHTML = `<label for="${id}"><span>Playback speed</span></label><select id="${id}">${opts.map(([v, l]) => `<option value="${v}">${l}</option>`).join('')}</select>`;
+  $('select', d).addEventListener('change', e => onChange(parseFloat(e.target.value)));
+  return d;
+}
+
+/* ===================== Part 1: 3-D spinning shapes ===================== */
+WIDGETS.spin3d = host => {
+  const P = { shape: 'scyl', M: 2.0, R: 0.30, w: 6.0, compare: false };
+  let shown = false, playing = !reducedMotion(), angle = 0, last = 0, speed = 1, raf = null;
+  const did = uid('sd'), gname = uid('sh');
+  host.innerHTML = `<div class="lab-grid wide3d"><div>
+      <div class="viewport3d"></div>
+      <p class="help3d">Drag to turn the view; scroll or pinch to zoom. Keyboard: select the view, then <kbd>←</kbd> <kbd>→</kbd> <kbd>↑</kbd> <kbd>↓</kbd> and <kbd>+</kbd> <kbd>−</kbd>.</p>
+      <div class="readout"><div><span>moment of inertia I</span><b class="o-I"></b></div><div><span>rotational KE</span><b class="o-K"></b></div><div><span>rim speed Rω</span><b class="o-v"></b></div><div><span>½M(Rω)²</span><b class="o-Kr"></b></div></div>
+      <div class="cmp-wrap" hidden><h3 class="cmp-h">All four shapes with this M, R and ω</h3><div class="cmp-chart"></div></div>
+      <p class="desc-live" id="${did}" aria-live="polite"></p>
+    </div><div class="ctrls sp-ctrls"></div></div>`;
+  const tb = toolbar(host);
+  tb.innerHTML = `<button type="button" class="primary pl">${playing ? 'Pause spin' : 'Spin'}</button><button type="button" class="rv" aria-pressed="false">Reveal values</button><button type="button" class="rs">Reset</button><span class="tb-status" aria-live="polite"></span>`;
+  const ctrls = $('.sp-ctrls', host);
+  ctrls.appendChild(radioGroup('Shape (spinning about its symmetry axis)', gname, Object.keys(SHAPES).map(k => [k, SHAPES[k].long]), P.shape, v => { P.shape = v; build(); update(); }));
+  $('.radio-row', ctrls).classList.add('stack');
+  const sM = sliderCtrl({ label: 'Mass, M', min: 0.5, max: 10, step: 0.5, val: P.M, unit: 'kg', spoken: 'kilograms', d: 1, onInput: v => { P.M = v; update(); } });
+  const sR = sliderCtrl({ label: 'Radius, R', min: 0.05, max: 0.50, step: 0.01, val: P.R, unit: 'm', spoken: 'metres', d: 2, onInput: v => { P.R = v; build(); update(); } });
+  const sW = sliderCtrl({ label: 'Angular velocity, ω', min: 0, max: 20, step: 0.5, val: P.w, unit: 'rad/s', spoken: 'radians per second', d: 1, onInput: v => { P.w = v; update(); } });
+  [sM, sR, sW].forEach(s => ctrls.appendChild(s.el));
+  const cC = checkCtrl('Compare all four shapes', false, v => { P.compare = v; update(); });
+  ctrls.appendChild(cC.el);
+  ctrls.appendChild(speedCtrl(v => { speed = v; }, [['1', 'Real time (1×)'], ['0.25', 'Slow motion (0.25×)'], ['0.1', 'Very slow (0.1×)']]));
+  const descEl = $(`#${did}`, host), say = debounce(t => { descEl.textContent = t; }, 450);
+  const plBtn = $('.pl', tb), rvBtn = $('.rv', tb);
+
+  const v = View3D($('.viewport3d', host), { label: 'Three-dimensional view of the chosen object spinning about a vertical axis. The values and a text description are given below the view.', describedby: did, target: [0, 0, 0] });
+  const SC = 2.2; // world units per metre
+  let O = null;
+  if (v.ok) {
+    addGridXY(v, 1.2, 0.22).position.z = -0.75;
+    const ax = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, -0.9), new THREE.Vector3(0, 0, 0.95)]), v.line('--A', { dashSize: 0.06, gapSize: 0.04 }));
+    ax.computeLineDistances(); v.scene.add(ax);
+    const lb = v.label('axis of rotation', '--A', 0.1); lb.position.set(0, 0, 1.05);
+    const spin = new THREE.Group(); v.scene.add(spin);
+    O = { spin, body: v.mat('--B', { roughness: 0.4 }), inner: v.mat('--surface-2', { side: THREE.BackSide, roughness: 0.8 }), mark: v.mat('--F'), stripe: v.line('--surface'), ring: v.mat('--surface') };
+    v.setView(-60, 24, 3.6);
+  }
+  function build() {
+    if (!O) return;
+    const g = O.spin; while (g.children.length) { const c = g.children.pop(); if (c.geometry) c.geometry.dispose(); }
+    const r = P.R * SC, s = P.shape;
+    let markZ = 0;
+    if (s === 'hoop') {
+      g.add(new THREE.Mesh(new THREE.TorusGeometry(r, Math.max(0.018, r * 0.06), 16, 96), O.body));
+    } else if (s === 'scyl') {
+      const h = Math.max(0.12, r * 0.45);
+      const m = new THREE.Mesh(new THREE.CylinderGeometry(r, r, h, 72), O.body); m.rotation.x = Math.PI / 2; g.add(m);
+      for (let k = 0; k < 4; k++) { const a = k * Math.PI / 2; const l = new THREE.Line(new THREE.BufferGeometry().setFromPoints([new THREE.Vector3(0, 0, h / 2 + 0.003), new THREE.Vector3(r * Math.cos(a), r * Math.sin(a), h / 2 + 0.003)]), O.stripe); g.add(l); }
+      markZ = h / 2;
+    } else if (s === 'ssph') {
+      g.add(new THREE.Mesh(new THREE.SphereGeometry(r, 48, 32), O.body));
+      for (let k = 0; k < 3; k++) { const t = new THREE.Mesh(new THREE.TorusGeometry(r * 1.004, Math.max(0.004, r * 0.012), 6, 80), O.ring); t.rotation.x = Math.PI / 2; t.rotation.y = k * Math.PI / 3; g.add(t); }
+    } else if (s === 'hsph') {
+      const shell = new THREE.Mesh(new THREE.SphereGeometry(r, 48, 32, 0, Math.PI * 1.6), O.body); shell.rotation.x = Math.PI / 2; g.add(shell);
+      const inside = new THREE.Mesh(new THREE.SphereGeometry(r * 0.985, 48, 32, 0, Math.PI * 1.6), O.inner); inside.rotation.x = Math.PI / 2; g.add(inside);
+    }
+    const mk = new THREE.Mesh(new THREE.SphereGeometry(Math.max(0.03, r * 0.09), 16, 12), O.mark);
+    mk.position.set(s === 'hsph' ? -r : r, 0, markZ); g.add(mk);
+    v.render();
+  }
+  function compareChart() {
+    const host2 = $('.cmp-chart', host), keys = Object.keys(SHAPES);
+    const Ks = keys.map(k => 0.5 * SHAPES[k].c * P.M * P.R * P.R * P.w * P.w), Kmax = Math.max(...Ks, 1e-9);
+    const W = 520, rowH = 34, H = keys.length * rowH + 10, x0 = 130, bw = W - x0 - 90;
+    let g = `<svg class="svgfig" viewBox="0 0 ${W} ${H}" role="img" aria-label="Bar chart of rotational kinetic energy for the four shapes at the same mass, radius and angular velocity: ${keys.map((k, i) => `${SHAPES[k].name} ${shown ? fmt(Ks[i], 3) + ' joules' : ''}`).join(', ')}.">`;
+    keys.forEach((k, i) => {
+      const y = 6 + i * rowH, w = bw * Ks[i] / Kmax, cur = k === P.shape;
+      g += `<text x="${x0 - 8}" y="${y + 20}" text-anchor="end" font-size="14"${cur ? ' font-weight="800"' : ''}>${SHAPES[k].name}${cur ? ' ◀' : ''}</text>`;
+      g += `<rect x="${x0}" y="${y + 4}" width="${Math.max(1, w)}" height="22" rx="3" class="f-B" opacity="${cur ? 1 : 0.55}"/>`;
+      g += `<text x="${x0 + w + 6}" y="${y + 20}" font-size="13" class="muted">${shown ? fmt(Ks[i], 3) + ' J' : 'c = ' + ['1', '2/3', '1/2', '2/5'][i]}</text>`;
+    });
+    host2.innerHTML = g + '</svg>';
+  }
+  function update() {
+    const sh = SHAPES[P.shape], I = sh.c * P.M * P.R * P.R, K = 0.5 * I * P.w * P.w, vr = P.R * P.w;
+    rvBtn.textContent = shown ? 'Hide values' : 'Reveal values'; rvBtn.setAttribute('aria-pressed', String(shown));
+    if (shown) {
+      $('.o-I', host).textContent = `${fmt(I, 4)} kg·m²`; $('.o-K', host).textContent = `${fmt(K, 3)} J`;
+      $('.o-v', host).textContent = `${fmt(vr, 2)} m/s`; $('.o-Kr', host).textContent = `${fmt(0.5 * P.M * vr * vr, 3)} J`;
+    } else $$('.readout b', host).forEach(b => { b.textContent = '—'; });
+    $('.cmp-wrap', host).hidden = !P.compare; if (P.compare) compareChart();
+    let d = `${sh.long[0].toUpperCase() + sh.long.slice(1)}, mass ${fmt(P.M, 1)} kg, radius ${fmt(P.R, 2)} m, spinning at ${fmt(P.w, 1)} rad/s about its symmetry axis. `;
+    d += shown ? `I = ${sh.If} = ${fmt(I, 4)} kg·m². Rotational kinetic energy ${fmt(K, 3)} J. Rim speed ${fmt(vr, 2)} m/s.` : 'Values are hidden until you press Reveal values.';
+    say(d);
+    if (O) v.render();
+  }
+  function tick(now) {
+    const dt = Math.min(0.05, (now - last) / 1000); last = now;
+    angle += P.w * dt * speed;
+    if (O) { O.spin.rotation.z = angle; v.render(); }
+    raf = requestAnimationFrame(tick);
+  }
+  function setPlay(p) {
+    playing = p; plBtn.textContent = p ? 'Pause spin' : 'Spin';
+    if (raf) cancelAnimationFrame(raf); raf = null;
+    if (p) { last = performance.now(); raf = requestAnimationFrame(tick); }
+  }
+  plBtn.addEventListener('click', () => setPlay(!playing));
+  rvBtn.addEventListener('click', () => { shown = !shown; update(); });
+  $('.rs', tb).addEventListener('click', () => {
+    Object.assign(P, { shape: 'scyl', M: 2.0, R: 0.30, w: 6.0, compare: false });
+    sM.set(P.M); sR.set(P.R); sW.set(P.w); cC.input.checked = false; $(`input[value="scyl"]`, ctrls).checked = true;
+    shown = false; angle = 0; build(); update();
+  });
+  document.addEventListener('pagechange', () => { setPlay(false); });
+  document.addEventListener('pageshown', e => { if (e.detail === 'rot' && !reducedMotion()) setPlay(true); });
+  build(); update(); setPlay(false); descEl.textContent = '';
+};
+
+/* ===================== Part 1: dumbbell ===================== */
+WIDGETS.dumbbell = host => {
+  const DEF = { m1: 0.50, m2: 0.50, L: 1.0, w: 4.0 };
+  const P = Object.assign({}, DEF);
+  let shown = false, playing = false, angle = 0, last = 0, raf = null, speed = 1;
+  const did = uid('db');
+  host.innerHTML = `<div class="lab-grid wide3d"><div>
+      <div class="db-fig"></div>
+      <div class="readout"><div><span>distance r of each ball</span><b class="o-r"></b></div><div><span>ball speed v = rω</span><b class="o-v"></b></div><div><span>moment of inertia I</span><b class="o-I"></b></div><div><span>K = ½Iω²</span><b class="o-K"></b></div></div>
+      <details class="deeper calc-box"><summary>Show the calculation</summary><div class="vec-read db-calc"></div></details>
+      <p class="desc-live" id="${did}" aria-live="polite"></p>
+    </div><div class="ctrls db-ctrls"></div></div>`;
+  const tb = toolbar(host);
+  tb.innerHTML = `<button type="button" class="primary pl">Spin</button><button type="button" class="rv" aria-pressed="false">Reveal values</button><button type="button" class="rs">Load the example</button><span class="tb-status" aria-live="polite"></span>`;
+  const ctrls = $('.db-ctrls', host);
+  const sA = sliderCtrl({ label: 'Mass of ball 1, m₁', min: 0.1, max: 2.0, step: 0.05, val: P.m1, unit: 'kg', spoken: 'kilograms', d: 2, onInput: v => { P.m1 = v; update(); } });
+  const sB = sliderCtrl({ label: 'Mass of ball 2, m₂', min: 0.1, max: 2.0, step: 0.05, val: P.m2, unit: 'kg', spoken: 'kilograms', d: 2, onInput: v => { P.m2 = v; update(); } });
+  const sL = sliderCtrl({ label: 'Length of the rod, L', min: 0.2, max: 2.0, step: 0.05, val: P.L, unit: 'm', spoken: 'metres', d: 2, onInput: v => { P.L = v; update(); } });
+  const sW = sliderCtrl({ label: 'Angular velocity, ω', min: 0, max: 10, step: 0.5, val: P.w, unit: 'rad/s', spoken: 'radians per second', d: 1, onInput: v => { P.w = v; update(); } });
+  [sA, sB, sL, sW].forEach(x => ctrls.appendChild(x.el));
+  ctrls.appendChild(speedCtrl(v => { speed = v; }, [['1', 'Real time (1×)'], ['0.25', 'Slow motion (0.25×)'], ['0.1', 'Very slow (0.1×)']]));
+  const note = document.createElement('p'); note.className = 'help3d';
+  note.innerHTML = 'Top view. The axis passes through the middle of the rod, perpendicular to the page; the rod’s own mass is neglected. Arrows show each ball’s velocity, drawn to scale (both balls move at the same speed, whatever their masses).';
+  ctrls.appendChild(note);
+  const plBtn = $('.pl', tb), rvBtn = $('.rv', tb), descEl = $(`#${did}`, host), say = debounce(t => { descEl.textContent = t; }, 450);
+  const calc = () => { const r = P.L / 2, v = r * P.w, I = (P.m1 + P.m2) * r * r; return { r, v, I, K: 0.5 * I * P.w * P.w, K1: 0.5 * P.m1 * v * v, K2: 0.5 * P.m2 * v * v }; };
+  function draw() {
+    const W = 440, H = 440, C = [220, 220], k = 175, c = calc(), rp = c.r * k;
+    const ca = Math.cos(angle), sa = Math.sin(angle);
+    const p2 = [C[0] + rp * ca, C[1] - rp * sa], p1 = [C[0] - rp * ca, C[1] + rp * sa];
+    const rad = m => 8 + 11 * Math.sqrt(m);
+    let g = `<svg class="svgfig" viewBox="0 0 ${W} ${H}" role="img" aria-label="Top view of the spinning dumbbell. Values and a description are given below the figure." style="max-width:480px;margin:0 auto">`;
+    g += `<circle cx="${C[0]}" cy="${C[1]}" r="${rp}" fill="none" class="c-x" stroke-width="1.2" stroke-dasharray="4 6" opacity=".5"/>`;
+    g += `<line x1="${p1[0]}" y1="${p1[1]}" x2="${p2[0]}" y2="${p2[1]}" class="c-ink" stroke-width="4"/>`;
+    // velocity arrows (CCW rotation: velocity = ω × r)
+    const vs = 22; // px per (m/s)
+    [[p2, 1, P.m2], [p1, -1, P.m1]].forEach(([p0, sg, m]) => {
+      const ux = -sa * sg, uy = -ca * sg, L = Math.min(c.v * vs, 150);
+      if (L < 3) return;
+      const p = [p0[0] + ux * (rad(m) + 2), p0[1] + uy * (rad(m) + 2)];
+      const ex = p[0] + ux * L, ey = p[1] + uy * L, hx = ex - ux * 12, hy = ey - uy * 12;
+      g += `<line x1="${p[0]}" y1="${p[1]}" x2="${hx}" y2="${hy}" class="c-x" stroke-width="3"/><polygon points="${ex},${ey} ${hx - uy * 6},${hy + ux * 6} ${hx + uy * 6},${hy - ux * 6}" class="f-x"/>`;
+    });
+    g += `<circle cx="${p1[0]}" cy="${p1[1]}" r="${rad(P.m1)}" class="f-x" stroke="var(--surface)" stroke-width="2"/>`;
+    g += `<circle cx="${p2[0]}" cy="${p2[1]}" r="${rad(P.m2)}" class="f-B" stroke="var(--surface)" stroke-width="2"/>`;
+    g += `<text x="${p1[0]}" y="${p1[1] + 5}" font-size="14" font-weight="800" text-anchor="middle" fill="var(--surface)">1</text><text x="${p2[0]}" y="${p2[1] + 5}" font-size="14" font-weight="800" text-anchor="middle" fill="var(--surface)">2</text>`;
+    g += `<circle cx="${C[0]}" cy="${C[1]}" r="8" fill="var(--surface)" class="c-A" stroke-width="3"/><circle cx="${C[0]}" cy="${C[1]}" r="2.5" class="f-A"/>`;
+    if (P.w > 0) { g += `<path d="M${C[0] + 26},${C[1]} A26,26 0 1 0 ${C[0]},${C[1] + 26}" fill="none" class="c-A" stroke-width="2.5"/><polygon points="${C[0] - 1},${C[1] + 19} ${C[0] - 1},${C[1] + 33} ${C[0] + 12},${C[1] + 26}" class="f-A"/>`; }
+    g += `<text x="10" y="22" font-size="14" class="muted">Top view · axis out of the page</text>`;
+    $('.db-fig', host).innerHTML = g + '</svg>';
+  }
+  function update() {
+    const c = calc();
+    rvBtn.textContent = shown ? 'Hide values' : 'Reveal values'; rvBtn.setAttribute('aria-pressed', String(shown));
+    if (shown) {
+      $('.o-r', host).textContent = `${fmt(c.r, 2)} m`; $('.o-v', host).textContent = `${fmt(c.v, 2)} m/s`;
+      $('.o-I', host).textContent = `${fmt(c.I, 3)} kg·m²`; $('.o-K', host).textContent = `${fmt(c.K, 3)} J`;
+      $('.db-calc', host).innerHTML = `<div>r = L/2 = ${fmt(c.r, 2)} m; v = rω = (${fmt(c.r, 2)})(${fmt(P.w, 1)}) = ${fmt(c.v, 2)} m/s</div>
+        <div>Route 1: I = m₁r² + m₂r² = (${fmt(P.m1, 2)} + ${fmt(P.m2, 2)})(${fmt(c.r, 2)})² = ${fmt(c.I, 3)} kg·m²; K = ½Iω² = <b>${fmt(c.K, 3)} J</b></div>
+        <div>Route 2: ½m₁v² + ½m₂v² = ${fmt(c.K1, 3)} J + ${fmt(c.K2, 3)} J = <b>${fmt(c.K1 + c.K2, 3)} J</b></div>`;
+    } else {
+      $$('.readout b', host).forEach(b => { b.textContent = '—'; });
+      $('.db-calc', host).innerHTML = '<div>Values are hidden. Press Reveal values to show them.</div>';
+    }
+    draw();
+    say(`Dumbbell: ball 1 ${fmt(P.m1, 2)} kg, ball 2 ${fmt(P.m2, 2)} kg, rod ${fmt(P.L, 2)} m, spinning at ${fmt(P.w, 1)} rad/s about the center. ` +
+      (shown ? `Each ball is ${fmt(c.r, 2)} m from the axis and moves at ${fmt(c.v, 2)} m/s. I = ${fmt(c.I, 3)} kg·m². Kinetic energy ${fmt(c.K, 3)} J: ${fmt(c.K1, 3)} J for ball 1 and ${fmt(c.K2, 3)} J for ball 2.` : 'Values are hidden until you press Reveal values.'));
+  }
+  function tick(now) { const dt = Math.min(0.05, (now - last) / 1000); last = now; angle += P.w * dt * speed; draw(); raf = requestAnimationFrame(tick); }
+  function setPlay(p) { playing = p; plBtn.textContent = p ? 'Pause' : 'Spin'; if (raf) cancelAnimationFrame(raf); raf = null; if (p) { last = performance.now(); raf = requestAnimationFrame(tick); } }
+  plBtn.addEventListener('click', () => setPlay(!playing));
+  rvBtn.addEventListener('click', () => { shown = !shown; update(); });
+  $('.rs', tb).addEventListener('click', () => { Object.assign(P, DEF); sA.set(P.m1); sB.set(P.m2); sL.set(P.L); sW.set(P.w); angle = 0; shown = false; update(); $('.tb-status', tb).textContent = 'Example values loaded.'; });
+  document.addEventListener('pagechange', () => setPlay(false));
+  update(); descEl.textContent = '';
+};
+
+/* ===================== Part 3: the race ===================== */
+const LANES = [
+  { id: 'ssph', name: 'Solid sphere', c: 2 / 5, on: true, r: 13 },
+  { id: 'scyl', name: 'Solid cylinder', c: 1 / 2, on: true, r: 13 },
+  { id: 'hsph', name: 'Hollow sphere', c: 2 / 3, on: true, r: 13 },
+  { id: 'hoop', name: 'Hoop', c: 1, on: true, r: 13 },
+  { id: 'big', name: 'Big, heavy solid cylinder (2R, 8M)', short: 'Big solid cylinder', c: 1 / 2, on: false, r: 22 },
+  { id: 'block', name: 'Frictionless sliding block', short: 'Sliding block', c: 0, on: false, r: 12 }
+];
+WIDGETS.race = host => {
+  const P = { mode: 'down', th: 20, h: 1.0, basis: 'speed', v0: 3.0, kpm: 9.0 };
+  const lanes = LANES.map(l => Object.assign({}, l));
+  let t = 0, playing = false, raf = null, last = 0, speed = 1, shown = false, finished = false;
+  const did = uid('rc');
+  host.innerHTML = `<div class="race-wrap"><div>
+      <div class="race-fig"></div>
+      <h3 class="en-h">Where each object’s energy is, right now</h3>
+      <ul class="legend3d" aria-label="Legend for the energy bars"><li><i class="sw sw-U"></i>gravitational potential energy (dotted)</li><li><i class="sw sw-T"></i>translational KE (solid)</li><li><i class="sw sw-R"></i>rotational KE (hatched)</li></ul>
+      <div class="en-fig"></div>
+      <div class="race-results"></div>
+      <p class="desc-live" id="${did}" aria-live="polite"></p>
+    </div><div class="ctrl-grid rc-ctrls"></div></div>`;
+  const tb = toolbar(host);
+  tb.innerHTML = `<button type="button" class="primary pl">Start the race</button><button type="button" class="st">Step 0.05 s</button><button type="button" class="rs">Reset</button><button type="button" class="rv" aria-pressed="false">Reveal results</button><span class="tb-status" aria-live="polite"></span>`;
+  const plBtn = $('.pl', tb), rvBtn = $('.rv', tb), status = $('.tb-status', tb);
+  const ctrls = $('.rc-ctrls', host);
+  const onChange = () => resetRun();
+  const dirBox = document.createElement('div'); dirBox.className = 'ctrls'; ctrls.appendChild(dirBox);
+  dirBox.appendChild(radioGroup('Direction', uid('md'), [['down', 'Downhill, from rest'], ['up', 'Uphill, launched from the bottom']], P.mode, v => { P.mode = v; showModeCtrls(); onChange(); }));
+  const sTh = sliderCtrl({ label: 'Angle of the incline, θ', min: 5, max: 40, step: 1, val: P.th, unit: '°', spoken: 'degrees', d: 0, onInput: v => { P.th = v; onChange(); } });
+  const sH = sliderCtrl({ label: 'Starting height, h', min: 0.2, max: 2.0, step: 0.1, val: P.h, unit: 'm', spoken: 'metres', d: 1, onInput: v => { P.h = v; onChange(); } });
+  const upBox = document.createElement('div'); upBox.className = 'ctrls';
+  upBox.appendChild(radioGroup('Uphill: what is the same for all?', uid('bs'), [['speed', 'Same initial speed'], ['energy', 'Same initial kinetic energy (per kg)']], P.basis, v => { P.basis = v; showModeCtrls(); onChange(); }));
+  const sV = sliderCtrl({ label: 'Initial speed, v₀', min: 1, max: 5, step: 0.1, val: P.v0, unit: 'm/s', spoken: 'metres per second', d: 1, onInput: v => { P.v0 = v; onChange(); } });
+  const sK = sliderCtrl({ label: 'Initial kinetic energy per kg, K₀/M', min: 2, max: 20, step: 0.5, val: P.kpm, unit: 'J/kg', spoken: 'joules per kilogram', d: 1, onInput: v => { P.kpm = v; onChange(); } });
+  upBox.appendChild(sV.el); upBox.appendChild(sK.el);
+  const geo = document.createElement('div'); geo.className = 'ctrls'; ctrls.appendChild(geo);
+  [sTh.el, sH.el, upBox].forEach(e => geo.appendChild(e));
+  const lf = document.createElement('fieldset'); lf.className = 'radio-row stack'; lf.innerHTML = '<legend>Lanes</legend>';
+  lanes.forEach(l => { const c = checkCtrl(l.name, l.on, v => { l.on = v; if (!lanes.some(x => x.on)) { l.on = true; c.input.checked = true; } onChange(); }); lf.appendChild(c.el); });
+  ctrls.appendChild(lf);
+  dirBox.appendChild(speedCtrl(v => { speed = v; }));
+  const note = document.createElement('p'); note.className = 'help3d';
+  note.innerHTML = 'All round objects roll without slipping; the block slides without friction. Changing a control resets the race. Lanes are drawn side by side on identical inclines.';
+  dirBox.appendChild(note);
+  const descEl = $(`#${did}`, host), say = debounce(x => { descEl.textContent = x; }, 450);
+  function showModeCtrls() { sH.el.hidden = P.mode !== 'down'; upBox.hidden = P.mode !== 'up'; sV.el.hidden = P.basis !== 'speed'; sK.el.hidden = P.basis !== 'energy'; }
+
+  const rad = () => P.th * Math.PI / 180;
+  const act = () => lanes.filter(l => l.on);
+  const acc = l => G * Math.sin(rad()) / (1 + l.c);
+  const v0Of = l => P.basis === 'speed' ? P.v0 : Math.sqrt(2 * P.kpm / (1 + l.c));
+  const smax = l => { const v0 = v0Of(l); return v0 * v0 / (2 * acc(l)); };
+  const Lphys = () => P.mode === 'down' ? P.h / Math.sin(rad()) : Math.max(...act().map(smax)) * 1.12;
+  const tEnd = l => P.mode === 'down' ? Math.sqrt(2 * Lphys() / acc(l)) : 2 * v0Of(l) / acc(l);
+  // s measured from the bottom of the lane along the slope (m)
+  function state(l, tt) {
+    const a = acc(l);
+    if (P.mode === 'down') { const L = Lphys(), te = tEnd(l), tc = Math.min(tt, te), d = 0.5 * a * tc * tc; return { s: L - d, v: a * tc, done: tt >= te }; }
+    const v0 = v0Of(l), te = tEnd(l), tc = Math.min(tt, te); return { s: v0 * tc - 0.5 * a * tc * tc, v: v0 - a * tc, done: tt >= te, peak: tt >= v0 / a };
+  }
+  function energies(l, st) {
+    const sinT = Math.sin(rad());
+    const E = P.mode === 'down' ? G * P.h : 0.5 * v0Of(l) ** 2 * (1 + l.c);
+    const U = G * st.s * sinT, K = Math.max(0, E - U);
+    return { E, U, Kt: K / (1 + l.c), Kr: K * l.c / (1 + l.c) };
+  }
+  function shapeSVG(l, x, y, r, rotDeg) {
+    const tf = `transform="rotate(${rotDeg.toFixed(1)} ${x.toFixed(1)} ${y.toFixed(1)})"`;
+    const spoke = `<line x1="${x}" y1="${y}" x2="${x}" y2="${y - r}" stroke="var(--surface)" stroke-width="3" ${tf}/>`;
+    switch (l.id) {
+      case 'hoop': return `<circle cx="${x}" cy="${y}" r="${r - 2}" fill="none" class="c-cm" stroke-width="5"/><line x1="${x}" y1="${y - r + 6}" x2="${x}" y2="${y - r - 1}" class="c-ink" stroke-width="3" ${tf}/>`;
+      case 'hsph': return `<circle cx="${x}" cy="${y}" r="${r - 1.5}" fill="var(--surface)" class="c-A" stroke-width="3.5"/><circle cx="${x}" cy="${y}" r="${r - 6}" fill="none" class="c-A" stroke-width="1.3" stroke-dasharray="3 3"/><line x1="${x}" y1="${y}" x2="${x}" y2="${y - r + 2}" class="c-A" stroke-width="2.5" ${tf}/>`;
+      case 'scyl': case 'big': return `<circle cx="${x}" cy="${y}" r="${r}" class="f-B"/><circle cx="${x}" cy="${y}" r="${r * 0.55}" fill="none" stroke="var(--surface)" stroke-width="1.5"/>${spoke}`;
+      case 'ssph': return `<circle cx="${x}" cy="${y}" r="${r}" class="f-x"/><circle cx="${x - r * 0.35}" cy="${y - r * 0.35}" r="${r * 0.28}" fill="var(--surface)" opacity=".45"/>${spoke}`;
+      case 'block': return `<rect x="${x - r}" y="${y - r}" width="${2 * r}" height="${2 * r}" rx="2" class="f-F" transform="rotate(${P.th} ${x} ${y})"/>`;
+    }
+    return '';
+  }
+  function draw() {
+    const A = act(), th = rad(), W = 720, x0 = 190, Lpx = 470, gap = 74, top = 34;
+    const H = Math.round(top + (A.length - 1) * gap + Lpx * Math.sin(th) + 46);
+    const k = Lpx / Lphys(), cos = Math.cos(th), sin = Math.sin(th), nx = sin, ny = -cos;
+    let g = `<svg class="svgfig" viewBox="0 0 ${W} ${H}" role="img" aria-label="Race on ${A.length} identical inclines at ${P.th} degrees. A full description is given in the text below the results." style="max-width:820px">`;
+    A.forEach((l, i) => {
+      const xa = x0, ya = top + i * gap, xb = xa + Lpx * cos, yb = ya + Lpx * sin; // a = top end, b = bottom end
+      g += `<polygon points="${xa},${ya} ${xb},${yb} ${xa},${yb}" fill="var(--surface-2)" opacity=".55"/>`;
+      g += `<line x1="${xa}" y1="${ya}" x2="${xb}" y2="${yb}" class="c-ink" stroke-width="2.5"/>`;
+      g += `<text x="${xa - 10}" y="${ya + 5}" text-anchor="end" font-size="15" font-weight="700">${l.short || l.name}</text>`;
+      if (P.mode === 'down') g += `<line x1="${xb}" y1="${yb}" x2="${xb + nx * 30}" y2="${yb + ny * 30}" class="c-ink" stroke-width="2" stroke-dasharray="4 3"/><text x="${xb + nx * 34 + 4}" y="${yb + ny * 34 + 4}" font-size="13" class="muted">finish</text>`;
+      const st = state(l, t), sp = (Lphys() - st.s) * k; // px from top end
+      const px = xa + sp * cos, py = ya + sp * sin, r = l.r, cx = px + nx * r, cy = py + ny * r;
+      if (P.mode === 'up') {
+        const sm = smax(l), spm = (Lphys() - sm) * k, mx = xa + spm * cos, my = ya + spm * sin;
+        if (st.peak || st.done) g += `<line x1="${mx}" y1="${my}" x2="${mx + nx * 34}" y2="${my + ny * 34}" class="c-F" stroke-width="2.5"/><text x="${mx + nx * 38}" y="${my + ny * 38}" font-size="13" class="txt-F" text-anchor="middle">${shown ? 'h = ' + fmt(sm * sin, 2) + ' m' : 'highest'}</text>`;
+      }
+      g += shapeSVG(l, cx, cy, r, l.id === 'block' ? 0 : (sp / r) * 180 / Math.PI);
+    });
+    const hb = top + (A.length - 1) * gap + Lpx * sin;
+    g += `<text x="${x0}" y="${hb + 30}" font-size="14" class="muted">${P.mode === 'down' ? `Each incline: height ${fmt(P.h, 1)} m, length ${fmt(Lphys(), 2)} m` : `Each incline: ${fmt(Lphys(), 2)} m long (drawn to fit the highest climb)`} · t = ${fmt(t, 2)} s</text>`;
+    $('.race-fig', host).innerHTML = g + '</svg>';
+    // energy bars
+    const BW = 720, rowH = 30, bx = 190, bwid = 500;
+    let e = `<svg class="svgfig" viewBox="0 0 ${BW} ${A.length * rowH + 8}" role="img" aria-label="Energy bars for each lane: share of potential, translational and rotational energy. Values are listed in the results table.">
+      <defs><pattern id="hatchR" width="7" height="7" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><rect width="7" height="7" class="f-A" opacity=".35"/><line x1="0" y1="0" x2="0" y2="7" class="c-A" stroke-width="3"/></pattern>
+      <pattern id="dotU" width="7" height="7" patternUnits="userSpaceOnUse"><rect width="7" height="7" class="f-cm" opacity=".22"/><circle cx="3.5" cy="3.5" r="1.6" class="f-cm"/></pattern></defs>`;
+    A.forEach((l, i) => {
+      const en = energies(l, state(l, t)), y = 4 + i * rowH, f = x => bwid * x / en.E;
+      e += `<text x="${bx - 10}" y="${y + 17}" text-anchor="end" font-size="15">${l.short || l.name}</text>`;
+      let x = bx;
+      e += `<rect x="${x}" y="${y}" width="${f(en.U)}" height="22" fill="url(#dotU)"/>`; x += f(en.U);
+      e += `<rect x="${x}" y="${y}" width="${f(en.Kt)}" height="22" class="f-x"/>`; x += f(en.Kt);
+      e += `<rect x="${x}" y="${y}" width="${f(en.Kr)}" height="22" fill="url(#hatchR)"/>`;
+      e += `<rect x="${bx}" y="${y}" width="${bwid}" height="22" fill="none" class="c-ink" stroke-width="1"/>`;
+    });
+    $('.en-fig', host).innerHTML = e + '</svg>';
+  }
+  function results() {
+    const el = $('.race-results', host), A = act();
+    if (!(shown || finished)) { el.innerHTML = `<p class="help3d">Results appear here when the race ends, or when you press Reveal results.</p>`; return; }
+    if (P.mode === 'down') {
+      const rows = A.map(l => ({ l, te: tEnd(l), v: Math.sqrt(2 * G * P.h / (1 + l.c)) })).sort((a, b) => a.te - b.te);
+      el.innerHTML = `<div class="table-wrap"><table><caption>Downhill from rest, height ${fmt(P.h, 1)} m, θ = ${P.th}°</caption><thead><tr><th scope="col">Place</th><th scope="col">Object</th><th scope="col" class="num">c</th><th scope="col" class="num">time (s)</th><th scope="col" class="num">speed at bottom (m/s)</th><th scope="col" class="num">KE in translation</th><th scope="col" class="num">KE in rotation</th></tr></thead><tbody>` +
+        rows.map((r, i) => `<tr><td>${i > 0 && Math.abs(r.te - rows[i - 1].te) < 1e-6 ? '(tie)' : i + 1}</td><th scope="row">${r.l.name}</th><td class="num">${fmt(r.l.c, 2)}</td><td class="num">${fmt(r.te, 2)}</td><td class="num">${fmt(r.v, 2)}</td><td class="num">${fmt(100 / (1 + r.l.c), 1)}%</td><td class="num">${fmt(100 * r.l.c / (1 + r.l.c), 1)}%</td></tr>`).join('') + '</tbody></table></div>';
+    } else {
+      const rows = A.map(l => ({ l, v0: v0Of(l), h: smax(l) * Math.sin(rad()) })).sort((a, b) => b.h - a.h);
+      el.innerHTML = `<div class="table-wrap"><table><caption>Uphill, ${P.basis === 'speed' ? `same initial speed ${fmt(P.v0, 1)} m/s` : `same initial kinetic energy, ${fmt(P.kpm, 1)} J per kg`}, θ = ${P.th}°</caption><thead><tr><th scope="col">Rank</th><th scope="col">Object</th><th scope="col" class="num">c</th><th scope="col" class="num">initial speed (m/s)</th><th scope="col" class="num">initial KE per kg (J/kg)</th><th scope="col" class="num">highest point h (m)</th><th scope="col" class="num">KE in rotation</th></tr></thead><tbody>` +
+        rows.map((r, i) => `<tr><td>${i > 0 && Math.abs(r.h - rows[i - 1].h) < 1e-6 ? '(tie)' : i + 1}</td><th scope="row">${r.l.name}</th><td class="num">${fmt(r.l.c, 2)}</td><td class="num">${fmt(r.v0, 2)}</td><td class="num">${fmt(0.5 * r.v0 * r.v0 * (1 + r.l.c), 2)}</td><td class="num">${fmt(r.h, 3)}</td><td class="num">${fmt(100 * r.l.c / (1 + r.l.c), 1)}%</td></tr>`).join('') + '</tbody></table></div>';
+    }
+  }
+  function describe() {
+    const A = act();
+    let d = `${P.mode === 'down' ? `Downhill race from rest, height ${fmt(P.h, 1)} m` : `Uphill, ${P.basis === 'speed' ? `same initial speed ${fmt(P.v0, 1)} m/s` : `same initial kinetic energy ${fmt(P.kpm, 1)} J per kg`}`}, incline ${P.th} degrees. Lanes: ${A.map(l => l.name).join(', ')}. `;
+    if (!(shown || finished)) { say(d + 'Results are hidden until the race ends or you press Reveal results.'); return; }
+    if (P.mode === 'down') { const r = A.map(l => [l, tEnd(l)]).sort((a, b) => a[1] - b[1]); d += 'Finishing order: ' + r.map(([l, te]) => `${l.name} ${fmt(te, 2)} s`).join(', ') + '. '; }
+    else { const r = A.map(l => [l, smax(l) * Math.sin(rad())]).sort((a, b) => b[1] - a[1]); d += 'Highest points: ' + r.map(([l, h]) => `${l.name} ${fmt(h, 2)} m`).join(', ') + '. '; }
+    d += 'Share of kinetic energy in rotation: ' + A.map(l => `${l.name} ${fmt(100 * l.c / (1 + l.c), 0)}%`).join(', ') + '.';
+    say(d);
+  }
+  function render() { draw(); results(); }
+  const Tmax = () => Math.max(...act().map(tEnd));
+  function stop(msg) { playing = false; if (raf) cancelAnimationFrame(raf); raf = null; plBtn.textContent = finished ? 'Run again' : (t > 0 ? 'Resume' : 'Start the race'); if (msg !== undefined) status.textContent = msg; render(); describe(); }
+  function tick(now) {
+    const dt = Math.min(0.05, (now - last) / 1000) * speed; last = now;
+    t = Math.min(Tmax(), t + dt); draw();
+    if (t >= Tmax() - 1e-9) { finished = true; stop(P.mode === 'down' ? 'All objects have reached the bottom.' : 'All objects are back at the bottom.'); return; }
+    raf = requestAnimationFrame(tick);
+  }
+  function resetRun() { if (raf) cancelAnimationFrame(raf); raf = null; playing = false; t = 0; finished = false; shown = false; rvBtn.textContent = 'Reveal results'; rvBtn.setAttribute('aria-pressed', 'false'); plBtn.textContent = 'Start the race'; status.textContent = ''; render(); describe(); }
+  plBtn.addEventListener('click', () => {
+    if (playing) { stop(`Paused at t = ${fmt(t, 2)} s.`); return; }
+    if (finished) { t = 0; finished = false; }
+    playing = true; plBtn.textContent = 'Pause'; status.textContent = 'Racing…'; last = performance.now(); raf = requestAnimationFrame(tick);
+  });
+  $('.st', tb).addEventListener('click', () => { if (playing) stop(); if (finished) return; t = Math.min(Tmax(), t + 0.05); if (t >= Tmax() - 1e-9) finished = true; stop(finished ? 'End of the race.' : `Stepped to t = ${fmt(t, 2)} s.`); });
+  $('.rs', tb).addEventListener('click', resetRun);
+  rvBtn.addEventListener('click', () => { shown = !shown; rvBtn.textContent = shown ? 'Hide results' : 'Reveal results'; rvBtn.setAttribute('aria-pressed', String(shown)); render(); describe(); });
+  document.addEventListener('pagechange', () => { if (playing) stop(`Paused at t = ${fmt(t, 2)} s.`); });
+  showModeCtrls(); resetRun(); descEl.textContent = '';
+};
+
+/* ===================== Side tab: slipping before rolling ===================== */
+WIDGETS.slip = host => {
+  const P = { shape: 'ssph', v0: 8.0, mu: 0.20 };
+  const did = uid('sl');
+  host.innerHTML = `<div class="lab-grid wide3d"><div>
+      <div class="slip-fig"></div>
+      <ul class="legend3d" aria-label="Legend"><li><i style="background:var(--x)"></i>speed of the center, v (solid)</li><li><i style="background:repeating-linear-gradient(90deg,var(--A) 0 8px,transparent 8px 13px)"></i>rim speed from spinning, Rω (dashed)</li></ul>
+      <div class="readout"><div><span>starts rolling at</span><b class="o-t"></b></div><div><span>rolling speed</span><b class="o-v"></b></div><div><span>distance slid</span><b class="o-d"></b></div><div><span>KE lost to friction</span><b class="o-l"></b></div></div>
+      <p class="desc-live" id="${did}" aria-live="polite"></p>
+    </div><div class="ctrls"></div></div>`;
+  const ctrls = $('.ctrls', host);
+  ctrls.appendChild(radioGroup('Shape', uid('ss'), Object.keys(SHAPES).map(k => [k, SHAPES[k].long]), P.shape, v => { P.shape = v; update(); }));
+  $('.radio-row', ctrls).classList.add('stack');
+  const sV = sliderCtrl({ label: 'Launch speed, v₀ (no spin)', min: 1, max: 10, step: 0.5, val: P.v0, unit: 'm/s', spoken: 'metres per second', d: 1, onInput: v => { P.v0 = v; update(); } });
+  const sM = sliderCtrl({ label: 'Kinetic friction coefficient, μₖ', min: 0.05, max: 0.50, step: 0.01, val: P.mu, unit: '', spoken: '', d: 2, onInput: v => { P.mu = v; update(); } });
+  ctrls.appendChild(sV.el); ctrls.appendChild(sM.el);
+  const descEl = $(`#${did}`, host), say = debounce(x => { descEl.textContent = x; }, 400);
+  function update() {
+    const c = SHAPES[P.shape].c, tr = c * P.v0 / (P.mu * G * (1 + c)), vr = P.v0 / (1 + c), dist = P.v0 * tr - 0.5 * P.mu * G * tr * tr, lost = 100 * c / (1 + c);
+    const W = 600, H = 300, m = { l: 58, r: 16, t: 24, b: 44 }, pw = W - m.l - m.r, ph = H - m.t - m.b;
+    const T = Math.max(tr * 1.6, 0.5), Vmax = Math.ceil(P.v0);
+    const X = x => m.l + x / T * pw, Y = y => m.t + ph - y / Vmax * ph;
+    let g = `<svg class="svgfig" viewBox="0 0 ${W} ${H}" role="img" aria-label="Graph of speed against time. The center's speed v falls in a straight line from ${fmt(P.v0, 1)} metres per second while the rim speed R omega rises from zero; they meet at ${fmt(tr, 2)} seconds at ${fmt(vr, 2)} metres per second, and both stay constant afterwards.">`;
+    const tStep = T > 3 ? 1 : T > 1.2 ? 0.5 : 0.25;
+    for (let x = 0; x <= T + 1e-9; x += tStep) g += `<line class="gridl" x1="${X(x)}" y1="${m.t}" x2="${X(x)}" y2="${m.t + ph}"/><text x="${X(x)}" y="${m.t + ph + 16}" text-anchor="middle" font-size="12" class="muted">${fmt(x, tStep < 1 ? 2 : 0)}</text>`;
+    const vStep = Vmax > 6 ? 2 : 1;
+    for (let y = 0; y <= Vmax + 1e-9; y += vStep) g += `<line class="gridl" x1="${m.l}" y1="${Y(y)}" x2="${m.l + pw}" y2="${Y(y)}"/><text x="${m.l - 6}" y="${Y(y) + 4}" text-anchor="end" font-size="12" class="muted">${y}</text>`;
+    g += `<line class="axis" x1="${m.l}" y1="${m.t}" x2="${m.l}" y2="${m.t + ph}"/><line class="axis" x1="${m.l}" y1="${m.t + ph}" x2="${m.l + pw}" y2="${m.t + ph}"/>`;
+    g += `<text x="${m.l + pw}" y="${H - 6}" text-anchor="end" font-size="12" class="muted">time t (s)</text><text x="${m.l + 6}" y="${m.t - 4}" font-size="12" class="muted">speed (m/s)</text>`;
+    g += `<rect x="${X(0)}" y="${m.t}" width="${X(tr) - X(0)}" height="${ph}" class="f-F" opacity=".07"/><text x="${(X(0) + X(tr)) / 2}" y="${m.t + 14}" text-anchor="middle" font-size="12" class="txt-F">sliding</text><text x="${(X(tr) + X(T)) / 2}" y="${m.t + 14}" text-anchor="middle" font-size="12">rolling without slipping</text>`;
+    g += `<polyline points="${X(0)},${Y(P.v0)} ${X(tr)},${Y(vr)} ${X(T)},${Y(vr)}" fill="none" class="c-x" stroke-width="3"/>`;
+    g += `<polyline points="${X(0)},${Y(0)} ${X(tr)},${Y(vr)} ${X(T)},${Y(vr)}" fill="none" class="c-A" stroke-width="3" stroke-dasharray="9 5"/>`;
+    g += `<circle cx="${X(tr)}" cy="${Y(vr)}" r="6" fill="var(--surface)" class="c-ink" stroke-width="2.5"/><line x1="${X(tr)}" y1="${Y(vr)}" x2="${X(tr)}" y2="${m.t + ph}" class="c-ink" stroke-dasharray="3 4" stroke-width="1.2"/>`;
+    g += `<text x="${X(tr) + 10}" y="${Y(vr) - 10}" font-size="13" font-weight="700">v = Rω = ${fmt(vr, 2)} m/s</text>`;
+    g += `<text x="${X(0) + 8}" y="${Y(P.v0) + 18}" font-size="14" class="txt-x">v</text><text x="${X(tr * 0.35)}" y="${Y(vr * 0.35) + 20}" font-size="14" class="txt-A">Rω</text>`;
+    $('.slip-fig', host).innerHTML = g + '</svg>';
+    $('.o-t', host).textContent = `${fmt(tr, 2)} s`; $('.o-v', host).textContent = `${fmt(vr, 2)} m/s`; $('.o-d', host).textContent = `${fmt(dist, 2)} m`; $('.o-l', host).textContent = `${fmt(lost, 1)}%`;
+    say(`${SHAPES[P.shape].long[0].toUpperCase() + SHAPES[P.shape].long.slice(1)}, launched at ${fmt(P.v0, 1)} m/s with no spin, kinetic friction coefficient ${fmt(P.mu, 2)}. It slides for ${fmt(tr, 2)} s and ${fmt(dist, 2)} m, then rolls without slipping at ${fmt(vr, 2)} m/s, having lost ${fmt(lost, 1)}% of its kinetic energy to friction.`);
+  }
+  update(); descEl.textContent = '';
+};
+
+/* ===================== practice questions ===================== */
+const QUESTIONS = {};
+QUESTIONS.rot = [
+  { type: 'mc', kind: 'concept',
+    prompt: R`<p>A hoop, a hollow sphere, a solid cylinder and a solid sphere all have the <strong>same mass</strong> and the <strong>same radius</strong>, and each spins about its symmetry axis at the <strong>same angular speed</strong>. Rank their rotational kinetic energies from largest to smallest.</p>`,
+    options: [
+      { html: R`hoop &gt; hollow sphere &gt; solid cylinder &gt; solid sphere`, correct: true, fb: R`Yes. With \(M\), \(R\) and \(\omega\) equal, \(K_\text{rot} = \tfrac12 cMR^2\omega^2\) is proportional to \(c\): 1, 2/3, 1/2, 2/5.` },
+      { html: R`They are all equal: same mass, same radius, same \(\omega\).`, fb: R`Same \(M\), \(R\) and \(\omega\) do not mean the same \(I\). What matters is how far the mass is from the axis, and that depends on the shape.` },
+      { html: R`solid sphere &gt; solid cylinder &gt; hollow sphere &gt; hoop`, fb: R`This is the order reversed. A solid object has more of its mass close to the axis, where pieces move slowly; that means <em>less</em> kinetic energy.` },
+      { html: R`hollow sphere &gt; hoop &gt; solid sphere &gt; solid cylinder`, fb: R`Compare the factors \(c\) in \(I = cMR^2\): hoop 1, hollow sphere 2/3, solid cylinder 1/2, solid sphere 2/5.` }
+    ],
+    hints: [R`Write \(K_\text{rot} = \tfrac12 cMR^2\omega^2\). With everything else equal, only \(c\) differs.`],
+    solution: R`<p>\(K_\text{rot} \propto c\) when \(M\), \(R\) and \(\omega\) are fixed. The hoop has all its mass at the rim (\(c = 1\)); the solid sphere has the most mass near the axis (\(c = 0.4\)). Order: hoop (1), hollow sphere (0.67), solid cylinder (0.50), solid sphere (0.40).</p>` },
+  { type: 'mc', kind: 'concept',
+    prompt: R`<p>A hoop of radius \(R\) and a solid sphere of radius \(2R\) have the same mass and spin at the same angular speed. Which has more rotational kinetic energy?</p>`,
+    options: [
+      { html: R`The hoop: all its mass is at the rim.`, fb: R`Shape matters, but so does size. The sphere is twice as wide, and \(R\) enters squared.` },
+      { html: R`The solid sphere.`, correct: true, fb: R`Yes. Compare \(cR^2\): hoop \(1 \times R^2\), sphere \(0.4 \times (2R)^2 = 1.6R^2\). The sphere has 1.6 times as much.` },
+      { html: R`They have the same energy.`, fb: R`Compute \(cR^2\) for each one: \(1\cdot R^2\) and \(0.4\cdot(2R)^2\).` },
+      { html: R`It depends on the value of \(\omega\).`, fb: R`Both spin at the same \(\omega\), so the factor \(\omega^2\) is common and cancels in the comparison.` }
+    ],
+    hints: [R`With \(M\) and \(\omega\) equal, \(K_\text{rot} \propto cR^2\).`],
+    solution: R`<p>\(K_\text{hoop} = \tfrac12 MR^2\omega^2\) and \(K_\text{sphere} = \tfrac12\cdot\tfrac25 M(2R)^2\omega^2 = \tfrac12(1.6)MR^2\omega^2\). The sphere has 1.6 times the hoop’s energy: size can outweigh shape.</p>` },
+  { type: 'mc', kind: 'concept',
+    prompt: R`<p>The same four shapes (same mass, same radius) are each given the <strong>same rotational kinetic energy</strong>. Which one spins fastest?</p>`,
+    options: [
+      { html: R`the hoop`, fb: R`The hoop has the largest \(I\), so for a given energy it turns the slowest.` },
+      { html: R`the hollow sphere`, fb: R`Compare the factors \(c\): the fastest spinner has the smallest \(I\).` },
+      { html: R`the solid sphere`, correct: true, fb: R`Yes: \(\omega = \sqrt{2K/I}\), and the solid sphere has the smallest \(I = 0.4MR^2\).` },
+      { html: R`They all spin at the same rate.`, fb: R`Same energy, but different \(I\): \(\omega = \sqrt{2K/I}\) differs.` }
+    ],
+    hints: [R`Solve \(K = \tfrac12 I\omega^2\) for \(\omega\).`],
+    solution: R`<p>\(\omega = \sqrt{2K/(cMR^2)}\). For equal \(K\), \(M\) and \(R\), the smallest \(c\) gives the largest \(\omega\): solid sphere fastest, hoop slowest.</p>` },
+  { type: 'mc', kind: 'concept',
+    prompt: R`<p>A solid disk spins about its axis. Its mass stays the same, but you double its radius <em>and</em> halve its angular speed. Its rotational kinetic energy</p>`,
+    options: [
+      { html: R`stays the same.`, correct: true, fb: R`Yes: \(R^2\omega^2 = (2R)^2(\omega/2)^2 = R^2\omega^2\). Notice the rim speed \(R\omega\) is unchanged too.` },
+      { html: R`doubles.`, fb: R`Both \(R\) and \(\omega\) are squared in \(\tfrac12 cMR^2\omega^2\).` },
+      { html: R`halves.`, fb: R`Both \(R\) and \(\omega\) are squared in \(\tfrac12 cMR^2\omega^2\).` },
+      { html: R`is four times larger.`, fb: R`Doubling \(R\) multiplies \(K\) by 4, but halving \(\omega\) divides it by 4.` }
+    ],
+    hints: [R`Track the factor \(R^2\omega^2\) in \(K_\text{rot} = \tfrac12\cdot\tfrac12 MR^2\omega^2\).`],
+    solution: R`<p>\(K_\text{rot} = \tfrac14 MR^2\omega^2 = \tfrac14 M(R\omega)^2\). The rim speed \(R\omega\) is unchanged, so the energy is unchanged.</p>` },
+  { type: 'num', kind: 'calc', unit: 'J', answer: 0.648, tolRel: 0.02,
+    prompt: R`<p>A basketball (a hollow sphere, \(M = 0.60\ \text{kg}\), \(R = 0.12\ \text{m}\)) spins on a fingertip at 15&nbsp;rad/s. What is its rotational kinetic energy?</p>`,
+    wrong: [ { val: 0.389, fb: R`You used the solid-sphere value \(\tfrac25MR^2\). A basketball is a hollow sphere: \(I = \tfrac23MR^2\).` }, { val: 1.296, fb: R`You forgot the \(\tfrac12\) in \(\tfrac12 I\omega^2\).` }, { val: 0.972, fb: R`That uses \(I = MR^2\) (a hoop). Use \(I = \tfrac23MR^2\) for a hollow sphere.` } ],
+    hints: [R`\(I = \tfrac23MR^2 = \tfrac23(0.60)(0.12)^2\).`, R`Then \(K_\text{rot} = \tfrac12 I\omega^2\) with \(\omega = 15\ \text{rad/s}\).`],
+    solution: R`<p>\(I = \tfrac23(0.60)(0.12)^2 = 0.00576\ \text{kg·m}^2\), so \(K_\text{rot} = \tfrac12(0.00576)(15)^2 = 0.65\ \text{J}\).</p>` },
+  { type: 'num', kind: 'calc', unit: 'rad/s', answer: 89.4, tolRel: 0.02,
+    prompt: R`<p>A flywheel is a solid cylinder of mass 12&nbsp;kg and radius 0.25&nbsp;m. At what angular speed does it store 1500&nbsp;J of kinetic energy?</p>`,
+    wrong: [ { val: 63.2, fb: R`That uses \(I = MR^2\). A solid cylinder has \(I = \tfrac12MR^2\).` }, { val: 126.5, fb: R`Check the factor of 2: \(\omega = \sqrt{2K/I}\), with \(I = \tfrac12MR^2 = 0.375\ \text{kg·m}^2\).` }, { val: 8000, fb: R`That is \(\omega^2\). Take the square root.` } ],
+    hints: [R`\(I = \tfrac12(12)(0.25)^2 = 0.375\ \text{kg·m}^2\).`, R`\(\omega = \sqrt{2K/I}\).`],
+    solution: R`<p>\(I = 0.375\ \text{kg·m}^2\), so \(\omega = \sqrt{2(1500)/0.375} = \sqrt{8000} = 89\ \text{rad/s}\) (about 850&nbsp;rpm).</p>` }
+];
+QUESTIONS.work = [
+  { type: 'mc', kind: 'concept',
+    prompt: R`<p>The same constant torque is applied, from rest, to a hoop and to a solid disk of the same mass and radius, and each turns through the same angle. Which statement is true at the end?</p>`,
+    options: [
+      { html: R`They have the same rotational kinetic energy, but the disk spins faster.`, correct: true, fb: R`Yes. Same \(\tau\) and same \(\Delta\theta\) means the same work, so the same \(K_\text{rot}\). The disk has the smaller \(I\), so the same energy means a larger \(\omega\).` },
+      { html: R`They spin at the same rate, but the hoop has more kinetic energy.`, fb: R`The work done, \(\tau\Delta\theta\), is the same for both, so their kinetic energies are equal. Their angular speeds are not.` },
+      { html: R`The hoop has more kinetic energy and spins faster.`, fb: R`The work, and so the kinetic energy, is the same. With a larger \(I\), the hoop ends up slower, not faster.` },
+      { html: R`They have the same kinetic energy and spin at the same rate.`, fb: R`Equal energy does not mean equal \(\omega\): \(\omega = \sqrt{2K/I}\) and the two moments of inertia differ.` }
+    ],
+    hints: [R`What is the work done on each? Then use \(K = \tfrac12 I\omega^2\).`],
+    solution: R`<p>\(W = \tau\,\Delta\theta\) is the same for both, so \(\Delta K_\text{rot}\) is the same. Since \(I_\text{disk} = \tfrac12 MR^2 < I_\text{hoop} = MR^2\), the disk’s \(\omega = \sqrt{2K/I}\) is larger, by a factor \(\sqrt2\).</p>` },
+  { type: 'mc', kind: 'concept',
+    prompt: R`<p>A constant torque acts on a wheel that starts from rest. A graph of the wheel’s rotational kinetic energy against the <em>angle</em> it has turned through is</p>`,
+    options: [
+      { html: R`a straight line through the origin.`, correct: true, fb: R`Yes: \(K_\text{rot} = W = \tau\theta\), proportional to \(\theta\).` },
+      { html: R`a parabola, curving upward.`, fb: R`That is \(K_\text{rot}\) against <em>time</em> (\(\theta \propto t^2\)). Against angle it is \(K = \tau\theta\), a straight line.` },
+      { html: R`a horizontal line.`, fb: R`The torque does positive work, so the energy grows as the wheel turns.` },
+      { html: R`a curve that levels off.`, fb: R`Each radian adds the same work \(\tau\), so the energy keeps growing at a constant rate per radian.` }
+    ],
+    hints: [R`Use the work–energy theorem: \(K_\text{rot} - 0 = \tau\,\theta\).`],
+    solution: R`<p>From rest, \(K_\text{rot}(\theta) = \tau\theta\): a straight line of slope \(\tau\). (Against time it would be a parabola, because \(\theta = \tfrac12\alpha t^2\).)</p>` },
+  { type: 'mc', kind: 'concept',
+    prompt: R`<p>A wheel spins freely on a frictionless axle. You push on its rim with a force pointing straight toward the axle. How does its rotational kinetic energy change?</p>`,
+    options: [
+      { html: R`It does not change.`, correct: true, fb: R`Yes. A force along the radius has no torque about the axle and does no rotational work.` },
+      { html: R`It increases, because you do work on the wheel.`, fb: R`The force points through the axis: its lever arm is zero, so its torque and its rotational work are zero.` },
+      { html: R`It decreases, because the force opposes the motion.`, fb: R`The rim moves sideways (tangentially), perpendicular to a radial force, so the force does no work at all.` },
+      { html: R`It depends on how hard you push.`, fb: R`However hard you push along the radius, \(\tau = rF\sin 0^\circ = 0\).` }
+    ],
+    hints: [R`What is the torque of a force whose line of action passes through the axis?`],
+    solution: R`<p>\(\tau = rF\sin\theta\) with \(\theta = 180^\circ\) (the force points toward the axis), so \(\tau = 0\) and \(W = \tau\,\Delta\theta = 0\): \(K_\text{rot}\) is unchanged.</p>` },
+  { type: 'num', kind: 'calc', unit: 'rad/s', answer: 112, tolRel: 0.02,
+    prompt: R`<p>A solid disk (\(M = 2.0\ \text{kg}\), \(R = 0.10\ \text{m}\)) starts from rest. A constant torque of 0.50&nbsp;N·m turns it through 20 revolutions. Use the work–energy theorem to find its final angular speed.</p>`,
+    wrong: [ { val: 44.7, fb: R`You used the angle in revolutions (20) instead of radians. \(\Delta\theta = 20 \times 2\pi\ \text{rad}\).` }, { val: 79.3, fb: R`That uses \(I = MR^2\). A solid disk has \(I = \tfrac12MR^2 = 0.010\ \text{kg·m}^2\).` }, { val: 12566, fb: R`That is \(\omega^2\). Take the square root.` } ],
+    hints: [R`\(W = \tau\,\Delta\theta = (0.50)(20 \times 2\pi)\).`, R`\(I = \tfrac12(2.0)(0.10)^2 = 0.010\ \text{kg·m}^2\); then \(W = \tfrac12 I\omega^2\).`],
+    solution: R`<p>\(W = (0.50)(40\pi) = 62.8\ \text{J}\). From rest, \(62.8 = \tfrac12(0.010)\omega^2\), so \(\omega = \sqrt{12\,566} = 112\ \text{rad/s}\).</p>` },
+  { type: 'num', kind: 'calc', unit: 'rev', answer: 22.9, tolRel: 0.02,
+    prompt: R`<p>A grinding wheel (solid disk, \(M = 1.6\ \text{kg}\), \(R = 0.10\ \text{m}\)) spins at 120&nbsp;rad/s when the motor is turned off. A constant friction torque of 0.40&nbsp;N·m slows it down. How many revolutions does it make before it stops?</p>`,
+    wrong: [ { val: 144, fb: R`That is the angle in radians. Divide by \(2\pi\) to get revolutions.` }, { val: 45.8, fb: R`That uses \(I = MR^2\). A solid disk has \(I = \tfrac12MR^2\).` }, { val: 11.5, fb: R`Check the \(\tfrac12\) in \(K = \tfrac12 I\omega^2\) and in \(I = \tfrac12MR^2\): \(K_i = 57.6\ \text{J}\).` } ],
+    hints: [R`Initial energy: \(K_i = \tfrac12 I\omega^2\) with \(I = \tfrac12MR^2\).`, R`The friction torque does work \(-\tau\,\Delta\theta\), which must remove all of \(K_i\).`],
+    solution: R`<p>\(I = 0.0080\ \text{kg·m}^2\), \(K_i = \tfrac12(0.0080)(120)^2 = 57.6\ \text{J}\). Then \(0.40\,\Delta\theta = 57.6\), so \(\Delta\theta = 144\ \text{rad} = 22.9\ \text{rev}\).</p>` },
+  { type: 'num', kind: 'calc', unit: 'W', answer: 240, tolRel: 0.02,
+    prompt: R`<p>An electric drill delivers a torque of 0.80&nbsp;N·m while its bit turns at 300&nbsp;rad/s. At what rate is it doing work?</p>`,
+    wrong: [ { val: 375, fb: R`Power is \(\tau\omega\), not \(\omega/\tau\).` }, { val: 1508, fb: R`You converted 300 rad/s as if it were rev/s. The angular speed is already in rad/s.` } ],
+    hints: [R`Rotational power: \(P = \tau\omega\), with \(\omega\) in rad/s.`],
+    solution: R`<p>\(P = \tau\omega = (0.80\ \text{N·m})(300\ \text{rad/s}) = 240\ \text{W}\).</p>` }
+];
+QUESTIONS.roll = [
+  { type: 'mc', kind: 'concept',
+    prompt: R`<p>A solid sphere, a hollow sphere, a hoop and a solid cylinder are released together from rest at the same height on the same incline, and all roll without slipping. In what order do they reach the bottom?</p>`,
+    options: [
+      { html: R`solid sphere, solid cylinder, hollow sphere, hoop`, correct: true, fb: R`Yes. Smaller \(c\) means a smaller share of energy goes into spinning, so more goes into speed: \(v = \sqrt{2gh/(1+c)}\).` },
+      { html: R`hoop, hollow sphere, solid cylinder, solid sphere`, fb: R`This is reversed. The hoop puts half its kinetic energy into spinning, so it moves the slowest.` },
+      { html: R`They all arrive together.`, fb: R`They would if they slid without friction. Rolling objects store part of their energy in rotation, and that share depends on the shape.` },
+      { html: R`It depends on their masses and radii.`, fb: R`Mass and radius cancel out: \(a = g\sin\theta/(1+c)\) depends only on the shape factor \(c\).` }
+    ],
+    hints: [R`Energy: \(Mgh = \tfrac12 Mv^2(1+c)\). Which object has the largest \(v\) at every height?`],
+    solution: R`<p>At every height, \(v = \sqrt{2g\,\Delta h/(1+c)}\), so the object with the smallest \(c\) is always fastest. Order: solid sphere (0.4), solid cylinder (0.5), hollow sphere (0.67), hoop (1).</p>` },
+  { type: 'mc', kind: 'concept',
+    prompt: R`<p>Two solid cylinders roll from rest down the same incline. One is twice the radius and eight times the mass of the other. Which reaches the bottom first?</p>`,
+    options: [
+      { html: R`the big, heavy one`, fb: R`The extra mass is matched by extra inertia: both \(M\) and \(R\) cancel in \(a = g\sin\theta/(1+c)\).` },
+      { html: R`the small, light one`, fb: R`A larger radius does not slow it down here: \(I/(MR^2) = \tfrac12\) for any solid cylinder.` },
+      { html: R`They tie.`, correct: true, fb: R`Yes. Same shape, same \(c = \tfrac12\), same acceleration \(\tfrac23 g\sin\theta\).` },
+      { html: R`It depends on the angle of the incline.`, fb: R`The angle changes how long they take, but it changes it equally for both.` }
+    ],
+    hints: [R`Does \(c = I/(MR^2)\) depend on the mass or the radius?`],
+    solution: R`<p>For any solid cylinder \(c = \tfrac12\), so \(a = \tfrac23 g\sin\theta\) whatever its mass and radius. They tie. Try it in the simulation with the “big, heavy solid cylinder” lane.</p>` },
+  { type: 'mc', kind: 'concept',
+    prompt: R`<p>The four shapes roll <strong>up</strong> an incline, all starting with the <strong>same speed</strong>. Which one climbs highest?</p>`,
+    options: [
+      { html: R`the hoop`, correct: true, fb: R`Yes. At the same speed it has the most kinetic energy, \(\tfrac12Mv_0^2(1+c)\), and all of it, translational and rotational, turns into height: \(h = v_0^2(1+c)/2g\).` },
+      { html: R`the solid sphere`, fb: R`The solid sphere wins the downhill race, but uphill at equal speed it has the <em>least</em> kinetic energy to spend.` },
+      { html: R`They all reach the same height.`, fb: R`That would be true if they started with the same kinetic energy. With the same speed, the hoop carries more energy because of its spin.` },
+      { html: R`the one with the largest mass`, fb: R`Mass cancels: \(h = v_0^2(1+c)/2g\).` }
+    ],
+    hints: [R`Write the energy at the bottom, \(\tfrac12Mv_0^2(1+c)\), and set it equal to \(Mgh\).`],
+    solution: R`<p>\(h = \dfrac{v_0^2(1+c)}{2g}\): the largest \(c\) climbs highest. The hoop rises twice as high as a frictionless block launched at the same speed.</p>` },
+  { type: 'mc', kind: 'concept',
+    prompt: R`<p>A ball rolls without slipping <strong>up</strong> a ramp, slowing down. Which way does the static friction force on it point?</p>`,
+    options: [
+      { html: R`up the ramp`, correct: true, fb: R`Yes. The spin must slow down too, and only a force pointing up the slope at the contact point gives a torque that slows the forward spin.` },
+      { html: R`down the ramp, against the motion`, fb: R`Friction opposes <em>slipping</em>, not motion. Without friction the ball would keep spinning while its center slowed, so the contact point would slide down-slope; friction points up the slope to prevent that.` },
+      { html: R`There is no friction, because the ball does not slip.`, fb: R`Static friction can act without slipping; here it is needed to keep \(v = R\omega\) as both change.` },
+      { html: R`perpendicular to the ramp`, fb: R`That is the normal force. Friction acts along the surface.` }
+    ],
+    hints: [R`Gravity alone would slow the center but not the spin. Which force could slow the spin?`],
+    solution: R`<p>Along the slope, \(-Mg\sin\theta + f_s = Ma\), and the angular deceleration requires a torque from \(f_s\). Solving gives \(f_s = Mg\sin\theta\,\frac{c}{1+c} > 0\) up the slope, in the direction of motion. It does no work, because the contact point does not slide.</p>` },
+  { type: 'mc', kind: 'concept',
+    prompt: R`<p>What fraction of a rolling solid cylinder’s kinetic energy is rotational?</p>`,
+    options: [
+      { html: R`1/3`, correct: true, fb: R`Yes: \(\dfrac{c}{1+c} = \dfrac{1/2}{3/2} = \dfrac13\).` },
+      { html: R`1/2`, fb: R`That is the hoop (\(c = 1\)). For a solid cylinder \(c = \tfrac12\).` },
+      { html: R`2/3`, fb: R`2/3 is the translational share. The rotational share is \(c/(1+c)\).` },
+      { html: R`It depends on its speed.`, fb: R`Both parts are proportional to \(v^2\), so the ratio is fixed by the shape.` }
+    ],
+    hints: [R`\(K_\text{rot}/K = c/(1+c)\).`],
+    solution: R`<p>\(K_\text{trans} = \tfrac12Mv^2\), \(K_\text{rot} = \tfrac12\cdot\tfrac12MR^2(v/R)^2 = \tfrac14Mv^2\). So \(K = \tfrac34Mv^2\) and the rotational share is \(\tfrac14/\tfrac34 = \tfrac13\).</p>` },
+  { type: 'num', kind: 'calc', unit: 'm/s', answer: 4.58, tolRel: 0.02,
+    prompt: R`<p>A solid sphere rolls from rest down a ramp, its center dropping 1.5&nbsp;m. How fast is it moving at the bottom?</p>`,
+    wrong: [ { val: 5.42, fb: R`That is the speed of a frictionless sliding block, \(\sqrt{2gh}\). A rolling sphere puts 2/7 of its energy into spin.` }, { val: 3.83, fb: R`That uses \(c = 1\) (a hoop). For a solid sphere \(c = 2/5\).` }, { val: 21, fb: R`That is \(v^2\). Take the square root.` } ],
+    hints: [R`\(Mgh = \tfrac12Mv^2(1 + \tfrac25)\).`],
+    solution: R`<p>\(v = \sqrt{\dfrac{2gh}{1+c}} = \sqrt{\dfrac{2(9.8)(1.5)}{1.4}} = \sqrt{21.0} = 4.6\ \text{m/s}\).</p>` },
+  { type: 'num', kind: 'calc', unit: 'J', answer: 314, tolRel: 0.02,
+    prompt: R`<p>A 7.0&nbsp;kg bowling ball (solid sphere) rolls without slipping at 8.0&nbsp;m/s. What is its total kinetic energy?</p>`,
+    wrong: [ { val: 224, fb: R`That is only the translational part. Add \(\tfrac12 I\omega^2 = \tfrac12\cdot\tfrac25Mv^2\).` }, { val: 89.6, fb: R`That is only the rotational part. Add \(\tfrac12Mv^2\).` }, { val: 448, fb: R`That uses \(c = 1\). A solid sphere has \(c = 2/5\).` } ],
+    hints: [R`\(K = \tfrac12Mv^2(1+c)\) with \(c = 2/5\). The radius is not needed.`],
+    solution: R`<p>\(K = \tfrac12(7.0)(8.0)^2(1.4) = 224 + 89.6 = 314\ \text{J}\).</p>` },
+  { type: 'num', kind: 'calc', unit: 'm', answer: 0.918, tolRel: 0.02,
+    prompt: R`<p>A hoop rolls without slipping at 3.0&nbsp;m/s toward a ramp, and rolls up it. How high does its center rise before it stops?</p>`,
+    wrong: [ { val: 0.459, fb: R`That is \(v^2/2g\), the height for a sliding block. The hoop’s rotational energy also turns into height: multiply by \(1+c = 2\).` }, { val: 1.84, fb: R`Check the factor: \(h = v^2(1+c)/(2g) = (9)(2)/(19.6)\).` } ],
+    hints: [R`\(\tfrac12Mv_0^2(1+c) = Mgh\) with \(c = 1\).`],
+    solution: R`<p>\(h = \dfrac{v_0^2(1+c)}{2g} = \dfrac{(3.0)^2(2)}{2(9.8)} = 0.92\ \text{m}\), twice as high as a sliding block launched at the same speed.</p>` }
+];
+
+/* ===================== progress, attempts, instructor mode ===================== */
+const MAX_TRIES = 3, STORE_KEY = 'rke-progress-v1', NAME_KEY = 'rke-names-v1', INSTR_KEY = 'rke-instructor';
+let INSTRUCTOR = false;
+try { INSTRUCTOR = sessionStorage.getItem(INSTR_KEY) === '1'; } catch (e) {}
+if (/(^#|[?&])instructor\b/.test(location.hash) || /[?&]instructor\b/.test(location.search)) {
+  INSTRUCTOR = true; try { sessionStorage.setItem(INSTR_KEY, '1'); } catch (e) {}
+  history.replaceState(null, '', location.pathname + location.search + '#overview');
+}
+let STATE = {};
+if (!INSTRUCTOR) { try { STATE = JSON.parse(localStorage.getItem(STORE_KEY) || '{}') || {}; } catch (e) { STATE = {}; } }
+function saveState() { if (INSTRUCTOR) return; try { localStorage.setItem(STORE_KEY, JSON.stringify(STATE)); } catch (e) {} }
+function allQuestionIds() { const ids = []; Object.keys(QUESTIONS).forEach(k => QUESTIONS[k].forEach((q, n) => ids.push(`${k}-${n + 1}`))); return ids; }
+
+/* ===================== part locking ===================== */
+const PART_ORDER = ['rot', 'work', 'roll'];
+const PART_NAMES = { rot: 'Part 1: Rotational kinetic energy', work: 'Part 2: The work–energy theorem', roll: 'Part 3: Rolling motion' };
+const PAGE_NEEDS = { work: ['rot'], roll: ['rot', 'work'], slip: ['rot', 'work'], summary: ['rot', 'work', 'roll'] };
+function partProgress(k) { const set = QUESTIONS[k]; let d = 0, ok = 0; set.forEach((q, n) => { const s = STATE[`${k}-${n + 1}`]; if (s && s.done) { d++; if (s.ok) ok++; } }); return { done: d, ok, total: set.length }; }
+function partDone(k) { const p = partProgress(k); return p.done === p.total; }
+function pageUnlocked(pg) { return INSTRUCTOR || (PAGE_NEEDS[pg] || []).every(partDone); }
+function renderLockPage(pg) {
+  const need = PAGE_NEEDS[pg].find(k => !partDone(k)), pr = partProgress(need);
+  $('[data-page="locked"] .lock-title').textContent = `${PAGE_TITLES[pg]} is locked`;
+  $('[data-page="locked"] .lock-body').innerHTML = `<p>The parts open in order. To unlock this page, finish all ${pr.total} questions in <strong>${PART_NAMES[need]}</strong> first: answer each one correctly, or use all ${MAX_TRIES} attempts.</p>
+    <p><strong>Your progress in ${PART_NAMES[need]}: ${pr.done} of ${pr.total} questions finished.</strong></p>
+    <p><a href="#practice-${need}">Go to the questions in ${PART_NAMES[need]}</a></p>
+    <p>The <a href="#overview">Overview</a> and the <a href="#itable">Moments of inertia</a> table are always open.</p>`;
+}
+function updateLocks() {
+  $$('nav.pages a').forEach(a => {
+    const pg = a.dataset.pg; if (!PAGE_NEEDS[pg]) return;
+    let mark = $('.lockmark', a); const locked = !pageUnlocked(pg);
+    if (locked && !mark) { mark = document.createElement('span'); mark.className = 'lockmark'; mark.innerHTML = '<span aria-hidden="true"> 🔒</span><span class="sr-only"> (locked)</span>'; a.appendChild(mark); }
+    if (!locked && mark) mark.remove();
+  });
+  $$('[data-practice]').forEach(host => {
+    const k = host.dataset.practice, el = $('.part-done', host), sc = $('.part-score', host); if (!el) return;
+    const pr = partProgress(k), next = PART_ORDER[PART_ORDER.indexOf(k) + 1];
+    if (sc) sc.textContent = `Finished: ${pr.done} of ${pr.total} · correct: ${pr.ok}.`;
+    if (pr.done === pr.total && !INSTRUCTOR) {
+      el.hidden = false;
+      el.innerHTML = next ? `🎉 <strong>Part complete (${pr.ok} of ${pr.total} correct).</strong> <a href="#${next}">${PART_NAMES[next]}</a> is now unlocked.`
+        : `🎉 <strong>Part 3 complete (${pr.ok} of ${pr.total} correct).</strong> The <a href="#summary">Summary</a> is now unlocked; your certificate is at the end of it.`;
+    } else el.hidden = true;
+  });
+  const fin = $('#finish'); if (fin) fin.hidden = !(INSTRUCTOR || PART_ORDER.every(partDone));
+}
+
+/* ===================== practice engine (3 attempts) ===================== */
+function buildPractice(host) {
+  const key = host.dataset.practice, set = QUESTIONS[key];
+  const nC = set.filter(q => q.kind === 'concept').length;
+  const intro = document.createElement('div');
+  intro.innerHTML = `<p class="progress">Questions 1–${nC} check ideas; questions ${nC + 1}–${set.length} need calculations. ${INSTRUCTOR ? 'Instructor mode: unlimited attempts, and the explanation can be opened at any time.' : `You have <strong>${MAX_TRIES} attempts</strong> per question. Hints are free. After a correct answer, or after the last attempt, the full explanation opens.`}</p><p class="part-score progress" aria-live="polite"></p>`;
+  host.appendChild(intro);
+  const doneNote = document.createElement('p'); doneNote.className = 'part-done'; doneNote.setAttribute('aria-live', 'polite'); doneNote.hidden = true;
+  set.forEach((q, n) => {
+    const qid = `${key}-${n + 1}`, id = uid('q'), box = document.createElement('section');
+    box.className = 'q'; box.setAttribute('aria-labelledby', `${id}h`);
+    let body = '';
+    if (q.type === 'mc') {
+      body = `<div id="${id}l" class="prompt">${q.prompt}</div><div role="radiogroup" aria-labelledby="${id}h ${id}l">` +
+        q.options.map((o, k) => `<label class="opt"><input type="radio" name="${id}" value="${k}"><span style="flex:1;min-width:0">${o.html}</span></label>`).join('') + `</div>`;
+    } else {
+      body = `<div id="${id}l">${q.prompt}</div><div class="num-row"><label for="${id}i"><strong>Your answer</strong></label><input type="text" inputmode="decimal" autocomplete="off" id="${id}i" aria-describedby="${id}u ${id}l"><span id="${id}u">${esc(q.unit)}</span></div>`;
+    }
+    box.innerHTML = `<div class="q-head"><h3 id="${id}h">Question ${n + 1}</h3><span class="q-kind">${q.kind === 'concept' ? 'Concept check' : 'Calculation'}</span></div>${body}
+      ${q.kind === 'concept' ? `<div class="reason"><label for="${id}r">Your reasoning in a sentence (for you or your group; not graded)</label><textarea id="${id}r" rows="2"></textarea></div>` : ''}
+      <p class="attempts"></p>
+      <div class="q-actions"><button type="button" class="primary chk">Check answer</button><button type="button" class="hintbtn">Show a hint (${q.hints.length} available)</button></div>
+      <div class="hints" aria-live="polite"></div>
+      <div class="feedback" role="status" aria-live="polite"></div>
+      <details class="solution"${INSTRUCTOR ? '' : ' hidden'}><summary>Full explanation</summary>${q.solution}</details>`;
+    host.appendChild(box);
+    const st = INSTRUCTOR ? { tries: 0, done: false, ok: false } : (STATE[qid] || (STATE[qid] = { tries: 0, done: false, ok: false }));
+    let hintN = 0;
+    const fbEl = $('.feedback', box), sol = $('.solution', box), hb = $('.hintbtn', box), chk = $('.chk', box), att = $('.attempts', box);
+    const answerText = () => q.type === 'mc' ? q.options.find(o => o.correct).html : `${Number(q.answer).toPrecision(3).replace('-', MINUS)} ${esc(q.unit)}`;
+    const showAttempts = () => {
+      if (INSTRUCTOR) { att.textContent = ''; return; }
+      att.textContent = st.done ? (st.ok ? `Finished: correct (${st.tries} attempt${st.tries === 1 ? '' : 's'} used).` : `Finished: no attempts left.`) : `Attempts left: ${MAX_TRIES - st.tries} of ${MAX_TRIES}.`;
+    };
+    function lock() { $$('input', box).forEach(i => { i.disabled = true; }); chk.disabled = true; sol.hidden = false; }
+    hb.addEventListener('click', () => {
+      if (hintN >= q.hints.length) return;
+      const h = document.createElement('p'); h.className = 'hint';
+      h.innerHTML = `<strong>Hint ${hintN + 1}.</strong> ${q.hints[hintN]}`;
+      $('.hints', box).appendChild(h); typeset(h); hintN++;
+      hb.textContent = hintN >= q.hints.length ? 'No more hints' : `Show another hint (${q.hints.length - hintN} left)`;
+      hb.disabled = hintN >= q.hints.length;
+    });
+    chk.addEventListener('click', () => {
+      if (st.done && !INSTRUCTOR) return;
+      let ok = false, msg = '';
+      if (q.type === 'mc') {
+        const sel = $(`input[name="${id}"]:checked`, box);
+        if (!sel) { fbEl.innerHTML = `<div class="fb bad"><strong>Choose an answer first.</strong>Pick the option you think is best, then select Check answer. This does not use an attempt.</div>`; return; }
+        const o = q.options[+sel.value]; ok = !!o.correct; msg = o.fb;
+      } else {
+        const inp = $(`#${id}i`, box), val = parseNum(inp.value);
+        if (isNaN(val)) { fbEl.innerHTML = `<div class="fb bad"><strong>Enter a number.</strong>Type a number such as 2.5 (the unit, ${esc(q.unit)}, is already given). This does not use an attempt.</div>`; inp.focus(); return; }
+        ok = close(val, q.answer, q);
+        if (ok) msg = `Your answer, ${val} ${esc(q.unit)}, matches ${Number(q.answer).toPrecision(3)} ${esc(q.unit)} within rounding.`;
+        else { const w = (q.wrong || []).find(w => close(val, w.val, { tolRel: 0.03 })); msg = w ? w.fb : `That is not it yet. Check the moment of inertia you used, the units (radians, revolutions) and the factors of ½. A hint may help.`; }
+      }
+      st.tries++;
+      const left = MAX_TRIES - st.tries;
+      fbEl.innerHTML = `<div class="fb ${ok ? 'good' : 'bad'}"><strong>${ok ? '✓ Correct.' : `✗ Not yet.${!INSTRUCTOR && left > 0 ? ` ${left} attempt${left === 1 ? '' : 's'} left.` : ''}`}</strong>${msg}</div>`;
+      if (!INSTRUCTOR && (ok || left === 0)) {
+        st.done = true; st.ok = ok; lock();
+        if (!ok) fbEl.innerHTML += `<div class="fb reveal"><strong>No attempts left.</strong>The correct answer is ${answerText()}. Read the full explanation below.</div>`;
+        saveState(); updateLocks();
+      } else if (INSTRUCTOR) sol.hidden = false;
+      else saveState();
+      typeset(fbEl); showAttempts();
+    });
+    if (st.done) { lock(); fbEl.innerHTML = `<div class="fb ${st.ok ? 'good' : 'reveal'}"><strong>${st.ok ? '✓ Answered correctly earlier.' : 'Finished earlier: no attempts left.'}</strong>${st.ok ? '' : `The correct answer is ${answerText()}.`}</div>`; }
+    showAttempts();
+  });
+  host.appendChild(doneNote);
+  saveState();
+}
+
+/* ===================== certificate of completion ===================== */
+function loadNames() { if (INSTRUCTOR) return null; try { return JSON.parse(localStorage.getItem(NAME_KEY) || 'null'); } catch (e) { return null; } }
+function saveNames(o) { if (INSTRUCTOR) return; try { localStorage.setItem(NAME_KEY, JSON.stringify(o)); } catch (e) {} }
+function fitFont(ctx, text, weight, size, maxW, family) { let s = size; do { ctx.font = `${weight} ${s}px ${family}`; s -= 2; } while (ctx.measureText(text).width > maxW && s > 18); return s + 2; }
+function drawCertificate(cv, info) {
+  const ctx = cv.getContext('2d'), W = cv.width, H = cv.height, FAM = '"Atkinson Hyperlegible Next", Verdana, sans-serif';
+  ctx.fillStyle = '#FFFDF7'; ctx.fillRect(0, 0, W, H);
+  ctx.strokeStyle = '#0E6A78'; ctx.lineWidth = 14; ctx.strokeRect(24, 24, W - 48, H - 48);
+  ctx.strokeStyle = '#7A2E6E'; ctx.lineWidth = 3; ctx.strokeRect(46, 46, W - 92, H - 92);
+  // rolling-objects motif in the corners
+  const motif = (x, y, s) => {
+    ctx.save(); ctx.translate(x, y); ctx.strokeStyle = '#A84A00'; ctx.lineWidth = 5; ctx.beginPath(); ctx.arc(0, 0, 18 * s, 0, 7); ctx.stroke();
+    ctx.fillStyle = '#0B5FA5'; ctx.beginPath(); ctx.arc(46 * s, 0, 18 * s, 0, 7); ctx.fill();
+    ctx.fillStyle = '#0E6A78'; ctx.beginPath(); ctx.arc(92 * s, 0, 18 * s, 0, 7); ctx.fill(); ctx.restore();
+  };
+  motif(96, 100, 1); motif(W - 188, 100, 1); motif(96, H - 100, 1); motif(W - 188, H - 100, 1);
+  ctx.textAlign = 'center';
+  ctx.fillStyle = '#7A2E6E'; ctx.font = `800 62px ${FAM}`; ctx.fillText('Certificate of Completion', W / 2, 190);
+  ctx.fillStyle = '#4A5565'; ctx.font = `400 26px ${FAM}`; ctx.fillText(info.names.length > 1 ? 'This certifies that' : 'This certifies that', W / 2, 252);
+  ctx.fillStyle = '#172033';
+  let y = 322;
+  info.names.forEach((n, i) => { fitFont(ctx, n, 800, 52, W - 300, FAM); ctx.fillText(n, W / 2, y); y += i === 0 && info.names.length > 1 ? 38 : 0; if (i === 0 && info.names.length > 1) { ctx.fillStyle = '#4A5565'; ctx.font = `400 26px ${FAM}`; ctx.fillText('and', W / 2, y); ctx.fillStyle = '#172033'; y += 64; } });
+  y += 58;
+  ctx.fillStyle = '#4A5565'; ctx.font = `400 26px ${FAM}`; ctx.fillText(info.names.length > 1 ? 'have completed the guided activity' : 'has completed the guided activity', W / 2, y);
+  ctx.fillStyle = '#0E6A78'; fitFont(ctx, 'Rotational Kinetic Energy and Rolling', 800, 44, W - 300, FAM); ctx.fillText('Rotational Kinetic Energy and Rolling', W / 2, y + 58);
+  ctx.fillStyle = '#172033'; ctx.font = `600 26px ${FAM}`; ctx.fillText('PHY2048 · Santa Fe College', W / 2, y + 102);
+  ctx.fillStyle = '#4A5565'; ctx.font = `400 24px ${FAM}`;
+  ctx.fillText(`${info.done} of ${info.total} questions completed · ${info.ok} answered correctly`, W / 2, y + 152);
+  ctx.fillText(`Issued ${info.when}${info.preview ? ' · INSTRUCTOR PREVIEW' : ''}`, W / 2, y + 188);
+}
+function initFinish() {
+  const sec = $('#finish'); if (!sec) return;
+  const n1 = $('#stuName', sec), n2 = $('#partnerName', sec), err = $('#stuNameErr', sec), out = $('#cardOut', sec), cv = $('#cardCanvas', sec), stat = $('#saveStatus', sec);
+  let current = null;
+  const saved = loadNames(); if (saved) { n1.value = saved.name || ''; n2.value = saved.partner || ''; }
+  async function make() {
+    const a = n1.value.trim().replace(/\s+/g, ' '), b = n2.value.trim().replace(/\s+/g, ' ');
+    if (!a) { err.hidden = false; n1.setAttribute('aria-invalid', 'true'); n1.focus(); return; }
+    err.hidden = true; n1.removeAttribute('aria-invalid');
+    const ids = allQuestionIds(); let done = 0, ok = 0; ids.forEach(i => { const s = STATE[i]; if (s && s.done) { done++; if (s.ok) ok++; } });
+    const prev = loadNames();
+    const when = (prev && prev.name === a && prev.partner === b && prev.when) ? prev.when : new Date().toLocaleString(undefined, { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+    saveNames({ name: a, partner: b, when });
+    current = { names: b ? [a, b] : [a], done: INSTRUCTOR ? ids.length : done, ok: INSTRUCTOR ? ids.length : ok, total: ids.length, when, preview: INSTRUCTOR };
+    try { if (document.fonts && document.fonts.ready) await document.fonts.ready; } catch (x) {}
+    drawCertificate(cv, current);
+    cv.setAttribute('aria-label', `Certificate of completion. This certifies that ${current.names.join(' and ')} ${current.names.length > 1 ? 'have' : 'has'} completed the guided activity Rotational Kinetic Energy and Rolling, PHY2048. ${current.done} of ${current.total} questions completed, ${current.ok} answered correctly. Issued ${when}.${INSTRUCTOR ? ' Instructor preview.' : ''}`);
+    out.hidden = false; stat.textContent = '';
+    $('#cardH', sec).focus();
+  }
+  $('#mkCard', sec).addEventListener('click', make);
+  [n1, n2].forEach(i => i.addEventListener('keydown', e => { if (e.key === 'Enter') make(); }));
+  $('#saveCard', sec).addEventListener('click', async () => {
+    if (!current) return;
+    stat.textContent = 'Preparing the image…';
+    const blob = await new Promise(r => cv.toBlob(r, 'image/png'));
+    const slug = current.names.map(n => n.normalize('NFD').replace(/[̀-ͯ]/g, '').replace(/[^A-Za-z0-9]+/g, '_').replace(/^_|_$/g, '')).filter(Boolean).join('_and_') || 'student';
+    const filename = `PHY2048_rotational_KE_certificate_${slug}.png`;
+    let dl = null;
+    try { dl = (window.claude && claude.use) ? await claude.use('downloads') : null; } catch (x) { dl = null; }
+    if (dl) {
+      try { await dl.save({ filename, data: blob }); stat.textContent = `Saved as ${filename}. Upload this image for credit.`; }
+      catch (x) { stat.textContent = x && x.code === 'declined' ? 'The save was cancelled. Select the button again when you are ready.' : 'Saving is not available here. Right-click (or long-press) the certificate and choose “Save image”, or take a screenshot of it.'; }
+    } else {
+      try { const l = document.createElement('a'); l.href = URL.createObjectURL(blob); l.download = filename; document.body.appendChild(l); l.click(); l.remove(); stat.textContent = 'If no download started, right-click (or long-press) the certificate and choose “Save image”, or take a screenshot of it.'; }
+      catch (x) { stat.textContent = 'Right-click (or long-press) the certificate and choose “Save image”, or take a screenshot of it.'; }
+    }
+  });
+}
+function initInstructorBanner() {
+  if (!INSTRUCTOR) return;
+  const b = document.createElement('div'); b.className = 'instr-banner'; b.setAttribute('role', 'region'); b.setAttribute('aria-label', 'Instructor mode');
+  b.innerHTML = `<strong>Instructor mode</strong> All parts unlocked · unlimited attempts · explanations open · nothing is saved. <button type="button">Leave instructor mode</button>`;
+  $('button', b).addEventListener('click', () => { try { sessionStorage.removeItem(INSTR_KEY); } catch (e) {} location.hash = '#overview'; location.reload(); });
+  document.body.insertBefore(b, $('header.sitebar'));
+}
+
+/* ===================== pages (hash routing) & theme ===================== */
+const PAGES = ['itable', 'overview', 'rot', 'work', 'roll', 'slip', 'summary'];
+const PAGE_TITLES = { itable: 'Moments of inertia', overview: 'Overview', rot: 'Part 1: Rotational kinetic energy', work: 'Part 2: The work–energy theorem', roll: 'Part 3: Rolling motion', slip: 'Slipping before rolling', summary: 'Summary', locked: 'Locked page' };
+let currentPage = null, routed = false;
+function route() {
+  const h = decodeURIComponent(location.hash.slice(1));
+  if (h === 'instructor') { try { sessionStorage.setItem(INSTR_KEY, '1'); } catch (e) {} location.replace(location.pathname + location.search + '#overview'); location.reload(); return; }
+  let pg = 'overview', target = null;
+  if (PAGES.includes(h)) pg = h;
+  else if (h) { const el = document.getElementById(h); const p = el && el.closest('[data-page]'); if (p) { pg = p.dataset.page; target = el; } }
+  if (!pageUnlocked(pg)) { renderLockPage(pg); pg = 'locked'; target = null; }
+  const changed = pg !== currentPage;
+  if (changed) {
+    document.dispatchEvent(new Event('pagechange'));
+    $$('[data-page]').forEach(p => { p.hidden = p.dataset.page !== pg; });
+    $$('nav.pages a').forEach(a => { if (a.dataset.pg === pg) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current'); });
+    document.title = `${PAGE_TITLES[pg]} | Rotational Kinetic Energy and Rolling (PHY2048)`;
+    $('#skipLink').setAttribute('href', `#main-${pg}`);
+    currentPage = pg;
+    requestAnimationFrame(() => { VIEWS.forEach(v => v.render()); document.dispatchEvent(new CustomEvent('pageshown', { detail: pg })); });
+  }
+  requestAnimationFrame(() => {
+    if (target) { target.scrollIntoView(); if (target.hasAttribute('tabindex')) target.focus({ preventScroll: true }); }
+    else if (changed || PAGES.includes(h)) {
+      window.scrollTo(0, 0);
+      if (routed) { const hd = $(`[data-page="${pg}"] h1`); if (hd) hd.focus({ preventScroll: true }); }
+    }
+    routed = true;
+  });
+}
+function initTheme() {
+  const sel = $('#themeSel');
+  let saved = 'auto';
+  try { saved = localStorage.getItem('kin-theme') || 'auto'; } catch (e) {}
+  const refresh = () => requestAnimationFrame(() => VIEWS.forEach(v => v.refresh()));
+  const apply = v => { if (v === 'auto') document.documentElement.removeAttribute('data-theme'); else document.documentElement.setAttribute('data-theme', v); refresh(); };
+  sel.value = saved; apply(saved);
+  sel.addEventListener('change', () => { apply(sel.value); try { localStorage.setItem('kin-theme', sel.value); } catch (e) {} });
+  try { const mq = window.matchMedia('(prefers-color-scheme: dark)'); if (mq.addEventListener) mq.addEventListener('change', refresh); else if (mq.addListener) mq.addListener(refresh); } catch (e) {}
+}
+function safe(label, fn) { try { fn(); } catch (e) { console.error(`[rot-ke] ${label} failed:`, e); } }
+function init() {
+  safe('theme', initTheme);
+  safe('instructor', initInstructorBanner);
+  $$('[data-practice]').forEach(el => safe('practice', () => buildPractice(el)));
+  $$('[data-widget]').forEach(el => safe(`widget ${el.dataset.widget}`, () => { const f = WIDGETS[el.dataset.widget]; if (f) f(el); }));
+  safe('finish', initFinish);
+  safe('locks', updateLocks);
+  safe('3-D colours', () => VIEWS.forEach(v => v.refresh()));
+  safe('toc', () => { if (window.matchMedia('(max-width: 900px)').matches) $$('.toc-details').forEach(d => { d.open = false; }); });
+  safe('routing', () => { window.addEventListener('hashchange', route); route(); });
+  let typesetting = false;
+  window.__typesetAll = () => {
+    if (typesetting || !(window.MathJax && MathJax.typesetPromise)) return;
+    typesetting = true;
+    MathJax.typesetPromise().catch(e => console.error('[rot-ke] MathJax:', e)).finally(() => { typesetting = false; });
+  };
+  if (window.__mjLoaded) window.__typesetAll();
+}
+if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
+
+</script>
+</body>
+</html>
+
+</body></html>
