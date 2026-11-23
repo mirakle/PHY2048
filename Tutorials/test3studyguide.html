@@ -1,0 +1,1178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>PHY2048 Test 3 Study Guide</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:ital,wght@0,400;0,700;1,400&family=Newsreader:opsz,wght@6..72,500;6..72,600&display=swap" rel="stylesheet">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']] },
+  svg: { fontCache: 'global' },
+  options: { menuOptions: { settings: { assistiveMml: true } } },
+  startup: { pageReady() { return MathJax.startup.defaultPageReady().then(() => { window.__mjReady = true; }); } }
+};
+</script>
+<script async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+:root{
+  --paper:#EEF2F5; --surface:#FFFFFF; --ink:#16233A; --muted:#4F5F73; --line:#CBD5E0; --track:#6E7B8C;
+  --accent:#2766D1; --accentInk:#FFFFFF; --chip:#E3EBF7; --chipInk:#1B4B9C;
+  --good:#0F7A5F; --bad:#C2352A; --goodBg:#E3F3EE; --badBg:#FBE8E6; --warn:#8A5200; --warnBg:#FFF1D6; --focus:#2766D1;
+  --c1:#2766D1; --c2:#B3500C; --c3:#0F7A5F; --c4:#7A3DB8; --c5:#B0283F;
+  --serif:'Newsreader', Georgia, 'Times New Roman', serif;
+  --sans:'Atkinson Hyperlegible', system-ui, -apple-system, 'Segoe UI', sans-serif;
+  color-scheme:light; box-sizing:border-box;
+  padding-top:env(safe-area-inset-top,0px); padding-bottom:env(safe-area-inset-bottom,0px);
+}
+@media (prefers-color-scheme: dark){
+  :root:not([data-theme="light"]){
+    --paper:#0F1720; --surface:#17212C; --ink:#E6EDF5; --muted:#A3B2C4; --line:#2B3949; --track:#7C8DA1;
+    --accent:#6FA6F5; --accentInk:#0F1720; --chip:#1E3350; --chipInk:#BFD6FB;
+    --good:#3CC39A; --bad:#FF7B6B; --goodBg:#12302A; --badBg:#3A1E1C; --warn:#F2B44A; --warnBg:#3A2A0E; --focus:#6FA6F5;
+    --c1:#6FA6F5; --c2:#F2A65C; --c3:#3CC39A; --c4:#C29BF2; --c5:#FF8A9B;
+    color-scheme:dark;
+  }
+}
+:root[data-theme="dark"]{
+  --paper:#0F1720; --surface:#17212C; --ink:#E6EDF5; --muted:#A3B2C4; --line:#2B3949; --track:#7C8DA1;
+  --accent:#6FA6F5; --accentInk:#0F1720; --chip:#1E3350; --chipInk:#BFD6FB;
+  --good:#3CC39A; --bad:#FF7B6B; --goodBg:#12302A; --badBg:#3A1E1C; --warn:#F2B44A; --warnBg:#3A2A0E; --focus:#6FA6F5;
+  --c1:#6FA6F5; --c2:#F2A65C; --c3:#3CC39A; --c4:#C29BF2; --c5:#FF8A9B;
+  color-scheme:dark;
+}
+html{scroll-padding-top:calc(env(safe-area-inset-top,0px) + 16px);}
+*,*::before,*::after{box-sizing:inherit;}
+body{margin:0;background:var(--paper);color:var(--ink);font-family:var(--sans);font-size:17px;line-height:1.6;}
+.skip{position:absolute;left:-9999px;top:8px;background:var(--ink);color:var(--paper);padding:8px 12px;border-radius:8px;z-index:30;}
+.skip:focus{left:12px;}
+:focus-visible{outline:3px solid var(--focus);outline-offset:2px;}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap;}
+a{color:var(--accent);text-underline-offset:3px;}
+h1,h2,h3,h4{font-family:var(--serif);font-weight:600;line-height:1.15;letter-spacing:-.01em;}
+h4{font-family:var(--sans);font-weight:700;font-size:17px;letter-spacing:0;margin:18px 0 6px;}
+button{font:inherit;cursor:pointer;}
+.btn{font-weight:700;border-radius:9px;padding:8px 16px;background:var(--accent);color:var(--accentInk);border:1.5px solid var(--accent);min-height:44px;}
+.btn.quiet{background:transparent;color:var(--ink);border-color:var(--track);}
+.btn.small{padding:5px 12px;font-size:15px;min-height:40px;}
+mjx-container{font-size:105% !important;}
+mjx-container[display="true"]{overflow-x:auto;overflow-y:hidden;}
+
+.layout{max-width:1180px;margin:0 auto;padding:24px 20px 80px;display:grid;grid-template-columns:240px minmax(0,1fr);gap:32px;align-items:start;}
+@media (max-width:900px){.layout{grid-template-columns:1fr;gap:16px;}}
+nav.toc{position:sticky;top:16px;font-size:15px;background:var(--surface);border:1px solid var(--line);border-radius:12px;padding:14px 14px 12px;}
+@media (max-width:900px){nav.toc{position:static;}}
+nav.toc h2{font-family:var(--sans);font-size:15px;margin:0 0 6px;color:var(--muted);letter-spacing:0;}
+nav.toc ol{list-style:none;margin:0;padding:0;}
+nav.toc a{display:block;padding:5px 6px;text-decoration:none;color:var(--ink);border-radius:6px;}
+nav.toc a:hover{background:var(--chip);}
+nav.toc .score{display:block;font-size:13px;color:var(--muted);}
+.tools{display:flex;flex-wrap:wrap;gap:6px;margin-top:12px;padding-top:10px;border-top:1px solid var(--line);}
+
+main{min-width:0;}
+.mast .course{margin:0 0 4px;color:var(--muted);font-size:15px;}
+.mast h1{font-size:clamp(32px,5.5vw,50px);margin:0 0 10px;}
+.lede{max-width:66ch;color:var(--muted);margin:0 0 6px;}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:20px 24px;margin-top:20px;}
+section.topic{margin-top:40px;}
+section.topic > h2{font-size:clamp(28px,4vw,36px);margin:0 0 4px;display:flex;gap:12px;align-items:baseline;flex-wrap:wrap;}
+section.topic > h2 .n{font-family:var(--sans);font-size:15px;font-weight:700;color:var(--accent);border:1.5px solid var(--accent);border-radius:999px;padding:1px 10px;letter-spacing:0;}
+.sub{color:var(--muted);margin:0 0 8px;max-width:70ch;}
+.card h3{font-size:24px;margin:0 0 8px;}
+.prose{max-width:72ch;}
+.prose p{margin:8px 0;}
+ul.tight{margin:6px 0;padding-left:22px;}
+ul.tight li{margin:4px 0;}
+.eq{margin:12px 0;padding:8px 14px;border:2px solid var(--c2);border-radius:8px;background:var(--warnBg);overflow-x:auto;}
+.eq.plain{border:1px dashed var(--track);background:transparent;}
+.trap{border-left:5px solid var(--bad);background:var(--badBg);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;}
+.trap h4{margin:0 0 4px;}
+.tip{border-left:5px solid var(--good);background:var(--goodBg);padding:10px 14px;border-radius:0 8px 8px 0;margin:12px 0;}
+.tip h4{margin:0 0 4px;}
+.goals{background:var(--chip);color:var(--ink);border-radius:10px;padding:10px 16px;margin:10px 0 0;}
+.goals h3{font-family:var(--sans);font-size:16px;margin:0 0 4px;letter-spacing:0;}
+.table-wrap{overflow-x:auto;margin:12px 0;}
+table{border-collapse:collapse;width:100%;font-size:16px;}
+caption{text-align:left;font-weight:700;padding:4px 0 8px;}
+th,td{border:1px solid var(--line);padding:7px 10px;text-align:left;vertical-align:top;}
+thead th{background:var(--paper);}
+
+/* visual tools */
+.tool{border:2px solid var(--accent);border-radius:14px;padding:16px 20px;margin-top:20px;background:var(--surface);}
+.tool > h3{font-size:22px;margin:0 0 4px;}
+.tool > h3::before{content:"Visual tool";font-family:var(--sans);font-size:14px;font-weight:700;color:var(--accent);letter-spacing:0;display:block;}
+.tool .how{color:var(--muted);margin:0 0 10px;}
+.ctrls{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:10px 22px;margin:10px 0;}
+.ctrl label{display:flex;justify-content:space-between;gap:8px;font-weight:700;font-size:15px;}
+.ctrl output{font-weight:400;font-variant-numeric:tabular-nums;}
+.ctrl input[type=range]{width:100%;accent-color:var(--accent);min-height:32px;}
+.ctrl select{font:inherit;color:var(--ink);background:var(--surface);border:1.5px solid var(--track);border-radius:8px;padding:6px 8px;min-height:40px;width:100%;}
+.fig{display:block;width:100%;height:auto;max-width:760px;margin:8px auto;color:var(--ink);}
+.fig text{fill:currentColor;font-family:var(--sans);}
+.readout{background:var(--paper);border-radius:10px;padding:10px 14px;margin-top:8px;font-variant-numeric:tabular-nums;}
+.readout strong{font-weight:700;}
+.btnrow{display:flex;flex-wrap:wrap;gap:8px;margin:8px 0;}
+.chk{display:flex;gap:8px;align-items:center;min-height:36px;}
+.chk input{width:18px;height:18px;accent-color:var(--accent);}
+fieldset.plain{border:0;padding:0;margin:0;min-width:0;}
+fieldset.plain legend{font-weight:700;font-size:15px;padding:0;margin-bottom:4px;}
+.shapes{display:flex;flex-wrap:wrap;gap:4px 18px;}
+.s-c1{stroke:var(--c1);} .f-c1{fill:var(--c1);}
+.s-c2{stroke:var(--c2);} .f-c2{fill:var(--c2);}
+.s-c3{stroke:var(--c3);} .f-c3{fill:var(--c3);}
+.s-c4{stroke:var(--c4);} .f-c4{fill:var(--c4);}
+.s-c5{stroke:var(--c5);} .f-c5{fill:var(--c5);}
+.s-ink{stroke:currentColor;} .f-ink{fill:currentColor;}
+.s-mut{stroke:var(--track);} .f-mut{fill:var(--track);}
+.f-surf{fill:var(--surface);} .f-paper{fill:var(--paper);}
+
+/* checkpoints */
+.cps{margin-top:22px;}
+.cps > h3{font-size:24px;margin:0 0 4px;}
+.cps > p{margin:0 0 6px;color:var(--muted);}
+.cp{background:var(--surface);border:1px solid var(--line);border-left:6px solid var(--track);border-radius:12px;padding:14px 18px;margin-top:12px;}
+.cp.ok{border-left-color:var(--good);} .cp.no{border-left-color:var(--bad);}
+.cp fieldset{border:0;padding:0;margin:0;min-width:0;}
+.cp legend{font-weight:700;padding:0;margin-bottom:8px;}
+.cp legend .tag{display:inline-block;font-size:13px;font-weight:700;background:var(--chip);color:var(--chipInk);border-radius:999px;padding:1px 9px;margin-right:6px;}
+.cp .opt{display:flex;gap:10px;align-items:flex-start;padding:6px 8px;border-radius:8px;min-height:40px;}
+.cp .opt:hover{background:var(--paper);}
+.cp .opt input{width:18px;height:18px;margin-top:4px;accent-color:var(--accent);flex:none;}
+.cp .act{display:flex;gap:8px;flex-wrap:wrap;margin-top:6px;}
+.fb{margin-top:8px;}
+.fb .verdict{font-weight:700;}
+.fb.ok .verdict{color:var(--good);} .fb.no .verdict{color:var(--bad);}
+.fb .ex{background:var(--paper);border-radius:8px;padding:8px 12px;margin-top:6px;}
+.secscore{font-weight:700;margin-top:10px;}
+
+.read{background:var(--chip);border:1.5px solid var(--accent);border-radius:12px;padding:12px 18px;margin:12px 0 0;}
+.read h3{font-family:var(--sans);font-size:17px;letter-spacing:0;margin:0 0 4px;color:var(--chipInk);}
+details.more{border:1.5px solid var(--line);border-radius:10px;margin:12px 0;background:var(--surface);}
+details.more > summary{cursor:pointer;padding:10px 14px;font-weight:700;color:var(--accent);min-height:44px;}
+details.more > div{padding:0 16px 12px;}
+.reslist{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:10px;margin:10px 0 0;padding:0;list-style:none;}
+.reslist a{display:block;border:1px solid var(--line);border-radius:10px;padding:10px 12px;background:var(--paper);text-decoration:none;color:var(--ink);height:100%;}
+.reslist a:hover{border-color:var(--accent);}
+.reslist .k{display:block;font-size:13px;color:var(--muted);font-weight:700;}
+footer{margin-top:40px;color:var(--muted);font-size:15px;}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto !important;transition:none !important;}}
+@media print{
+  body{background:#fff;color:#000;font-size:12pt;}
+  nav.toc,.skip,.tools,.btnrow,.cp .act{display:none !important;}
+  .layout{display:block;padding:0;}
+  .card,.tool,.cp{break-inside:avoid;border-color:#999;}
+  details.more > div{display:block !important;}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to main content</a>
+<div class="layout">
+<nav class="toc" aria-label="Study guide contents">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#start">How to use this guide</a></li>
+    <li><a href="#map">The big picture</a></li>
+    <li><a href="#we">1. Work and energy <span class="score" data-score="we"></span></a></li>
+    <li><a href="#lm">2. Linear momentum <span class="score" data-score="lm"></span></a></li>
+    <li><a href="#rk">3. Rotational kinematics and dynamics <span class="score" data-score="rk"></span></a></li>
+    <li><a href="#rr">4. Rotational energy and rolling <span class="score" data-score="rr"></span></a></li>
+    <li><a href="#am">5. Angular momentum <span class="score" data-score="am"></span></a></li>
+    <li><a href="#choose">Which principle do I use?</a></li>
+    <li><a href="#sheet">Equation sheet</a></li>
+    <li><a href="#res">Course resources and reading</a></li>
+  </ol>
+  <div class="tools" role="group" aria-label="Display options">
+    <button class="btn quiet small" id="themeBtn" type="button">Dark theme</button>
+    <button class="btn quiet small" id="smaller" type="button" aria-label="Make text smaller">A−</button>
+    <button class="btn quiet small" id="larger" type="button" aria-label="Make text larger">A+</button>
+    <button class="btn quiet small" id="resetBtn" type="button">Reset checkpoints</button>
+  </div>
+</nav>
+
+<main id="main" tabindex="-1">
+<header class="mast">
+  <p class="course">PHY2048, Santa Fe College</p>
+  <h1>Test 3 Study Guide</h1>
+  <p class="lede">Work and energy, linear momentum, rotational kinematics and dynamics, rotational kinetic energy and rolling, and angular momentum. Every section has the key ideas, the equations, the mistakes that cost the most points, a visual tool to explore, and checkpoints to test yourself.</p>
+</header>
+
+<section class="card" id="start" aria-labelledby="starth">
+  <h2 id="starth" style="font-size:26px;margin:0 0 6px">How to use this guide</h2>
+  <ol class="tight">
+    <li><strong>Read the key ideas</strong> of a section. Equations in orange boxes are the ones to know.</li>
+    <li><strong>Play with the visual tool.</strong> Predict what will happen before you move a slider, then check. Every tool also reports its result in words.</li>
+    <li><strong>Do the checkpoints.</strong> Pick an answer and select <em>Check</em>. You get feedback and the reasoning either way. Your score for each section appears in the contents.</li>
+    <li><strong>Miss one?</strong> Re-read the matching idea, then try a full problem in the <a href="https://claude.ai/artifact/PKN9MiPxLFwRUUQzHy4mZK">Test 3 Online Practice</a>.</li>
+  </ol>
+  <p class="prose">Use \(g = 9.8\ \text{m/s}^2\) throughout. Counterclockwise is positive for rotation. You will not be asked to compute integrals for a center of mass or a moment of inertia: use the table of moments of inertia.</p>
+</section>
+
+<section class="card" id="map" aria-labelledby="maph">
+  <h2 id="maph" style="font-size:26px;margin:0 0 6px">The big picture: every linear idea has a rotational twin</h2>
+  <p class="prose">Test 3 is really two stories told twice. Energy and momentum for an object moving along a line, then the same two ideas for an object turning about an axis. Learn the left column and you already know the right column: swap \(x \to \theta\), \(v \to \omega\), \(a \to \alpha\), \(m \to I\), \(F \to \tau\), \(p \to L\).</p>
+  <div class="table-wrap">
+  <table>
+    <caption>Linear quantities and their rotational counterparts</caption>
+    <thead><tr><th scope="col">Idea</th><th scope="col">Linear (sections 1–2)</th><th scope="col">Rotational (sections 3–5)</th><th scope="col">Link between them</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Position</th><td>\(x\) (m)</td><td>\(\theta\) (rad)</td><td>\(s = r\theta\)</td></tr>
+      <tr><th scope="row">Velocity</th><td>\(v\) (m/s)</td><td>\(\omega\) (rad/s)</td><td>\(v = r\omega\)</td></tr>
+      <tr><th scope="row">Acceleration</th><td>\(a\)</td><td>\(\alpha\)</td><td>\(a_t = r\alpha\)</td></tr>
+      <tr><th scope="row">Inertia</th><td>\(m\)</td><td>\(I = \sum m r^2\)</td><td>depends on the axis</td></tr>
+      <tr><th scope="row">Cause of change</th><td>\(F\)</td><td>\(\tau = rF\sin\theta\)</td><td>lever arm × force</td></tr>
+      <tr><th scope="row">Second law</th><td>\(\sum F = ma\)</td><td>\(\sum\tau = I\alpha\)</td><td></td></tr>
+      <tr><th scope="row">Work</th><td>\(W = Fd\cos\phi\)</td><td>\(W = \tau\,\Delta\theta\)</td><td></td></tr>
+      <tr><th scope="row">Kinetic energy</th><td>\(\tfrac12 mv^2\)</td><td>\(\tfrac12 I\omega^2\)</td><td>rolling has both</td></tr>
+      <tr><th scope="row">Power</th><td>\(P = Fv\)</td><td>\(P = \tau\omega\)</td><td></td></tr>
+      <tr><th scope="row">Momentum</th><td>\(p = mv\)</td><td>\(L = I\omega\)</td><td>\(\vec L = \vec r \times \vec p\)</td></tr>
+      <tr><th scope="row">Impulse</th><td>\(\Delta p = F\,\Delta t\)</td><td>\(\Delta L = \tau\,\Delta t\)</td><td></td></tr>
+      <tr><th scope="row">Conservation</th><td>no external force: \(p\) constant</td><td>no external torque: \(L\) constant</td><td></td></tr>
+    </tbody>
+  </table>
+  </div>
+</section>
+
+<!-- ===================================================== 1 WORK AND ENERGY -->
+<section class="topic" id="we" aria-labelledby="weh">
+  <h2 id="weh"><span class="n">Section 1</span>Work and energy</h2>
+  <p class="sub">Covered in: Work Done by a Force, Dot product and work practice, Energy Tutor, Skate Ramp Energy Lab.</p>
+  <aside class="read" aria-label="Reading in Knight, 5th edition"><h3>Read in Knight, 5th ed.</h3><ul class="tight"><li><strong>§9.1–9.2</strong> Energy overview; work and kinetic energy for a single particle</li><li><strong>§9.3</strong> Calculating the work done (dot product, varying forces)</li><li><strong>§9.4</strong> Restoring forces and the work done by a spring</li><li><strong>§9.5</strong> Dissipative forces and thermal energy</li><li><strong>§9.6</strong> Power</li><li><strong>§10.1–10.4</strong> Potential energy (gravitational, elastic) and conservation of energy</li><li><strong>§10.5–10.8</strong> Energy diagrams, force and potential energy, conservative and nonconservative forces, the energy principle</li></ul></aside>
+
+  <div class="card">
+    <h3>1a. Work done by a force</h3>
+    <div class="prose">
+      <p>Work is a <strong>scalar</strong> (joules). Only the part of the force along the displacement does work. Pick the method that matches what the problem gives you:</p>
+      <div class="table-wrap"><table>
+        <caption>Choosing a method for work</caption>
+        <thead><tr><th scope="col">The problem gives…</th><th scope="col">Use</th></tr></thead>
+        <tbody>
+          <tr><td>Magnitudes and the angle \(\phi\) between \(\vec F\) and \(\Delta\vec r\)</td><td>\(W = F\,d\cos\phi\)</td></tr>
+          <tr><td>Components (\(\hat\imath,\hat\jmath\) form)</td><td>\(W = F_x\Delta x + F_y\Delta y\)</td></tr>
+          <tr><td>A formula \(F(x)\)</td><td>\(W = \int_{x_i}^{x_f} F(x)\,dx\)</td></tr>
+          <tr><td>A graph of \(F\) versus \(x\)</td><td>signed area under the curve (below the axis counts negative)</td></tr>
+        </tbody>
+      </table></div>
+      <p>Positive work speeds an object up, negative work slows it down, and a force perpendicular to the motion (a normal force on a level floor, a vertical push on a sliding box) does <strong>zero</strong> work.</p>
+    </div>
+  </div>
+
+  <div class="tool" id="tWork">
+    <h3>The sign of work</h3>
+    <p class="how">A box slides to the right through a displacement \(d\). Change the angle between the force and the displacement and watch the component that does the work.</p>
+    <div class="ctrls">
+      <div class="ctrl"><label for="wF"><span>Force F</span> <output id="wFo" for="wF"></output></label><input type="range" id="wF" min="5" max="50" step="1" value="20"></div>
+      <div class="ctrl"><label for="wd"><span>Displacement d</span> <output id="wdo" for="wd"></output></label><input type="range" id="wd" min="1" max="10" step="0.5" value="5"></div>
+      <div class="ctrl"><label for="wphi"><span>Angle φ between F and d</span> <output id="wphio" for="wphi"></output></label><input type="range" id="wphi" min="0" max="180" step="5" value="30"></div>
+    </div>
+    <svg class="fig" id="wSvg" viewBox="0 0 640 300" role="img" aria-labelledby="wSvgT" aria-describedby="wOut">
+      <title id="wSvgT">Box on a floor with a force arrow at the chosen angle and its component along the motion</title>
+      <defs>
+        <marker id="ahF" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-c1"/></marker>
+        <marker id="ahP" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-c2"/></marker>
+        <marker id="ahD" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-c3"/></marker>
+      </defs>
+      <line x1="20" y1="250" x2="620" y2="250" class="s-ink" stroke-width="2"/>
+      <rect x="270" y="190" width="100" height="60" rx="4" class="f-paper s-ink" stroke-width="2"/>
+      <line id="wDisp" x1="200" y1="280" x2="450" y2="280" class="s-c3" stroke-width="4" marker-end="url(#ahD)"/>
+      <text x="20" y="285" font-size="16">displacement d</text>
+      <line id="wFarrow" x1="320" y1="140" x2="440" y2="80" class="s-c1" stroke-width="4" marker-end="url(#ahF)"/>
+      <text id="wFlab" x="445" y="75" font-size="16" font-weight="700">F</text>
+      <line id="wComp" x1="320" y1="140" x2="420" y2="140" class="s-c2" stroke-width="5" stroke-dasharray="8 5" marker-end="url(#ahP)"/>
+      <text id="wCompLab" x="330" y="100" font-size="15">F cos φ</text>
+      <path id="wArc" d="" fill="none" class="s-ink" stroke-width="1.5"/>
+      <text id="wArcLab" x="0" y="0" font-size="15">φ</text>
+    </svg>
+    <div class="readout" id="wOut" aria-live="polite"></div>
+  </div>
+
+  <div class="card">
+    <h3>1b. Kinetic energy and the work–energy theorem</h3>
+    <div class="prose">
+      <div class="eq">\[K = \tfrac12 mv^2 \qquad\qquad W_\text{net} = K_f - K_i\]</div>
+      <p>The <strong>net</strong> work (all forces together) equals the change in kinetic energy. \(K\) is never negative and grows with the <em>square</em> of the speed: doubling the speed quadruples \(K\).</p>
+      <p>Pushed over a fixed <strong>distance</strong>? Think work and energy. Pushed for a fixed <strong>time</strong>? Think impulse and momentum (section 2).</p>
+    </div>
+    <div class="trap"><h4>Traps</h4><ul class="tight">
+      <li>Forgetting the initial kinetic energy when the object is already moving.</li>
+      <li>Adding work to a speed. Work changes \(K\); solve for \(v_f = \sqrt{v_i^2 + 2W_\text{net}/m}\) and keep the square root.</li>
+    </ul></div>
+  </div>
+
+  <div class="card">
+    <h3>1c. Potential energy, friction and conservation of energy</h3>
+    <div class="prose">
+      <p>A conservative force (gravity, a spring) stores energy you can get back: \(\Delta U = -W_c\).</p>
+      <div class="eq">\[U_g = mgy \qquad U_e = \tfrac12 kx^2 \qquad \Delta E_\text{th} = f_k d = \mu_k F_N d\]</div>
+      <p>Write the energy bar chart as an equation. Both sides must balance:</p>
+      <div class="eq">\[K_i + U_{gi} + U_{ei} + W_\text{ext} = K_f + U_{gf} + U_{ef} + \Delta E_\text{th}\]</div>
+      <ol class="tight">
+        <li>Choose the system, the initial state and the final state.</li>
+        <li>Decide which bars are zero (starts from rest? spring relaxed? chosen \(y = 0\)?).</li>
+        <li>On an incline, \(F_N = mg\cos\theta\) and the sliding distance is \(d = h/\sin\theta\), not \(h\).</li>
+      </ol>
+      <p>With no friction, the speed after dropping a height \(h\) from rest is \(\sqrt{2gh}\), whatever the path or the mass. Power is the rate of doing work: \(P = dW/dt = Fv\), in watts.</p>
+    </div>
+    <div class="trap"><h4>Traps</h4><ul class="tight">
+      <li>Using the height of the incline as the friction distance.</li>
+      <li>Dropping the ½ in \(\tfrac12 kx^2\).</li>
+      <li>Counting gravity twice: use either \(W_\text{gravity}\) or \(U_g\), never both.</li>
+    </ul></div>
+  </div>
+
+  <div class="tool" id="tBars">
+    <h3>Energy bar chart: a block sliding down an incline</h3>
+    <p class="how">The block starts at the top with speed \(v_0\) and slides down. Kinetic friction acts the whole way. Watch how the initial energy is shared at the end.</p>
+    <div class="ctrls">
+      <div class="ctrl"><label for="bm"><span>Mass m</span> <output id="bmo" for="bm"></output></label><input type="range" id="bm" min="1" max="10" step="0.5" value="2"></div>
+      <div class="ctrl"><label for="bh"><span>Height h</span> <output id="bho" for="bh"></output></label><input type="range" id="bh" min="0.5" max="5" step="0.1" value="2"></div>
+      <div class="ctrl"><label for="bth"><span>Incline angle θ</span> <output id="btho" for="bth"></output></label><input type="range" id="bth" min="10" max="70" step="1" value="30"></div>
+      <div class="ctrl"><label for="bmu"><span>Kinetic friction μ<sub>k</sub></span> <output id="bmuo" for="bmu"></output></label><input type="range" id="bmu" min="0" max="1" step="0.01" value="0.2"></div>
+      <div class="ctrl"><label for="bv"><span>Initial speed v<sub>0</sub></span> <output id="bvo" for="bv"></output></label><input type="range" id="bv" min="0" max="6" step="0.1" value="0"></div>
+    </div>
+    <svg class="fig" id="bSvg" viewBox="0 0 640 300" role="img" aria-labelledby="bSvgT" aria-describedby="bOut"><title id="bSvgT">Energy bar chart, initial state on the left and final state on the right</title></svg>
+    <div class="readout" id="bOut" aria-live="polite"></div>
+  </div>
+
+  <div class="cps" data-sec="we"><h3>Checkpoints: work and energy</h3><p>Choose an answer, then select Check.</p></div>
+</section>
+
+<!-- ===================================================== 2 LINEAR MOMENTUM -->
+<section class="topic" id="lm" aria-labelledby="lmh">
+  <h2 id="lmh"><span class="n">Section 2</span>Linear momentum</h2>
+  <p class="sub">Covered in: Momentum and Impulse interactive tutorial.</p>
+  <aside class="read" aria-label="Reading in Knight, 5th edition"><h3>Read in Knight, 5th ed.</h3><ul class="tight"><li><strong>§11.1</strong> Momentum and impulse</li><li><strong>§11.2</strong> Conservation of momentum</li><li><strong>§11.3</strong> Collisions</li><li><strong>§11.4</strong> Explosions</li><li><strong>§11.5</strong> Momentum in two dimensions</li></ul></aside>
+
+  <div class="card">
+    <h3>2a. Momentum and impulse</h3>
+    <div class="prose">
+      <div class="eq">\[\vec p = m\vec v \qquad\qquad \vec J = \Delta\vec p = \int \vec F\,dt = \vec F_\text{avg}\,\Delta t\]</div>
+      <ul class="tight">
+        <li>Momentum is a <strong>vector</strong>: keep the sign of every velocity.</li>
+        <li>Impulse is the signed <strong>area under an F–t graph</strong>, not its height.</li>
+        <li>The same net force for the same time gives the same \(\Delta p\), whatever the mass. (The light object ends up faster, but with the same momentum change.)</li>
+        <li>A bounce gives a bigger \(\Delta p\) than a stop: \(\Delta p = m(v_f - v_i)\) with \(v_f\) of opposite sign.</li>
+        <li>Newton's second law in its general form: \(\sum\vec F = d\vec p/dt\).</li>
+      </ul>
+    </div>
+    <svg class="fig" viewBox="0 0 640 230" role="img" aria-labelledby="ftT ftD" style="max-width:560px">
+      <title id="ftT">Force versus time during a collision</title>
+      <desc id="ftD">A force rises from zero to a peak and falls back to zero over a short time. The shaded area under the curve is the impulse. A dashed rectangle with the same area has height equal to the average force.</desc>
+      <line x1="60" y1="190" x2="600" y2="190" class="s-ink" stroke-width="2"/>
+      <line x1="60" y1="190" x2="60" y2="20" class="s-ink" stroke-width="2"/>
+      <text x="595" y="214" font-size="16" text-anchor="end">time t</text>
+      <text x="20" y="30" font-size="16">F</text>
+      <path d="M120 190 C 200 190, 230 40, 300 40 C 370 40, 400 190, 480 190 Z" class="f-c1" fill-opacity="0.25"/>
+      <path d="M120 190 C 200 190, 230 40, 300 40 C 370 40, 400 190, 480 190" fill="none" class="s-c1" stroke-width="3"/>
+      <rect x="120" y="112" width="360" height="78" fill="none" class="s-c2" stroke-width="2.5" stroke-dasharray="7 5"/>
+      <text x="300" y="150" font-size="16" text-anchor="middle" font-weight="700">area = impulse J = Δp</text>
+      <text x="488" y="108" font-size="15">F<tspan font-size="11" dy="4">avg</tspan><tspan dy="-4"> (dashed: same area)</tspan></text>
+      <text x="300" y="212" font-size="15" text-anchor="middle">Δt</text>
+    </svg>
+    <p class="prose">Text description: the impulse is the area between the force curve and the time axis. The average force is the height of a rectangle with the same area and the same duration \(\Delta t\), so \(J = F_\text{avg}\Delta t\).</p>
+  </div>
+
+  <div class="card">
+    <h3>2b. Collisions and conservation of momentum</h3>
+    <div class="prose">
+      <p>For an isolated system (no net external force), the total momentum is the same before and after any collision or explosion:</p>
+      <div class="eq">\[m_1v_{1i} + m_2v_{2i} = m_1v_{1f} + m_2v_{2f}\]</div>
+      <p>The second equation describes the bounce, with the coefficient of restitution \(r\):</p>
+      <div class="eq">\[v_{2f} - v_{1f} = r\,(v_{1i} - v_{2i})\]</div>
+      <div class="table-wrap"><table>
+        <caption>Types of collisions</caption>
+        <thead><tr><th scope="col">Type</th><th scope="col">\(r\)</th><th scope="col">Momentum</th><th scope="col">Kinetic energy</th></tr></thead>
+        <tbody>
+          <tr><th scope="row">Elastic</th><td>1</td><td>conserved</td><td>conserved</td></tr>
+          <tr><th scope="row">Partially inelastic</th><td>between 0 and 1</td><td>conserved</td><td>some lost to heat and sound</td></tr>
+          <tr><th scope="row">Perfectly inelastic (stick)</th><td>0</td><td>conserved</td><td>maximum loss; \(v_f = \dfrac{m_1v_{1i}+m_2v_{2i}}{m_1+m_2}\)</td></tr>
+        </tbody>
+      </table></div>
+      <p>The two objects receive equal and opposite impulses (Newton's third law). Total energy is always conserved; only <em>kinetic</em> energy can be lost.</p>
+    </div>
+    <div class="trap"><h4>Traps</h4><ul class="tight">
+      <li>Writing the restitution equation with the velocities in the wrong order.</li>
+      <li>Forgetting the minus sign of an object moving left.</li>
+      <li>Assuming kinetic energy is conserved in every collision.</li>
+    </ul></div>
+  </div>
+
+  <div class="tool" id="tCol">
+    <h3>Collision lab on a track</h3>
+    <p class="how">Two carts on a frictionless track. Right is positive. Set the masses, the velocities and the restitution, then play the collision. The table checks momentum and kinetic energy for you.</p>
+    <div class="ctrls">
+      <div class="ctrl"><label for="cm1"><span>Cart 1 mass</span> <output id="cm1o" for="cm1"></output></label><input type="range" id="cm1" min="0.5" max="5" step="0.5" value="2"></div>
+      <div class="ctrl"><label for="cv1"><span>Cart 1 velocity</span> <output id="cv1o" for="cv1"></output></label><input type="range" id="cv1" min="-4" max="4" step="0.5" value="3"></div>
+      <div class="ctrl"><label for="cm2"><span>Cart 2 mass</span> <output id="cm2o" for="cm2"></output></label><input type="range" id="cm2" min="0.5" max="5" step="0.5" value="1"></div>
+      <div class="ctrl"><label for="cv2"><span>Cart 2 velocity</span> <output id="cv2o" for="cv2"></output></label><input type="range" id="cv2" min="-4" max="4" step="0.5" value="0"></div>
+      <div class="ctrl"><label for="cr"><span>Restitution r</span> <output id="cro" for="cr"></output></label><input type="range" id="cr" min="0" max="1" step="0.05" value="0"></div>
+    </div>
+    <div class="btnrow"><button class="btn" type="button" id="cPlay">Play collision</button><button class="btn quiet" type="button" id="cReset">Reset carts</button></div>
+    <svg class="fig" id="cSvg" viewBox="0 0 640 170" role="img" aria-labelledby="cSvgT" aria-describedby="cOut">
+      <title id="cSvgT">Two carts on a track with velocity arrows</title>
+      <defs><marker id="ahV" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-ink"/></marker></defs>
+      <line x1="10" y1="130" x2="630" y2="130" class="s-ink" stroke-width="3"/>
+      <g id="cart1"><rect x="-40" y="-40" width="80" height="40" rx="6" class="f-c1" fill-opacity=".85"/><text x="0" y="-14" text-anchor="middle" font-size="16" font-weight="700" class="f-surf" style="fill:var(--surface)">1</text><circle cx="-24" cy="4" r="6" class="f-ink"/><circle cx="24" cy="4" r="6" class="f-ink"/></g>
+      <g id="cart2"><rect x="-40" y="-40" width="80" height="40" rx="6" class="f-c2" fill-opacity=".85"/><text x="0" y="-14" text-anchor="middle" font-size="16" font-weight="700" style="fill:var(--surface)">2</text><circle cx="-24" cy="4" r="6" class="f-ink"/><circle cx="24" cy="4" r="6" class="f-ink"/></g>
+      <line id="cA1" class="s-ink" stroke-width="3" marker-end="url(#ahV)"/>
+      <line id="cA2" class="s-ink" stroke-width="3" marker-end="url(#ahV)"/>
+      <text id="cT1" font-size="15" text-anchor="middle"></text>
+      <text id="cT2" font-size="15" text-anchor="middle"></text>
+      <text id="cStage" x="320" y="160" font-size="15" text-anchor="middle"></text>
+    </svg>
+    <div class="table-wrap"><table id="cTab"><caption>Before and after the collision</caption>
+      <thead><tr><th scope="col">Quantity</th><th scope="col">Before</th><th scope="col">After</th></tr></thead><tbody></tbody></table></div>
+    <div class="readout" id="cOut" aria-live="polite"></div>
+  </div>
+
+  <div class="cps" data-sec="lm"><h3>Checkpoints: linear momentum</h3><p>Choose an answer, then select Check.</p></div>
+</section>
+
+<!-- ===================================================== 3 ROTATIONAL KINEMATICS & DYNAMICS -->
+<section class="topic" id="rk" aria-labelledby="rkh">
+  <h2 id="rkh"><span class="n">Section 3</span>Rotational kinematics and dynamics</h2>
+  <p class="sub">Covered in: Rigid Bodies Part 1, Demo Problem: Spinning Up a Bar. Includes center of mass and torque, which are also on Test 3.</p>
+  <aside class="read" aria-label="Reading in Knight, 5th edition"><h3>Read in Knight, 5th ed.</h3><ul class="tight"><li><strong>§4.4–4.6</strong> Uniform circular motion, centripetal acceleration, nonuniform circular motion (review: angular variables, a<sub>t</sub> and a<sub>c</sub>)</li><li><strong>§12.1</strong> Rotational motion</li><li><strong>§12.2</strong> Rotation about the center of mass (center of mass)</li><li><strong>§12.4</strong> Calculating moment of inertia (parallel-axis theorem)</li><li><strong>§12.5</strong> Torque</li><li><strong>§12.6–12.7</strong> Rotational dynamics; rotation about a fixed axis</li><li><strong>§12.8</strong> Static equilibrium</li></ul></aside>
+
+  <div class="card">
+    <h3>3a. Describing rotation</h3>
+    <div class="prose">
+      <p>Angle \(\theta\) in radians, angular velocity \(\omega = d\theta/dt\), angular acceleration \(\alpha = d\omega/dt\). With constant \(\alpha\), the equations are the linear ones with new letters:</p>
+      <div class="eq">\[\omega = \omega_0 + \alpha t \qquad \theta = \omega_0 t + \tfrac12\alpha t^2 \qquad \omega^2 = \omega_0^2 + 2\alpha\,\Delta\theta\]</div>
+      <p>A point at distance \(r\) from the axis has speed \(v = r\omega\), a tangential acceleration \(a_t = r\alpha\) (speeding up or slowing down) and a centripetal acceleration \(a_c = \omega^2 r\) (pointing to the axis). These are different: a wheel just starting from rest has \(a_t \ne 0\) but \(a_c = 0\).</p>
+      <p>Conversions: \(1\ \text{rev} = 2\pi\ \text{rad}\); \(\text{rpm} \times 2\pi/60 = \text{rad/s}\).</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>3b. Center of mass</h3>
+    <div class="prose">
+      <div class="eq">\[x_\text{cm} = \frac{\sum m_i x_i}{M} \qquad y_\text{cm} = \frac{\sum m_i y_i}{M}\]</div>
+      <p>A mass-weighted average: the center of mass sits closer to the heavier parts. For a uniform plate, split it into rectangles and weight each one by its area; for thin rods, weight by length. A symmetric uniform object has its center of mass on its line of symmetry.</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>3c. Torque and static equilibrium</h3>
+    <div class="prose">
+      <div class="eq">\[\tau = rF\sin\theta = (\text{lever arm})\times F \qquad \vec\tau = \vec r\times\vec F\]</div>
+      <p>\(r\) is measured from the <strong>pivot</strong> to where the force acts; \(\theta\) is the angle between \(\vec r\) and \(\vec F\). The lever arm \(r\sin\theta\) is the perpendicular distance from the pivot to the line of action. Counterclockwise is positive. Decide each sign from the way that force <em>alone</em> would turn the object.</p>
+      <p><strong>Static equilibrium:</strong> \(\sum F = 0\) and \(\sum\tau = 0\) about <em>any</em> point. A uniform beam's weight acts at its center. Choose the pivot at an unknown force to remove it from the torque equation.</p>
+    </div>
+  </div>
+
+  <div class="tool" id="tTorque">
+    <h3>Torque on a bar</h3>
+    <p class="how">A 1 m bar is pinned at its left end. Move where the force acts, its size and its direction. The dashed line is the line of action; the dotted segment is the lever arm.</p>
+    <div class="ctrls">
+      <div class="ctrl"><label for="tr"><span>Distance from pivot r</span> <output id="tro" for="tr"></output></label><input type="range" id="tr" min="0" max="1" step="0.05" value="0.8"></div>
+      <div class="ctrl"><label for="tF"><span>Force F</span> <output id="tFo" for="tF"></output></label><input type="range" id="tF" min="0" max="40" step="1" value="20"></div>
+      <div class="ctrl"><label for="tth"><span>Angle θ from the bar</span> <output id="ttho" for="tth"></output></label><input type="range" id="tth" min="0" max="360" step="5" value="60"></div>
+    </div>
+    <svg class="fig" id="tSvg" viewBox="0 0 640 470" role="img" aria-labelledby="tSvgT" aria-describedby="tOut">
+      <title id="tSvgT">A bar pinned at its left end with a force applied along it</title>
+      <defs><marker id="ahT" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-c1"/></marker>
+      <marker id="ahR" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-c4"/></marker></defs>
+      <line id="tLoa" class="s-mut" stroke-width="1.5" stroke-dasharray="8 6"/>
+      <line id="tArm" class="s-c2" stroke-width="4" stroke-dasharray="2 5" stroke-linecap="round"/>
+      <rect x="80" y="227" width="440" height="16" rx="5" class="f-paper s-ink" stroke-width="2"/>
+      <circle cx="80" cy="235" r="9" class="f-ink"/>
+      <text x="64" y="240" font-size="15" text-anchor="end">pivot</text>
+      <line id="tFarrow" class="s-c1" stroke-width="4" marker-end="url(#ahT)"/>
+      <circle id="tDot" r="5" class="f-c1"/>
+      <text id="tFlab" font-size="16" font-weight="700">F</text>
+      <path id="tRot" fill="none" class="s-c4" stroke-width="3" marker-end="url(#ahR)"/>
+      <text id="tRotLab" x="80" y="80" font-size="15" text-anchor="middle"></text>
+    </svg>
+    <div class="readout" id="tOut" aria-live="polite"></div>
+  </div>
+
+  <div class="card">
+    <h3>3d. Moment of inertia and Newton's second law for rotation</h3>
+    <div class="prose">
+      <div class="eq">\[\sum\tau = I\alpha \qquad I = \sum m_i r_i^2 \qquad I = I_\text{cm} + Md^2\]</div>
+      <p>\(I\) measures how hard it is to change the rotation. It depends on the mass <strong>and on where the mass is relative to the axis</strong>. The parallel-axis theorem moves the axis a distance \(d\) away from the center of mass, and \(I\) always gets bigger.</p>
+    </div>
+    <svg class="fig" viewBox="0 0 700 190" role="img" aria-labelledby="miT miD">
+      <title id="miT">Common moments of inertia</title>
+      <desc id="miD">Six shapes with their moments of inertia, listed in the table that follows.</desc>
+      <g transform="translate(60,80)"><circle r="42" fill="none" class="s-c1" stroke-width="6"/><circle r="3" class="f-ink"/><text y="78" text-anchor="middle" font-size="15">hoop: MR²</text></g>
+      <g transform="translate(175,80)"><circle r="42" class="f-c1" fill-opacity=".35" style="stroke:var(--c1)" stroke-width="2"/><circle r="3" class="f-ink"/><text y="78" text-anchor="middle" font-size="15">disk: ½MR²</text></g>
+      <g transform="translate(290,80)"><circle r="42" class="f-c3" fill-opacity=".35"/><ellipse rx="42" ry="12" fill="none" class="s-c3" stroke-width="1.5"/><circle r="3" class="f-ink"/><text y="78" text-anchor="middle" font-size="15">solid sphere: ⅖MR²</text></g>
+      <g transform="translate(410,80)"><circle r="42" fill="none" class="s-c3" stroke-width="5"/><ellipse rx="42" ry="12" fill="none" class="s-c3" stroke-width="1.5" stroke-dasharray="4 4"/><circle r="3" class="f-ink"/><text y="78" text-anchor="middle" font-size="15">hollow sphere: ⅔MR²</text></g>
+      <g transform="translate(540,80)"><rect x="-55" y="-6" width="110" height="12" class="f-c2" fill-opacity=".6"/><line x1="0" y1="-30" x2="0" y2="30" class="s-ink" stroke-width="2" stroke-dasharray="4 3"/><text y="78" text-anchor="middle" font-size="15">rod, center: ML²/12</text></g>
+      <g transform="translate(640,80)"><rect x="-35" y="-6" width="80" height="12" class="f-c2" fill-opacity=".6"/><line x1="-35" y1="-30" x2="-35" y2="30" class="s-ink" stroke-width="2" stroke-dasharray="4 3"/><text x="0" y="78" text-anchor="middle" font-size="15">rod, end: ML²/3</text></g>
+    </svg>
+    <div class="table-wrap"><table>
+      <caption>Moments of inertia used in this course (\(I = cMR^2\) for round objects)</caption>
+      <thead><tr><th scope="col">Object (axis through center unless noted)</th><th scope="col">\(I\)</th><th scope="col">shape factor \(c\)</th></tr></thead>
+      <tbody>
+        <tr><td>Thin hoop or thin-walled cylinder</td><td>\(MR^2\)</td><td>1</td></tr>
+        <tr><td>Solid disk or solid cylinder</td><td>\(\tfrac12 MR^2\)</td><td>1/2</td></tr>
+        <tr><td>Solid sphere</td><td>\(\tfrac25 MR^2\)</td><td>2/5</td></tr>
+        <tr><td>Hollow (thin-walled) sphere, like a basketball</td><td>\(\tfrac23 MR^2\)</td><td>2/3</td></tr>
+        <tr><td>Thin rod about its center</td><td>\(\tfrac1{12} ML^2\)</td><td>—</td></tr>
+        <tr><td>Thin rod about one end</td><td>\(\tfrac13 ML^2\)</td><td>—</td></tr>
+        <tr><td>Point mass at distance \(r\)</td><td>\(mr^2\)</td><td>—</td></tr>
+      </tbody>
+    </table></div>
+    <div class="tip"><h4>Check the parallel-axis theorem yourself</h4><p>Rod about its end: \(I_\text{cm} + M(L/2)^2 = \tfrac1{12}ML^2 + \tfrac14 ML^2 = \tfrac13 ML^2\). ✓</p></div>
+    <div class="trap"><h4>Traps</h4><ul class="tight">
+      <li>Using \(I\) about the center when the rod is pinned at its end.</li>
+      <li>Measuring distances from the end of the stick instead of from the pivot.</li>
+      <li>Forgetting the beam's own weight at its center.</li>
+      <li>Using rpm or revolutions in a formula that needs rad/s or radians; or leaving radians when the question asks for rotations.</li>
+    </ul></div>
+  </div>
+
+  <div class="cps" data-sec="rk"><h3>Checkpoints: rotational kinematics and dynamics</h3><p>Choose an answer, then select Check.</p></div>
+</section>
+
+<!-- ===================================================== 4 ROTATIONAL KE AND ROLLING -->
+<section class="topic" id="rr" aria-labelledby="rrh">
+  <h2 id="rrh"><span class="n">Section 4</span>Rotational kinetic energy and rolling motion</h2>
+  <p class="sub">Covered in: Rigid Bodies Part 2, Rotational Kinetic Energy and Rolling.</p>
+  <aside class="read" aria-label="Reading in Knight, 5th edition"><h3>Read in Knight, 5th ed.</h3><ul class="tight"><li><strong>§12.3</strong> Rotational energy</li><li><strong>§12.9</strong> Rolling motion</li></ul></aside>
+
+  <div class="card">
+    <h3>4a. Rotational kinetic energy and work by a torque</h3>
+    <div class="prose">
+      <div class="eq">\[K_\text{rot} = \tfrac12 I\omega^2 \qquad W = \tau\,\Delta\theta = \Delta\big(\tfrac12 I\omega^2\big) \qquad P = \tau\omega\]</div>
+      <p>\(\Delta\theta\) must be in radians. A braking torque does negative work and removes rotational kinetic energy.</p>
+      <p><strong>Ranking spinning shapes depends on what is held equal.</strong> Same \(M\), \(R\) and \(\omega\): the hoop has the most \(K_\text{rot}\) (largest \(c\)). Same angular momentum: the hoop has the least, since \(K = L^2/2I\).</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>4b. Rolling without slipping</h3>
+    <div class="prose">
+      <div class="eq">\[v_\text{cm} = R\omega \qquad a_\text{cm} = R\alpha \qquad K = \tfrac12 Mv_\text{cm}^2 + \tfrac12 I_\text{cm}\omega^2 = \tfrac12 Mv_\text{cm}^2\,(1+c)\]</div>
+      <p>A rolling object moves <em>and</em> spins. The fraction of its kinetic energy that is rotational is \(c/(1+c)\): half for a hoop, one-third for a solid cylinder, 2/7 for a solid sphere.</p>
+      <p><strong>Rolling down a height \(h\) from rest</strong> (energy is conserved: static friction does no work because the contact point does not slide):</p>
+      <div class="eq">\[v = \sqrt{\frac{2gh}{1+c}} \qquad a = \frac{g\sin\theta}{1+c}\]</div>
+      <p>Mass and radius cancel. Only the shape factor \(c\) matters, so the race order is always: solid sphere (2/5), solid cylinder (1/2), hollow sphere (2/3), hoop (1). A frictionless sliding block (\(c = 0\)) would beat them all.</p>
+      <p><strong>Rolling uphill</strong> from speed \(v_0\): the rotational energy also turns into height, so \(h = v_0^2(1+c)/2g\). At the same starting speed the hoop climbs highest.</p>
+    </div>
+    <div class="trap"><h4>Traps</h4><ul class="tight">
+      <li>Forgetting the rotational term, which gives the sliding-block answer \(\sqrt{2gh}\).</li>
+      <li>Using the wrong \(c\) for the shape.</li>
+      <li>Thinking heavier or bigger objects roll down faster.</li>
+      <li>Thinking static friction does work on an object rolling without slipping.</li>
+    </ul></div>
+  </div>
+
+  <div class="tool" id="tRace">
+    <h3>The rolling race</h3>
+    <p class="how">Each shape is released from rest at the top of the same incline. Predict the order, then run the race (shown 3 times slower than real time). The table gives the exact times and speeds.</p>
+    <div class="ctrls">
+      <div class="ctrl"><label for="rh"><span>Height h</span> <output id="rho" for="rh"></output></label><input type="range" id="rh" min="0.2" max="3" step="0.1" value="1"></div>
+      <div class="ctrl"><label for="rth"><span>Incline angle θ</span> <output id="rtho" for="rth"></output></label><input type="range" id="rth" min="5" max="60" step="1" value="20"></div>
+      <fieldset class="plain ctrl"><legend>Racers</legend><div class="shapes" id="rShapes"></div></fieldset>
+    </div>
+    <div class="btnrow"><button class="btn" type="button" id="rPlay">Run the race</button><button class="btn quiet" type="button" id="rReset">Back to the start</button></div>
+    <svg class="fig" id="rSvg" viewBox="0 0 640 330" role="img" aria-labelledby="rSvgT" aria-describedby="rOut"><title id="rSvgT">Lanes on an incline with each racer's position</title></svg>
+    <div class="table-wrap"><table id="rTab"><caption>Race results, fastest first</caption>
+      <thead><tr><th scope="col">Place</th><th scope="col">Racer</th><th scope="col">\(c\)</th><th scope="col">Time to bottom</th><th scope="col">Speed at bottom</th><th scope="col">Share of K in rotation</th></tr></thead><tbody></tbody></table></div>
+    <div class="readout" id="rOut" aria-live="polite"></div>
+  </div>
+
+  <div class="cps" data-sec="rr"><h3>Checkpoints: rotational energy and rolling</h3><p>Choose an answer, then select Check.</p></div>
+</section>
+
+<!-- ===================================================== 5 ANGULAR MOMENTUM -->
+<section class="topic" id="am" aria-labelledby="amh">
+  <h2 id="amh"><span class="n">Section 5</span>Angular momentum</h2>
+  <p class="sub">Covered in: Rigid Bodies Part 3, Angular Momentum.</p>
+  <aside class="read" aria-label="Reading in Knight, 5th edition"><h3>Read in Knight, 5th ed.</h3><ul class="tight"><li><strong>§12.10</strong> The vector description of rotational motion (cross product, torque as a vector)</li><li><strong>§12.11</strong> Angular momentum</li><li><strong>§12.12</strong> Advanced topic: precession of a gyroscope (optional)</li></ul></aside>
+
+  <div class="card">
+    <h3>5a. What angular momentum is</h3>
+    <div class="prose">
+      <div class="eq">\[\vec L = \vec r\times\vec p \ \ (\text{particle}),\quad L = mvr_\perp \qquad\qquad L = I\omega \ \ (\text{rigid body, fixed axis})\]</div>
+      <p>A particle moving in a straight line has angular momentum about any point not on its line: \(r_\perp\) is the perpendicular distance from the point to the line of motion. For a spinning body, \(\vec L\) points <strong>along the axis</strong>, by the right-hand rule: curl your fingers the way it turns, and your thumb gives \(\vec L\).</p>
+    </div>
+    <svg class="fig" viewBox="0 0 640 220" role="img" aria-labelledby="rhT rhD" style="max-width:520px">
+      <title id="rhT">Right-hand rule for angular momentum</title>
+      <desc id="rhD">A wheel seen from above turns counterclockwise. The angular momentum vector points straight up, out of the wheel along the axis. A wheel turning clockwise has its angular momentum pointing down.</desc>
+      <defs><marker id="ahL" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-c4"/></marker>
+      <marker id="ahW" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-c1"/></marker></defs>
+      <g transform="translate(170,150)"><ellipse rx="110" ry="32" class="f-c1" fill-opacity=".15" style="stroke:var(--c1)" stroke-width="3"/>
+        <path d="M 60 26 A 110 32 0 0 1 -60 26" fill="none" class="s-c1" stroke-width="4" marker-end="url(#ahW)"/>
+        <line x1="0" y1="0" x2="0" y2="-125" class="s-c4" stroke-width="5" marker-end="url(#ahL)"/>
+        <text x="12" y="-110" font-size="16" font-weight="700">L (up)</text>
+        <text x="0" y="62" font-size="15" text-anchor="middle">counterclockwise seen from above</text></g>
+      <g transform="translate(470,80)"><ellipse rx="110" ry="32" class="f-c1" fill-opacity=".15" style="stroke:var(--c1)" stroke-width="3"/>
+        <path d="M -60 26 A 110 32 0 0 0 60 26" fill="none" class="s-c1" stroke-width="4" marker-end="url(#ahW)"/>
+        <line x1="0" y1="0" x2="0" y2="115" class="s-c4" stroke-width="5" marker-end="url(#ahL)"/>
+        <text x="12" y="108" font-size="16" font-weight="700">L (down)</text>
+        <text x="0" y="-44" font-size="15" text-anchor="middle">clockwise seen from above</text></g>
+    </svg>
+  </div>
+
+  <div class="card">
+    <h3>5b. Torque changes angular momentum</h3>
+    <div class="prose">
+      <div class="eq">\[\sum\vec\tau = \frac{d\vec L}{dt} \qquad \Delta L = \tau\,\Delta t \ \ (\text{constant torque})\]</div>
+      <p>The rotational version of impulse. Torque and angular momentum must be taken about the same point. A torque perpendicular to \(\vec L\) changes its <em>direction</em>, not its size (a gyroscope precesses).</p>
+    </div>
+  </div>
+
+  <div class="card">
+    <h3>5c. Conservation of angular momentum</h3>
+    <div class="prose">
+      <p>With no external torque, \(\vec L\) is constant. Internal forces cannot change it.</p>
+      <div class="eq">\[I_1\omega_1 = I_2\omega_2\]</div>
+      <ul class="tight">
+        <li><strong>Changing shape</strong> (skater pulls in her arms, diver tucks): \(I\) drops, \(\omega\) rises. Kinetic energy <em>increases</em>, because \(K = L^2/2I\) and her muscles do work.</li>
+        <li><strong>Rotational collision</strong> (clay sticks to a turntable, a ring drops on a spinning disk): add the moments of inertia, \(\omega_f = I_1\omega_1/(I_1 + I_2)\). Kinetic energy <em>decreases</em>, like a perfectly inelastic collision.</li>
+        <li><strong>Vectors matter:</strong> a person on a stool who flips a spinning bicycle wheel starts turning the other way, so that the total \(\vec L\) stays the same.</li>
+      </ul>
+    </div>
+    <div class="trap"><h4>Traps</h4><ul class="tight">
+      <li>Pointing \(\vec L\) along the motion of the rim instead of along the axis.</li>
+      <li>Assuming kinetic energy is conserved whenever angular momentum is.</li>
+      <li>Treating \(L\) as a number when its direction matters (the wheel flip).</li>
+      <li>Thinking only circular motion has angular momentum.</li>
+    </ul></div>
+  </div>
+
+  <div class="tool" id="tStool">
+    <h3>Spinning stool with dumbbells</h3>
+    <p class="how">Seen from above. A student on a frictionless stool holds a 2 kg dumbbell in each hand. Set the starting spin with arms out, start the spin, then pull the arms in. Angular momentum stays fixed; watch \(\omega\) and the kinetic energy.</p>
+    <div class="ctrls">
+      <div class="ctrl"><label for="sw"><span>Spin with arms fully out, ω<sub>1</sub></span> <output id="swo" for="sw"></output></label><input type="range" id="sw" min="0.5" max="3" step="0.1" value="1.5"></div>
+      <div class="ctrl"><label for="sr"><span>Arm radius r</span> <output id="sro" for="sr"></output></label><input type="range" id="sr" min="0.15" max="0.9" step="0.05" value="0.9"></div>
+    </div>
+    <div class="btnrow"><button class="btn" type="button" id="sPlay" aria-pressed="false">Start spinning</button></div>
+    <svg class="fig" id="sSvg" viewBox="0 0 640 300" role="img" aria-labelledby="sSvgT" aria-describedby="sOut">
+      <title id="sSvgT">Top view of a student on a stool holding two dumbbells, with bars for angular momentum and kinetic energy</title>
+      <g transform="translate(170,150)"><circle r="128" fill="none" class="s-mut" stroke-width="1" stroke-dasharray="4 6"/>
+        <g id="sBody"><line id="sArm" x1="-100" y1="0" x2="100" y2="0" class="s-ink" stroke-width="6" stroke-linecap="round"/>
+          <circle r="28" class="f-c1" fill-opacity=".8"/><circle cx="14" cy="0" r="6" style="fill:var(--surface)"/>
+          <circle id="sD1" cx="-100" cy="0" r="14" class="f-c2"/><circle id="sD2" cx="100" cy="0" r="14" class="f-c2"/></g>
+        <text y="148" font-size="15" text-anchor="middle">top view (dot marks the nose)</text></g>
+      <g transform="translate(345,40)" id="sBars"></g>
+    </svg>
+    <div class="readout" id="sOut" aria-live="polite"></div>
+  </div>
+
+  <div class="cps" data-sec="am"><h3>Checkpoints: angular momentum</h3><p>Choose an answer, then select Check.</p></div>
+</section>
+
+<!-- ===================================================== CHOOSE -->
+<section class="topic" id="choose" aria-labelledby="chh">
+  <h2 id="chh">Which principle do I use?</h2>
+  <div class="card">
+    <p class="prose">Read the question for what is given and what is asked. These questions, in order, settle most Test 3 problems.</p>
+    <svg class="fig" viewBox="0 0 700 360" role="img" aria-labelledby="chT" aria-describedby="chList">
+      <title id="chT">Decision chart for choosing a principle, described in the list that follows</title>
+      <defs><marker id="ahC" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="5" markerHeight="5" orient="auto-start-reverse"><path d="M0 0L10 5L0 10z" class="f-ink"/></marker></defs>
+      <g font-size="15">
+        <rect x="10" y="10" width="300" height="60" rx="10" class="f-paper s-ink" stroke-width="1.5"/><text x="160" y="36" text-anchor="middle" font-weight="700">Is it a collision, explosion,</text><text x="160" y="56" text-anchor="middle" font-weight="700">or a quick push or hit?</text>
+        <line x1="310" y1="40" x2="380" y2="40" class="s-ink" stroke-width="2" marker-end="url(#ahC)"/><text x="345" y="32" text-anchor="middle">yes</text>
+        <rect x="385" y="10" width="305" height="60" rx="10" class="f-c1" fill-opacity=".15" style="stroke:var(--c1)" stroke-width="2"/><text x="537" y="36" text-anchor="middle">Momentum: p conserved, or J = Δp</text><text x="537" y="56" text-anchor="middle">(L conserved if it spins)</text>
+        <line x1="160" y1="70" x2="160" y2="115" class="s-ink" stroke-width="2" marker-end="url(#ahC)"/><text x="172" y="98">no</text>
+        <rect x="10" y="120" width="300" height="60" rx="10" class="f-paper s-ink" stroke-width="1.5"/><text x="160" y="146" text-anchor="middle" font-weight="700">Is the question about speeds</text><text x="160" y="166" text-anchor="middle" font-weight="700">at two positions or heights?</text>
+        <line x1="310" y1="150" x2="380" y2="150" class="s-ink" stroke-width="2" marker-end="url(#ahC)"/><text x="345" y="142" text-anchor="middle">yes</text>
+        <rect x="385" y="120" width="305" height="60" rx="10" class="f-c3" fill-opacity=".15" style="stroke:var(--c3)" stroke-width="2"/><text x="537" y="146" text-anchor="middle">Energy: bar chart, include ½Iω²</text><text x="537" y="166" text-anchor="middle">if it rolls or spins</text>
+        <line x1="160" y1="180" x2="160" y2="225" class="s-ink" stroke-width="2" marker-end="url(#ahC)"/><text x="172" y="208">no</text>
+        <rect x="10" y="230" width="300" height="60" rx="10" class="f-paper s-ink" stroke-width="1.5"/><text x="160" y="256" text-anchor="middle" font-weight="700">Does it ask for an acceleration,</text><text x="160" y="276" text-anchor="middle" font-weight="700">a time or a force?</text>
+        <line x1="310" y1="260" x2="380" y2="260" class="s-ink" stroke-width="2" marker-end="url(#ahC)"/><text x="345" y="252" text-anchor="middle">yes</text>
+        <rect x="385" y="230" width="305" height="60" rx="10" class="f-c2" fill-opacity=".15" style="stroke:var(--c2)" stroke-width="2"/><text x="537" y="256" text-anchor="middle">Newton: ΣF = ma and Στ = Iα,</text><text x="537" y="276" text-anchor="middle">then kinematics</text>
+        <line x1="160" y1="290" x2="160" y2="320" class="s-ink" stroke-width="2" marker-end="url(#ahC)"/><text x="172" y="312">nothing moves</text>
+        <rect x="200" y="315" width="300" height="40" rx="10" class="f-c4" fill-opacity=".15" style="stroke:var(--c4)" stroke-width="2"/><text x="350" y="341" text-anchor="middle">Statics: ΣF = 0 and Στ = 0</text>
+      </g>
+    </svg>
+    <ol class="tight" id="chList">
+      <li><strong>Collision, explosion, or a short hit?</strong> Use momentum: total \(p\) is conserved for the system, or \(J = \Delta p\) for one object. If something spins about a fixed axis, use \(L = I\omega\) conserved.</li>
+      <li><strong>Speeds at two positions or heights?</strong> Use energy with a bar chart. Include \(\tfrac12 I\omega^2\) if anything rolls or spins, and \(\Delta E_\text{th}\) if there is friction.</li>
+      <li><strong>An acceleration, a time, or a force?</strong> Use \(\sum F = ma\) and \(\sum\tau = I\alpha\), then the kinematics equations.</li>
+      <li><strong>Nothing moves?</strong> Static equilibrium: \(\sum F = 0\) and \(\sum\tau = 0\).</li>
+    </ol>
+    <div class="tip"><h4>Collisions with a drop or a swing (two stages)</h4><p>A bullet into a pendulum, a ball rolling down then hitting a block: use <strong>energy</strong> for the smooth part, <strong>momentum</strong> for the instant of the collision, then energy again. Never use energy conservation across an inelastic collision.</p></div>
+  </div>
+</section>
+
+<!-- ===================================================== SHEET -->
+<section class="topic" id="sheet" aria-labelledby="shh">
+  <h2 id="shh">Equation sheet</h2>
+  <div class="card">
+    <div class="table-wrap"><table>
+      <caption>Test 3 equations by topic</caption>
+      <thead><tr><th scope="col">Topic</th><th scope="col">Equations</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">Work</th><td>\(W = Fd\cos\phi = F_x\Delta x + F_y\Delta y\); \(W = \int F(x)\,dx\) (area); \(P = Fv\)</td></tr>
+        <tr><th scope="row">Energy</th><td>\(K = \tfrac12 mv^2\); \(W_\text{net} = \Delta K\); \(U_g = mgy\); \(U_e = \tfrac12 kx^2\); \(\Delta E_\text{th} = \mu_k F_N d\)<br>\(K_i + U_i + W_\text{ext} = K_f + U_f + \Delta E_\text{th}\)</td></tr>
+        <tr><th scope="row">Momentum</th><td>\(p = mv\); \(J = \Delta p = F_\text{avg}\Delta t = \int F\,dt\); \(\sum F = dp/dt\)</td></tr>
+        <tr><th scope="row">Collisions</th><td>\(m_1v_{1i} + m_2v_{2i} = m_1v_{1f} + m_2v_{2f}\); \(v_{2f} - v_{1f} = r(v_{1i} - v_{2i})\)</td></tr>
+        <tr><th scope="row">Center of mass</th><td>\(x_\text{cm} = \sum m_ix_i/M\)</td></tr>
+        <tr><th scope="row">Rotational kinematics</th><td>\(\omega = \omega_0 + \alpha t\); \(\theta = \omega_0t + \tfrac12\alpha t^2\); \(\omega^2 = \omega_0^2 + 2\alpha\Delta\theta\); \(v = r\omega\); \(a_t = r\alpha\); \(a_c = \omega^2 r\)</td></tr>
+        <tr><th scope="row">Torque and dynamics</th><td>\(\tau = rF\sin\theta\); \(\sum\tau = I\alpha\); \(I = \sum mr^2\); \(I = I_\text{cm} + Md^2\)</td></tr>
+        <tr><th scope="row">Rotational energy</th><td>\(K_\text{rot} = \tfrac12 I\omega^2\); \(W = \tau\Delta\theta\); \(P = \tau\omega\)</td></tr>
+        <tr><th scope="row">Rolling (\(I = cMR^2\))</th><td>\(v = R\omega\); \(K = \tfrac12 Mv^2(1+c)\); \(v = \sqrt{2gh/(1+c)}\); \(a = g\sin\theta/(1+c)\)</td></tr>
+        <tr><th scope="row">Angular momentum</th><td>\(L = I\omega\); \(L = mvr_\perp\); \(\sum\tau = dL/dt\); \(I_1\omega_1 = I_2\omega_2\); \(K = L^2/2I\)</td></tr>
+      </tbody>
+    </table></div>
+  </div>
+</section>
+
+<!-- ===================================================== RESOURCES -->
+<section class="topic" id="res" aria-labelledby="resh">
+  <h2 id="resh">Course resources and reading for Test 3</h2>
+  <div class="card">
+    <p class="prose">The notes, simulations and practice built for this course. Each opens in a new page.</p>
+    <ul class="reslist">
+      <li><a href="https://claude.ai/artifact/PKN9MiPxLFwRUUQzHy4mZK"><span class="k">Practice · all topics</span>Test 3 Online Practice (timed test, custom practice, topic reviews)</a></li>
+      <li><a href="https://claude.ai/artifact/PR8fpRvygHVpidzfPQgFqX"><span class="k">Section 1</span>Work Done by a Force: a structured explainer</a></li>
+      <li><a href="https://claude.ai/artifact/Enabx2jxYoMnPL88cABaWV"><span class="k">Section 1</span>Dot product and work practice</a></li>
+      <li><a href="https://claude.ai/artifact/RVYK8oCCvaDqC9wC3V5f2k"><span class="k">Section 1</span>Energy Tutor</a></li>
+      <li><a href="https://claude.ai/artifact/UbC2T98QHcH42XYkuHcZ9Y"><span class="k">Section 1</span>Skate Ramp Energy Lab</a></li>
+      <li><a href="https://claude.ai/artifact/48KUScXMGuRbhzQa2Cv7AU"><span class="k">Section 2</span>Momentum and Impulse: interactive tutorial</a></li>
+      <li><a href="https://claude.ai/artifact/F7U2caBucFX4syi5Vz4EKZ"><span class="k">Section 3</span>Rigid Bodies Part 1: Kinematics and Dynamics</a></li>
+      <li><a href="https://claude.ai/artifact/BNCmLRiXGjHWHJmKXFtxWj"><span class="k">Section 3</span>Demo Problem: Spinning Up a Bar</a></li>
+      <li><a href="https://claude.ai/artifact/HWVEd2VsAG1unipCQAAdAs"><span class="k">Section 4</span>Rigid Bodies Part 2: Energy and Rolling Motion</a></li>
+      <li><a href="https://claude.ai/artifact/1zp9Fun6uuYNUWyUcwxQmB"><span class="k">Section 4</span>Rotational Kinetic Energy and Rolling</a></li>
+      <li><a href="https://claude.ai/artifact/XHmddNW6ynsx7kQgDEg16P"><span class="k">Section 5</span>Rigid Bodies Part 3: Angular Momentum</a></li>
+      <li><a href="https://claude.ai/artifact/SYqF5eiVGGdCBaZPsZNpoj"><span class="k">Section 5</span>Angular Momentum</a></li>
+    </ul>
+    <h3 style="font-size:22px;margin:18px 0 6px">Textbook reading</h3>
+    <div class="table-wrap"><table>
+      <caption>Reading for Test 3 in Knight, <em>Physics for Scientists and Engineers: A Strategic Approach</em>, 5th edition</caption>
+      <thead><tr><th scope="col">Study guide section</th><th scope="col">Knight, 5th ed.</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">1. Work and energy</th><td>Ch. 9 Work and Kinetic Energy (§9.1–9.6); Ch. 10 Interactions and Potential Energy (§10.1–10.8)</td></tr>
+        <tr><th scope="row">2. Linear momentum</th><td>Ch. 11 Impulse and Momentum (§11.1–11.5; §11.6 Rocket Propulsion is optional)</td></tr>
+        <tr><th scope="row">3. Rotational kinematics and dynamics</th><td>Review §4.4–4.6; Ch. 12 §12.1, 12.2, 12.4–12.8</td></tr>
+        <tr><th scope="row">4. Rotational energy and rolling</th><td>§12.3 Rotational Energy; §12.9 Rolling Motion</td></tr>
+        <tr><th scope="row">5. Angular momentum</th><td>§12.10 The Vector Description of Rotational Motion; §12.11 Angular Momentum; §12.12 Precession of a Gyroscope (optional)</td></tr>
+      </tbody>
+    </table></div>
+    <p class="prose">Also available free: OpenStax <em>University Physics Volume 1</em>, chapters 7–11 and §12.1–12.2.</p>
+  </div>
+</section>
+
+<footer><p>PHY2048 Test 3 Study Guide. Uses \(g = 9.8\ \text{m/s}^2\). Equations are rendered with MathJax: right-click or long-press an equation for screen-reader and zoom options. Animations only run when you start them and can be stopped at any time.</p></footer>
+</main>
+</div>
+
+<div class="sr" id="announce" aria-live="polite"></div>
+
+<script>
+(() => {
+"use strict";
+const $ = id => document.getElementById(id);
+const g = 9.8;
+const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+const fmt = (x, d = 2) => { const v = Math.abs(x) < 0.5 * Math.pow(10, -d) ? 0 : x; return v.toFixed(d).replace('-', '−'); };
+const sgn = x => (x < 0 ? '−' : '');
+const store = {
+  get(k, d) { try { const v = localStorage.getItem(k); return v === null ? d : JSON.parse(v); } catch (e) { return d; } },
+  set(k, v) { try { localStorage.setItem(k, JSON.stringify(v)); } catch (e) {} }
+};
+const typeset = el => { if (window.MathJax && MathJax.typesetPromise) { MathJax.startup.promise.then(() => MathJax.typesetPromise([el])).catch(() => {}); } };
+function say(msg) { const a = $('announce'); a.textContent = ''; setTimeout(() => { a.textContent = msg; }, 40); }
+function bind(id, unit, dec, cb) {
+  const el = $(id), o = $(id + 'o');
+  const upd = () => { o.textContent = (+el.value).toFixed(dec).replace('-', '−') + unit; el.setAttribute('aria-valuetext', o.textContent); cb(); };
+  el.addEventListener('input', upd);
+  return upd;
+}
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent, text) {
+  const e = document.createElementNS(NS, tag);
+  for (const k in attrs) e.setAttribute(k, attrs[k]);
+  if (text !== undefined) e.textContent = text;
+  if (parent) parent.appendChild(e);
+  return e;
+}
+const set = (e, attrs) => { for (const k in attrs) e.setAttribute(k, attrs[k]); };
+
+/* ---------- theme, text size, print ---------- */
+const root = document.documentElement;
+const isDark = () => root.dataset.theme ? root.dataset.theme === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+function themeLabel() { $('themeBtn').textContent = isDark() ? 'Light theme' : 'Dark theme'; }
+const savedTheme = store.get('t3sg-theme', null); if (savedTheme) root.dataset.theme = savedTheme;
+themeLabel();
+$('themeBtn').onclick = () => { root.dataset.theme = isDark() ? 'light' : 'dark'; store.set('t3sg-theme', root.dataset.theme); themeLabel(); };
+const SIZES = [100, 112.5, 125, 137.5, 150]; let si = store.get('t3sg-size', 0);
+function applySize() { root.style.fontSize = SIZES[si] + '%'; document.body.style.fontSize = (17 * SIZES[si] / 100) + 'px'; $('smaller').disabled = si === 0; $('larger').disabled = si === SIZES.length - 1; store.set('t3sg-size', si); }
+$('smaller').onclick = () => { if (si > 0) { si--; applySize(); say('Text size ' + SIZES[si] + ' percent'); } };
+$('larger').onclick = () => { if (si < SIZES.length - 1) { si++; applySize(); say('Text size ' + SIZES[si] + ' percent'); } };
+applySize();
+
+/* ========== TOOL 1: sign of work ========== */
+(() => {
+  const draw = () => {
+    const F = +$('wF').value, d = +$('wd').value, phi = +$('wphi').value, r = phi * Math.PI / 180;
+    const ox = 320, oy = 220, L = 30 + F * 3.6;
+    const fx = ox + L * Math.cos(r), fy = oy - L * Math.sin(r);
+    set($('wFarrow'), { x1: ox, y1: oy, x2: fx, y2: fy });
+    set($('wFlab'), { x: fx + (Math.cos(r) >= 0 ? 8 : -22), y: fy - 6 });
+    const cx = ox + L * Math.cos(r);
+    const comp = $('wComp');
+    if (Math.abs(Math.cos(r)) < 0.02) { comp.setAttribute('visibility', 'hidden'); $('wCompLab').setAttribute('visibility', 'hidden'); }
+    else { comp.setAttribute('visibility', 'visible'); $('wCompLab').setAttribute('visibility', 'visible'); set(comp, { x1: ox, y1: oy, x2: cx, y2: oy }); set($('wCompLab'), { x: cx + (cx >= ox ? 10 : -70), y: oy + 6 }); }
+    set($('wDisp'), { x1: 200, x2: 200 + d * 30 });
+    const ar = 52, ax = ox + ar * Math.cos(r), ay = oy - ar * Math.sin(r);
+    set($('wArc'), { d: `M ${ox + ar} ${oy} A ${ar} ${ar} 0 0 0 ${ax} ${ay}` });
+    const mr = r / 2; set($('wArcLab'), { x: ox + (ar + 12) * Math.cos(mr) - 4, y: oy - (ar + 12) * Math.sin(mr) + 4 });
+    const W = F * d * Math.cos(r);
+    const kind = Math.abs(W) < 1e-9 ? 'zero: the force is perpendicular to the motion' : (W > 0 ? 'positive: the force helps the motion' : 'negative: the force opposes the motion');
+    $('wOut').innerHTML = `<strong>W = F d cos φ = (${F} N)(${d} m) cos ${phi}° = ${fmt(W, 1)} J.</strong> The work is ${kind}. The component along the motion is F cos φ = ${fmt(F * Math.cos(r), 1)} N.`;
+  };
+  ['wF', 'wd', 'wphi'].forEach((id, i) => bind(id, [' N', ' m', '°'][i], [0, 1, 0][i], draw)());
+})();
+
+/* ========== TOOL 2: energy bar chart ========== */
+(() => {
+  const svg = $('bSvg');
+  const draw = () => {
+    const m = +$('bm').value, h = +$('bh').value, th = +$('bth').value * Math.PI / 180, mu = +$('bmu').value, v0 = +$('bv').value;
+    const Ki = 0.5 * m * v0 * v0, Ugi = m * g * h, D = h / Math.sin(th);
+    const fric = mu * m * g * Math.cos(th);           // friction force
+    const net = m * g * Math.sin(th) - fric;           // net force down the slope
+    let s = D, stopped = false, stuck = false;
+    if (net < 0) {
+      if (v0 === 0) { stuck = true; s = 0; }
+      else { const sStop = Ki / (-net); if (sStop < D) { s = sStop; stopped = true; } }
+    }
+    const Eth = fric * s, Ugf = m * g * (h - s * Math.sin(th));
+    const Kf = stuck ? 0 : Math.max(0, Ki + Ugi - Ugf - Eth);
+    while (svg.lastChild && svg.lastChild.tagName !== 'title') svg.removeChild(svg.lastChild);
+    const bars = [['K', 'i', Ki, 'c1'], ['U', 'g,i', Ugi, 'c3'], ['W', 'ext', 0, 'c4'], ['K', 'f', Kf, 'c1'], ['U', 'g,f', Ugf, 'c3'], ['ΔE', 'th', Eth, 'c5']];
+    const total = Ki + Ugi, maxH = 190, base = 240, scale = total > 0 ? maxH / total : 0;
+    el('line', { x1: 30, y1: base, x2: 610, y2: base, class: 's-ink', 'stroke-width': 2 }, svg);
+    el('line', { x1: 320, y1: 20, x2: 320, y2: base + 40, class: 's-mut', 'stroke-width': 1.5, 'stroke-dasharray': '6 5' }, svg);
+    el('text', { x: 175, y: 22, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700 }, svg, 'Initial (top)');
+    el('text', { x: 465, y: 22, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700 }, svg, stuck ? 'Final (does not move)' : stopped ? 'Final (stops on the slope)' : 'Final (bottom)');
+    el('text', { x: 320, y: 140, 'text-anchor': 'middle', 'font-size': 30, 'font-weight': 700, class: 'f-ink' }, svg, '=');
+    bars.forEach(([sym, sub, val, c], i) => {
+      const x = (i < 3 ? 70 + i * 82 : 360 + (i - 3) * 82), hgt = val * scale;
+      el('rect', { x, y: base - hgt, width: 56, height: Math.max(hgt, 0.01), class: 'f-' + c, 'fill-opacity': .75 }, svg);
+      if (hgt > 0.5) el('rect', { x, y: base - hgt, width: 56, height: hgt, fill: 'none', class: 's-' + c, 'stroke-width': 2 }, svg);
+      const t = el('text', { x: x + 28, y: base + 22, 'text-anchor': 'middle', 'font-size': 16, 'font-weight': 700 }, svg, sym);
+      el('tspan', { 'font-size': 12, dy: 4 }, t, sub);
+      el('text', { x: x + 28, y: base + 42, 'text-anchor': 'middle', 'font-size': 14 }, svg, fmt(val, 1) + ' J');
+    });
+    const vf = Math.sqrt(2 * Kf / m);
+    let msg = `<strong>Initial:</strong> K<sub>i</sub> = ${fmt(Ki, 1)} J, U<sub>g,i</sub> = mgh = ${fmt(Ugi, 1)} J, total ${fmt(total, 1)} J. `;
+    if (stuck) msg += `<strong>The block does not move:</strong> with μ<sub>k</sub> ≥ tan θ = ${fmt(Math.tan(th), 2)} and no initial speed, friction can hold it (assuming static friction is at least as large).`;
+    else {
+      msg += `<strong>Final:</strong> K<sub>f</sub> = ${fmt(Kf, 1)} J, U<sub>g,f</sub> = ${fmt(Ugf, 1)} J, ΔE<sub>th</sub> = μ<sub>k</sub>(mg cos θ)s = ${fmt(Eth, 1)} J, with sliding distance s = ${fmt(s, 2)} m`;
+      msg += stopped ? `. Friction is larger than the pull of gravity along the slope, so the block <strong>stops before the bottom</strong>.` : ` (= h/sin θ). Speed at the bottom: <strong>${fmt(vf, 2)} m/s</strong>${mu === 0 ? ' — without friction this is √(v₀² + 2gh)' : ''}.`;
+    }
+    $('bOut').innerHTML = msg;
+  };
+  ['bm', 'bh', 'bth', 'bmu', 'bv'].forEach((id, i) => bind(id, [' kg', ' m', '°', '', ' m/s'][i], [1, 1, 0, 2, 1][i], draw)());
+})();
+
+/* ========== TOOL 3: collision lab ========== */
+(() => {
+  const Y = 126, W = 80, PX = 45;   // pixels per metre
+  let raf = null, st = null;
+  const vals = () => ({ m1: +$('cm1').value, v1: +$('cv1').value, m2: +$('cm2').value, v2: +$('cv2').value, r: +$('cr').value });
+  function result(p) {
+    const v1f = (p.m1 * p.v1 + p.m2 * p.v2 - p.m2 * p.r * (p.v1 - p.v2)) / (p.m1 + p.m2);
+    const v2f = v1f + p.r * (p.v1 - p.v2);
+    return { v1f, v2f };
+  }
+  function place(x1, x2, u1, u2, stage) {
+    set($('cart1'), { transform: `translate(${x1},${Y})` });
+    set($('cart2'), { transform: `translate(${x2},${Y})` });
+    const arrow = (id, tid, x, u) => {
+      const a = $(id), t = $(tid);
+      if (Math.abs(u) < 0.01) { a.setAttribute('visibility', 'hidden'); set(t, { x, y: 70 }); t.textContent = '0 m/s'; return; }
+      a.setAttribute('visibility', 'visible');
+      set(a, { x1: x, y1: 70, x2: x + u * 18, y2: 70 }); set(t, { x: x, y: 55 }); t.textContent = fmt(u, 2) + ' m/s';
+    };
+    arrow('cA1', 'cT1', x1, u1); arrow('cA2', 'cT2', x2, u2);
+    $('cStage').textContent = stage;
+  }
+  function table(p, rr, meet) {
+    const pB = p.m1 * p.v1 + p.m2 * p.v2, KB = .5 * p.m1 * p.v1 ** 2 + .5 * p.m2 * p.v2 ** 2;
+    const tb = $('cTab').tBodies[0];
+    if (!meet) {
+      tb.innerHTML = `<tr><td>Cart 1 velocity</td><td>${fmt(p.v1)} m/s</td><td>—</td></tr><tr><td>Cart 2 velocity</td><td>${fmt(p.v2)} m/s</td><td>—</td></tr><tr><td>Total momentum</td><td>${fmt(pB)} kg·m/s</td><td>—</td></tr><tr><td>Total kinetic energy</td><td>${fmt(KB)} J</td><td>—</td></tr>`;
+      $('cOut').innerHTML = '<strong>No collision:</strong> cart 1 is not moving toward cart 2 faster than cart 2 moves away (cart 1 starts on the left). Make v<sub>1</sub> greater than v<sub>2</sub>.';
+      return;
+    }
+    const pA = p.m1 * rr.v1f + p.m2 * rr.v2f, KA = .5 * p.m1 * rr.v1f ** 2 + .5 * p.m2 * rr.v2f ** 2;
+    tb.innerHTML = `<tr><td>Cart 1 velocity</td><td>${fmt(p.v1)} m/s</td><td>${fmt(rr.v1f)} m/s</td></tr><tr><td>Cart 2 velocity</td><td>${fmt(p.v2)} m/s</td><td>${fmt(rr.v2f)} m/s</td></tr><tr><td>Total momentum</td><td>${fmt(pB)} kg·m/s</td><td>${fmt(pA)} kg·m/s</td></tr><tr><td>Total kinetic energy</td><td>${fmt(KB)} J</td><td>${fmt(KA)} J</td></tr>`;
+    const lost = KB - KA;
+    const type = p.r === 1 ? 'elastic (r = 1), so no kinetic energy is lost' : p.r === 0 ? 'perfectly inelastic (r = 0): the carts stick together' : 'partially inelastic';
+    $('cOut').innerHTML = `<strong>After:</strong> v<sub>1f</sub> = ${fmt(rr.v1f)} m/s, v<sub>2f</sub> = ${fmt(rr.v2f)} m/s. Momentum before and after: ${fmt(pB)} kg·m/s (conserved). The collision is ${type}${p.r < 1 ? `; ${fmt(lost)} J of kinetic energy (${fmt(100 * lost / KB, 0)}%) becomes thermal energy and sound` : ''}. Cart 1 gets an impulse of ${fmt(p.m1 * (rr.v1f - p.v1))} N·s and cart 2 gets ${fmt(p.m2 * (rr.v2f - p.v2))} N·s: equal and opposite.`;
+  }
+  function stop() { if (raf) cancelAnimationFrame(raf); raf = null; $('cPlay').textContent = 'Play collision'; }
+  function reset() {
+    stop(); const p = vals(), rr = result(p), meet = p.v1 > p.v2;
+    place(180, 420, p.v1, p.v2, 'before'); table(p, rr, meet);
+  }
+  function play() {
+    if (raf) { stop(); return; }
+    const p = vals(), rr = result(p);
+    if (!(p.v1 > p.v2)) { reset(); say('No collision with these velocities.'); return; }
+    if (reduce) { const xc = 300; place(xc - W / 2 - 1 - 60, xc + W / 2 + 1 + 60, rr.v1f, rr.v2f, 'after (animation off: reduced motion)'); say('Collision complete.'); return; }
+    st = { x1: 180, x2: 420, u1: p.v1, u2: p.v2, hit: false, t: null, after: 0 };
+    $('cPlay').textContent = 'Stop';
+    const step = ts => {
+      if (st.t === null) st.t = ts; const dt = Math.min(0.05, (ts - st.t) / 1000) * 0.6; st.t = ts;
+      st.x1 += st.u1 * PX * dt; st.x2 += st.u2 * PX * dt;
+      if (!st.hit && st.x2 - st.x1 <= W) { st.hit = true; const mid = (st.x1 + st.x2) / 2; st.x1 = mid - W / 2; st.x2 = mid + W / 2; st.u1 = rr.v1f; st.u2 = rr.v2f; }
+      if (st.hit) st.after += dt;
+      place(st.x1, st.x2, st.u1, st.u2, st.hit ? 'after' : 'before');
+      const out = Math.min(st.x1, st.x2) < 40 || Math.max(st.x1, st.x2) > 600;
+      if (out || st.after > 4) { stop(); say('Collision complete. Results are in the table.'); return; }
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  }
+  $('cPlay').onclick = play; $('cReset').onclick = reset;
+  ['cm1', 'cv1', 'cm2', 'cv2', 'cr'].forEach((id, i) => bind(id, [' kg', ' m/s', ' kg', ' m/s', ''][i], [1, 1, 1, 1, 2][i], reset)());
+})();
+
+/* ========== TOOL 4: torque ========== */
+(() => {
+  const PX = 440, ox = 80, oy = 235;
+  const draw = () => {
+    const r = +$('tr').value, F = +$('tF').value, thd = +$('tth').value, th = thd * Math.PI / 180;
+    const px = ox + r * PX, py = oy, L = F * 2.8;
+    const ux = Math.cos(th), uy = -Math.sin(th);
+    set($('tDot'), { cx: px, cy: py });
+    const fa = $('tFarrow');
+    if (F === 0) fa.setAttribute('visibility', 'hidden'); else { fa.setAttribute('visibility', 'visible'); set(fa, { x1: px, y1: py, x2: px + ux * L, y2: py + uy * L }); }
+    set($('tFlab'), { x: px + ux * (L + 14) - 5, y: py + uy * (L + 14) + 5 });
+    set($('tLoa'), { x1: px - ux * 700, y1: py - uy * 700, x2: px + ux * 700, y2: py + uy * 700 });
+    const k = (ox - px) * ux + (oy - py) * uy, fx = px + k * ux, fy = py + k * uy;
+    set($('tArm'), { x1: ox, y1: oy, x2: fx, y2: fy });
+    const tau = r * F * Math.sin(th), arm = r * Math.abs(Math.sin(th));
+    const rot = $('tRot');
+    if (Math.abs(tau) < 1e-6) { rot.setAttribute('visibility', 'hidden'); $('tRotLab').textContent = 'no rotation'; }
+    else {
+      rot.setAttribute('visibility', 'visible');
+      const R = 44, cy = oy, ccw = tau > 0;
+      rot.setAttribute('d', ccw ? `M ${ox + R} ${cy} A ${R} ${R} 0 0 0 ${ox} ${cy - R}` : `M ${ox} ${cy - R} A ${R} ${R} 0 0 1 ${ox + R} ${cy}`);
+      $('tRotLab').textContent = ccw ? 'turns counterclockwise' : 'turns clockwise';
+    }
+    set($('tRotLab'), { x: ox + 30, y: oy - 60 });
+    const dir = Math.abs(tau) < 1e-6 ? 'zero: the line of action passes through the pivot' : tau > 0 ? 'positive (counterclockwise)' : 'negative (clockwise)';
+    $('tOut').innerHTML = `<strong>τ = rF sin θ = (${r.toFixed(2)} m)(${F} N) sin ${thd}° = ${fmt(tau, 2)} N·m</strong>, ${dir}. Lever arm r|sin θ| = ${fmt(arm, 2)} m. ${Math.abs(Math.sin(th)) < 1e-6 && r > 0 && F > 0 ? 'A force along the bar cannot turn it.' : ''}`;
+  };
+  ['tr', 'tF', 'tth'].forEach((id, i) => bind(id, [' m', ' N', '°'][i], [2, 0, 0][i], draw)());
+})();
+
+/* ========== TOOL 5: rolling race ========== */
+(() => {
+  const SH = [
+    { id: 'blk', name: 'Sliding block (no friction)', c: 0, col: 'c4', on: false, shape: 'block' },
+    { id: 'sph', name: 'Solid sphere', c: 2 / 5, col: 'c3', on: true, shape: 'solid' },
+    { id: 'cyl', name: 'Solid cylinder', c: 1 / 2, col: 'c1', on: true, shape: 'solid' },
+    { id: 'hsp', name: 'Hollow sphere', c: 2 / 3, col: 'c5', on: true, shape: 'ring' },
+    { id: 'hoop', name: 'Hoop', c: 1, col: 'c2', on: true, shape: 'ring' }
+  ];
+  const frac = { 0: '0', 0.4: '2/5', 0.5: '1/2', 0.667: '2/3', 1: '1' };
+  const cname = c => frac[Math.round(c * 1000) / 1000] || fmt(c, 2);
+  const box = $('rShapes');
+  SH.forEach(s => { const l = document.createElement('label'); l.className = 'chk'; l.innerHTML = `<input type="checkbox" id="rs_${s.id}" ${s.on ? 'checked' : ''}> ${s.name}`; box.appendChild(l); l.firstChild.addEventListener('change', () => { s.on = l.firstChild.checked; reset(); }); });
+  const svg = $('rSvg');
+  let raf = null, t0 = null, nodes = [];
+  const geo = () => { const th = +$('rth').value * Math.PI / 180; return { th, h: +$('rh').value }; };
+  const SLOW = 3;
+  function build() {
+    while (svg.lastChild && svg.lastChild.tagName !== 'title') svg.removeChild(svg.lastChild);
+    const { th } = geo(), act = SH.filter(s => s.on);
+    const len = 380, x0 = 40, y0 = 30, dx = len * Math.cos(th), dy = Math.min(len * Math.sin(th), 150);
+    const L2 = Math.hypot(dx, dy), ang = Math.atan2(dy, dx);
+    nodes = [];
+    act.forEach((s, i) => {
+      const off = i * 24, sx = x0, sy = y0 + off + 10, ex = x0 + dx, ey = sy + dy;
+      el('line', { x1: sx, y1: sy + 12, x2: ex, y2: ey + 12, class: 's-mut', 'stroke-width': 2 }, svg);
+      const g1 = el('g', {}, svg);
+      if (s.shape === 'block') el('rect', { x: -11, y: -11, width: 22, height: 22, class: 'f-' + s.col }, g1);
+      else if (s.shape === 'solid') { el('circle', { r: 11, class: 'f-' + s.col }, g1); el('line', { x1: 0, y1: 0, x2: 0, y2: -11, style: 'stroke:var(--surface)', 'stroke-width': 3 }, g1); }
+      else { el('circle', { r: 9.5, fill: 'none', class: 's-' + s.col, 'stroke-width': 4 }, g1); el('line', { x1: 0, y1: -4, x2: 0, y2: -12, class: 's-ink', 'stroke-width': 2 }, g1); }
+      el('text', { x: ex + 14, y: ey + 16, 'font-size': 14 }, svg, s.name.replace(' (no friction)', ''));
+      nodes.push({ s, g: g1, sx, sy, ang, L2 });
+    });
+    const yb = y0 + (act.length - 1) * 24 + 10 + dy + 44;
+    el('text', { x: 40, y: Math.min(yb, 322), 'font-size': 14 }, svg, act.length ? 'Start at the top left; finish at the bottom right.' : 'Choose at least one racer.');
+  }
+  function physics(s) {
+    const { th, h } = geo(), D = h / Math.sin(th), a = g * Math.sin(th) / (1 + s.c);
+    return { D, a, t: Math.sqrt(2 * D / a), v: Math.sqrt(2 * g * h / (1 + s.c)) };
+  }
+  function pose(tSim) {
+    nodes.forEach(n => {
+      const p = physics(n.s), d = Math.min(0.5 * p.a * tSim * tSim, p.D), f = d / p.D;
+      const x = n.sx + f * n.L2 * Math.cos(n.ang), y = n.sy + f * n.L2 * Math.sin(n.ang);
+      const rotDeg = n.s.shape === 'block' ? 0 : (f * n.L2 / 11) * 180 / Math.PI;
+      set(n.g, { transform: `translate(${x},${y}) rotate(${n.s.shape === 'block' ? n.ang * 180 / Math.PI : rotDeg})` });
+    });
+  }
+  function results() {
+    const act = SH.filter(s => s.on).map(s => ({ s, p: physics(s) })).sort((a, b) => a.p.t - b.p.t);
+    $('rTab').tBodies[0].innerHTML = act.map((o, i) => `<tr><td>${i + 1}</td><td>${o.s.name}</td><td>${cname(o.s.c)}</td><td>${fmt(o.p.t, 2)} s</td><td>${fmt(o.p.v, 2)} m/s</td><td>${o.s.c === 0 ? 'none' : fmt(100 * o.s.c / (1 + o.s.c), 0) + '%'}</td></tr>`).join('');
+    return act;
+  }
+  function stop() { if (raf) cancelAnimationFrame(raf); raf = null; $('rPlay').textContent = 'Run the race'; }
+  function reset() {
+    stop(); build(); pose(0); const act = results();
+    const { h } = geo();
+    $('rOut').innerHTML = act.length ? `Incline length ${fmt(h / Math.sin(geo().th), 2)} m. Predicted order: ${act.map(o => o.s.name).join(', then ')}. Mass and radius do not matter, only c.` : 'Choose at least one racer.';
+  }
+  function play() {
+    if (raf) { stop(); return; }
+    const act = results(); if (!act.length) return;
+    const tEnd = act[act.length - 1].p.t;
+    if (reduce) { pose(tEnd); say('Race finished. Order: ' + act.map(o => o.s.name).join(', ')); return; }
+    t0 = null; $('rPlay').textContent = 'Stop';
+    const step = ts => {
+      if (t0 === null) t0 = ts; const tSim = (ts - t0) / 1000 / SLOW;
+      pose(tSim);
+      if (tSim >= tEnd) { stop(); say('Race finished. Order: ' + act.map(o => o.s.name).join(', ')); return; }
+      raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+  }
+  $('rPlay').onclick = play; $('rReset').onclick = reset;
+  ['rh', 'rth'].forEach((id, i) => bind(id, [' m', '°'][i], [1, 0][i], reset)());
+})();
+
+/* ========== TOOL 6: spinning stool ========== */
+(() => {
+  const I0 = 2.0, md = 2.0, RMAX = 0.9, PX = 110;
+  const I = r => I0 + 2 * md * r * r;
+  let raf = null, ang = 0, last = null;
+  const state = () => { const w1 = +$('sw').value, r = +$('sr').value, L = I(RMAX) * w1, w = L / I(r); return { w1, r, L, w, I1: I(RMAX), I2: I(r), K1: L * L / (2 * I(RMAX)), K2: L * L / (2 * I(r)) }; };
+  const bars = $('sBars');
+  function draw() {
+    const s = state(), x = s.r * PX;
+    set($('sArm'), { x1: -x, x2: x }); set($('sD1'), { cx: -x }); set($('sD2'), { cx: x });
+    while (bars.firstChild) bars.removeChild(bars.firstChild);
+    const items = [['L (constant)', s.L, 30, 'kg·m²/s', 'c4'], ['ω', s.w, 12, 'rad/s', 'c1'], ['K', s.K2, 60, 'J', 'c2']];
+    items.forEach(([lab, v, max, u, c], i) => {
+      const y = i * 72, w = Math.min(1, v / max) * 150;
+      el('text', { x: 0, y: y + 14, 'font-size': 15, 'font-weight': 700 }, bars, lab);
+      el('rect', { x: 0, y: y + 22, width: 150, height: 22, rx: 4, class: 'f-paper s-mut', 'stroke-width': 1 }, bars);
+      el('rect', { x: 0, y: y + 22, width: Math.max(w, 0.5), height: 22, rx: 4, class: 'f-' + c, 'fill-opacity': .85 }, bars);
+      el('text', { x: 158, y: y + 39, 'font-size': 14 }, bars, fmt(v, 2) + ' ' + u);
+    });
+    $('sOut').innerHTML = `I = I<sub>body</sub> + 2mr² = 2.0 + 2(2.0)(${s.r.toFixed(2)})² = <strong>${fmt(s.I2, 2)} kg·m²</strong> (arms out: ${fmt(s.I1, 2)} kg·m²). L = I<sub>1</sub>ω<sub>1</sub> = ${fmt(s.L, 2)} kg·m²/s stays the same, so <strong>ω = L/I = ${fmt(s.w, 2)} rad/s</strong> (${fmt(s.w * 60 / (2 * Math.PI), 1)} rpm). Kinetic energy K = L²/2I = <strong>${fmt(s.K2, 2)} J</strong>, compared with ${fmt(s.K1, 2)} J with arms out${s.K2 > s.K1 + 1e-9 ? ': the student’s muscles did the extra work pulling the dumbbells in' : ''}.`;
+  }
+  function frame(ts) {
+    if (last === null) last = ts; const dt = Math.min(0.05, (ts - last) / 1000); last = ts;
+    ang -= state().w * dt * 180 / Math.PI;      // counterclockwise on screen
+    set($('sBody'), { transform: `rotate(${ang})` });
+    raf = requestAnimationFrame(frame);
+  }
+  $('sPlay').onclick = () => {
+    const b = $('sPlay');
+    if (raf) { cancelAnimationFrame(raf); raf = null; b.textContent = 'Start spinning'; b.setAttribute('aria-pressed', 'false'); }
+    else { last = null; raf = requestAnimationFrame(frame); b.textContent = 'Stop spinning'; b.setAttribute('aria-pressed', 'true'); }
+  };
+  ['sw', 'sr'].forEach((id, i) => bind(id, [' rad/s', ' m'][i], [1, 2][i], draw)());
+})();
+
+/* ========== CHECKPOINTS ========== */
+const CP = {
+we: [
+ { q: String.raw`A box slides 3 m across a level floor while you push it horizontally. How much work does the normal force do on the box?`, o: ['Positive, equal to \\(F_N d\\)', 'Zero', 'Negative, equal to \\(-F_N d\\)', 'It depends on the friction'], a: 1, x: String.raw`The normal force is vertical and the displacement is horizontal, so \(\phi = 90^\circ\) and \(W = F_N d\cos 90^\circ = 0\).` },
+ { q: String.raw`A force \(\vec F = (4\hat\imath - 2\hat\jmath)\ \text{N}\) acts while an object moves \(\Delta\vec r = (3\hat\imath + 5\hat\jmath)\ \text{m}\). The work done by \(\vec F\) is`, o: ['22 J', '2 J', '−2 J', '12 J'], a: 1, x: String.raw`Multiply matching components and add: \(W = (4)(3) + (-2)(5) = 12 - 10 = 2\ \text{J}\).` },
+ { q: String.raw`A force is 6 N from \(x = 0\) to \(x = 2\) m, then decreases linearly to 0 N at \(x = 4\) m. The work done from 0 to 4 m is`, o: ['24 J', '12 J', '18 J', '6 J'], a: 2, x: String.raw`Area under the F–x graph: rectangle \((6)(2) = 12\ \text{J}\) plus triangle \(\tfrac12(2)(6) = 6\ \text{J}\), total 18 J.` },
+ { q: String.raw`A 2.0 kg cart moving at 3.0 m/s receives 40 J of net work. Its final speed is`, o: ['7.0 m/s', '6.3 m/s', '23 m/s', '4.6 m/s'], a: 0, x: String.raw`\(K_i = \tfrac12(2)(3^2) = 9\ \text{J}\), so \(K_f = 49\ \text{J} = \tfrac12(2)v^2\) and \(v = 7.0\ \text{m/s}\). 6.3 m/s forgets the initial kinetic energy.` },
+ { q: String.raw`A block slides down a 30° incline whose top is 2.0 m above the bottom. Which distance goes into \(\Delta E_\text{th} = \mu_k F_N d\)?`, o: ['2.0 m', '1.0 m', '3.5 m', '4.0 m'], a: 3, x: String.raw`The block slides along the incline: \(d = h/\sin\theta = 2.0/\sin 30^\circ = 4.0\ \text{m}\). Using \(h\) is the most common mistake.` },
+ { q: String.raw`A spring with \(k = 500\ \text{N/m}\) is compressed 0.20 m. How much energy does it store?`, o: ['100 J', '20 J', '10 J', '50 J'], a: 2, x: String.raw`\(U_e = \tfrac12 kx^2 = \tfrac12(500)(0.20)^2 = 10\ \text{J}\). Forgetting the ½ gives 20 J.` },
+ { q: String.raw`Two balls are released from rest at the same height: one drops straight down, the other slides down a frictionless curved ramp. Ignoring air resistance, at the bottom`, o: ['the dropped ball is faster', 'the sliding ball is faster', 'they have the same speed', 'the heavier one is faster'], a: 2, x: String.raw`With no friction, \(mgh = \tfrac12 mv^2\) gives \(v = \sqrt{2gh}\) for both. The path and the mass do not matter.` }
+],
+lm: [
+ { q: String.raw`A 0.50 kg ball hits a wall at 4.0 m/s and bounces straight back at 3.0 m/s. The magnitude of its change in momentum is`, o: ['0.50 kg·m/s', '2.0 kg·m/s', '3.5 kg·m/s', '7.0 kg·m/s'], a: 2, x: String.raw`Take the initial direction as positive: \(\Delta p = m(v_f - v_i) = 0.50(-3.0 - 4.0) = -3.5\ \text{kg·m/s}\). Subtracting speeds (4 − 3) gives the wrong 0.50.` },
+ { q: String.raw`The same constant net force acts for the same time on a loaded truck and on an empty shopping cart, both starting from rest. Which one gains more momentum?`, o: ['The truck', 'The cart', 'They gain the same momentum', 'It depends on the force'], a: 2, x: String.raw`\(\Delta p = F\Delta t\), the same for both. The cart ends up much faster, but with the same momentum.` },
+ { q: String.raw`During a kick, the force on a ball rises linearly from 0 to 200 N and falls linearly back to 0 over a total of 0.010 s. The impulse on the ball is`, o: ['2.0 N·s', '1.0 N·s', '200 N·s', '0.50 N·s'], a: 1, x: String.raw`Impulse is the area under the F–t graph: a triangle, \(\tfrac12(0.010\ \text{s})(200\ \text{N}) = 1.0\ \text{N·s}\).` },
+ { q: String.raw`A 2.0 kg cart at +3.0 m/s collides with a 1.0 kg cart at rest, and they stick together. Their common velocity is`, o: ['+1.0 m/s', '+1.5 m/s', '+2.0 m/s', '+3.0 m/s'], a: 2, x: String.raw`\(v_f = \dfrac{(2.0)(3.0) + 0}{3.0} = 2.0\ \text{m/s}\). Check: kinetic energy drops from 9.0 J to 6.0 J, as it must when objects stick.` },
+ { q: String.raw`In the collision above, how much kinetic energy is lost?`, o: ['0 J', '3.0 J', '6.0 J', '9.0 J'], a: 1, x: String.raw`\(K_i = \tfrac12(2)(3^2) = 9.0\ \text{J}\), \(K_f = \tfrac12(3)(2^2) = 6.0\ \text{J}\): 3.0 J becomes thermal energy and sound. Momentum is still conserved.` },
+ { q: String.raw`For a collision between two carts on a frictionless track, which statement is always true?`, o: ['Kinetic energy is conserved', 'Momentum of the two-cart system is conserved', 'Both carts have the same final speed', 'The lighter cart gets the larger impulse'], a: 1, x: String.raw`No net external force acts on the two-cart system, so its momentum is conserved. Kinetic energy is conserved only if \(r = 1\), and the impulses are equal and opposite.` }
+],
+rk: [
+ { q: String.raw`A fan turns at 300 rpm. Its angular velocity in rad/s is`, o: ['5.0 rad/s', '31 rad/s', '47 rad/s', '1900 rad/s'], a: 1, x: String.raw`\(300\ \text{rev/min} \times 2\pi\ \text{rad/rev} \div 60\ \text{s/min} = 31.4\ \text{rad/s}\).` },
+ { q: String.raw`A wheel starts from rest with \(\alpha = 2.0\ \text{rad/s}^2\). How many revolutions does it make in 5.0 s?`, o: ['25 rev', '10 rev', '4.0 rev', '0.80 rev'], a: 2, x: String.raw`\(\theta = \tfrac12\alpha t^2 = \tfrac12(2.0)(5.0)^2 = 25\ \text{rad}\), and \(25/2\pi \approx 4.0\ \text{rev}\). 25 rev forgets to convert.` },
+ { q: String.raw`Masses of 1.0 kg at \(x = 0\) and 3.0 kg at \(x = 4.0\) m. Where is the center of mass?`, o: ['x = 1.0 m', 'x = 2.0 m', 'x = 3.0 m', 'x = 4.0 m'], a: 2, x: String.raw`\(x_\text{cm} = \dfrac{(1.0)(0) + (3.0)(4.0)}{4.0} = 3.0\ \text{m}\), closer to the heavier mass. 2.0 m is the unweighted average.` },
+ { q: String.raw`A 20 N force acts 0.50 m from a pivot, at 30° to the line from the pivot to the point where it acts. The torque has magnitude`, o: ['10 N·m', '8.7 N·m', '5.0 N·m', '40 N·m'], a: 2, x: String.raw`\(\tau = rF\sin\theta = (0.50)(20)\sin 30^\circ = 5.0\ \text{N·m}\). The lever arm is only \(0.50\sin 30^\circ = 0.25\ \text{m}\).` },
+ { q: String.raw`A meter stick balances at its center. A 2.0 kg mass hangs 30 cm to the left of the center. Where must a 3.0 kg mass hang to keep it balanced?`, o: ['20 cm to the right', '30 cm to the right', '45 cm to the right', '20 cm to the left'], a: 0, x: String.raw`\(\sum\tau = 0\) about the center: \((2.0)(30) = (3.0)d\), so \(d = 20\ \text{cm}\) on the right. The stick's own weight acts at the pivot and gives no torque.` },
+ { q: String.raw`A uniform rod (2.0 kg, 1.5 m) can turn about one end. Its moment of inertia about that end is`, o: ['0.375 kg·m²', '1.5 kg·m²', '3.0 kg·m²', '4.5 kg·m²'], a: 1, x: String.raw`\(I = \tfrac13 ML^2 = \tfrac13(2.0)(1.5)^2 = 1.5\ \text{kg·m}^2\). The center value is \(\tfrac1{12}ML^2 = 0.375\); add \(M(L/2)^2 = 1.125\) to get 1.5 by the parallel-axis theorem.` },
+ { q: String.raw`That rod is held horizontal and released. Its angular acceleration just after release is`, o: ['6.5 rad/s²', '9.8 rad/s²', '13 rad/s²', '20 rad/s²'], a: 1, x: String.raw`Weight acts at the center: \(\tau = Mg(L/2) = (2.0)(9.8)(0.75) = 14.7\ \text{N·m}\). \(\alpha = \tau/I = 14.7/1.5 = 9.8\ \text{rad/s}^2\) (in general \(3g/2L\)).` },
+ { q: String.raw`A turntable starts from rest with constant \(\alpha\). At the very first instant, a point on its rim has`, o: ['tangential and centripetal acceleration', 'only centripetal acceleration', 'only tangential acceleration', 'no acceleration'], a: 2, x: String.raw`\(a_t = r\alpha \ne 0\), but \(a_c = \omega^2 r = 0\) because \(\omega = 0\) at that instant.` }
+],
+rr: [
+ { q: String.raw`A 4.0 kg solid cylinder rolls without slipping at 2.0 m/s. Its total kinetic energy is`, o: ['8.0 J', '4.0 J', '12 J', '16 J'], a: 2, x: String.raw`\(K = \tfrac12 Mv^2(1+c) = \tfrac12(4.0)(2.0)^2(1 + \tfrac12) = 12\ \text{J}\): 8 J translational plus 4 J rotational. 8 J forgets the spin.` },
+ { q: String.raw`A solid sphere, a solid cylinder and a hoop are released together from rest at the top of the same incline. The order of arrival is`, o: ['all together', 'hoop, cylinder, sphere', 'sphere, cylinder, hoop', 'it depends on their masses'], a: 2, x: String.raw`\(a = g\sin\theta/(1+c)\): the smallest \(c\) wins. Sphere (2/5), cylinder (1/2), hoop (1). Mass and radius cancel.` },
+ { q: String.raw`A solid sphere rolls from rest down a height of 1.0 m. Its speed at the bottom is`, o: ['4.4 m/s', '3.7 m/s', '3.1 m/s', '2.6 m/s'], a: 1, x: String.raw`\(v = \sqrt{2gh/(1+c)} = \sqrt{2(9.8)(1.0)/1.4} = 3.7\ \text{m/s}\). 4.4 m/s is the frictionless-block answer.` },
+ { q: String.raw`What fraction of a rolling hoop's kinetic energy is rotational?`, o: ['1/4', '1/3', '1/2', 'all of it'], a: 2, x: String.raw`The rotational share is \(c/(1+c) = 1/2\) for a hoop: half translational, half rotational.` },
+ { q: String.raw`A ball rolls down a ramp without slipping. Which statement about the static friction force is correct?`, o: ['It does negative work, so energy is lost', 'It does no work, because the contact point does not slide', 'It points down the ramp and does positive work', 'There is no friction when an object rolls'], a: 1, x: String.raw`Static friction provides the torque that spins the ball up, but the contact point is momentarily at rest, so friction does no work and mechanical energy is conserved.` },
+ { q: String.raw`A motor applies a constant 10 N·m torque to a wheel through 5.0 revolutions. The work done is`, o: ['50 J', '160 J', '310 J', '3100 J'], a: 2, x: String.raw`\(\Delta\theta = 5.0 \times 2\pi = 31.4\ \text{rad}\), so \(W = \tau\Delta\theta = (10)(31.4) = 314\ \text{J}\). Using revolutions directly gives 50 J.` }
+],
+am: [
+ { q: String.raw`A skater spins at 2.0 rad/s with \(I = 4.0\ \text{kg·m}^2\), then pulls in her arms to \(I = 1.6\ \text{kg·m}^2\). Her new angular velocity is`, o: ['0.80 rad/s', '2.0 rad/s', '3.2 rad/s', '5.0 rad/s'], a: 3, x: String.raw`No external torque: \(I_1\omega_1 = I_2\omega_2\), so \(\omega_2 = (4.0)(2.0)/1.6 = 5.0\ \text{rad/s}\).` },
+ { q: String.raw`In the skater example, her kinetic energy`, o: ['stays the same', 'increases from 8.0 J to 20 J', 'decreases', 'increases from 8.0 J to 13 J'], a: 1, x: String.raw`\(K_1 = \tfrac12(4.0)(2.0)^2 = 8.0\ \text{J}\) and \(K_2 = \tfrac12(1.6)(5.0)^2 = 20\ \text{J}\). Angular momentum is conserved, kinetic energy is not: her muscles do work pulling her arms in.` },
+ { q: String.raw`A wheel lies flat and spins counterclockwise when seen from above. Its angular momentum points`, o: ['up, along the axis', 'down, along the axis', 'along the rim, in the direction of motion', 'toward the center'], a: 0, x: String.raw`Right-hand rule: curl your fingers counterclockwise, your thumb points up. \(\vec L\) lies along the axis, not along the rim.` },
+ { q: String.raw`A constant torque of 3.0 N·m acts for 4.0 s on a wheel that starts at rest. Its final angular momentum is`, o: ['0.75 kg·m²/s', '7.0 kg·m²/s', '12 kg·m²/s', '1.3 kg·m²/s'], a: 2, x: String.raw`The rotational impulse: \(\Delta L = \tau\Delta t = (3.0)(4.0) = 12\ \text{kg·m}^2/\text{s}\).` },
+ { q: String.raw`A disk (\(I = 0.50\ \text{kg·m}^2\)) spins at 10 rad/s. A ring with the same \(I\) is dropped onto it and sticks. The final angular velocity is`, o: ['20 rad/s', '10 rad/s', '7.1 rad/s', '5.0 rad/s'], a: 3, x: String.raw`\(\omega_f = I_1\omega_1/(I_1 + I_2) = (0.50)(10)/1.0 = 5.0\ \text{rad/s}\). Kinetic energy halves, like a perfectly inelastic collision.` },
+ { q: String.raw`A 2.0 kg puck slides at 3.0 m/s along a straight line that passes 4.0 m from point O at its closest. Its angular momentum about O is`, o: ['0 (it is not turning)', '6.0 kg·m²/s', '24 kg·m²/s', '1.5 kg·m²/s'], a: 2, x: String.raw`\(L = mvr_\perp = (2.0)(3.0)(4.0) = 24\ \text{kg·m}^2/\text{s}\). Straight-line motion has angular momentum about any point not on the line.` },
+ { q: String.raw`A diver tucks during a somersault. Which quantity stays constant while she is in the air?`, o: ['Her angular velocity', 'Her moment of inertia', 'Her angular momentum', 'Her rotational kinetic energy'], a: 2, x: String.raw`Gravity acts at her center of mass and exerts no torque about it, so \(L\) is constant. Tucking lowers \(I\), so \(\omega\) and \(K_\text{rot}\) rise.` }
+]
+};
+const SAVE = 't3sg-cp';
+let saved = store.get(SAVE, {});
+function scoreLine(sec) {
+  const n = CP[sec].length; let ok = 0, done = 0;
+  CP[sec].forEach((_, i) => { const r = saved[sec + i]; if (r) { done++; if (r.ok) ok++; } });
+  return { n, ok, done };
+}
+function refreshScores() {
+  Object.keys(CP).forEach(sec => {
+    const s = scoreLine(sec);
+    document.querySelectorAll(`[data-score="${sec}"]`).forEach(e => { e.textContent = s.done ? `Checkpoints: ${s.ok} of ${s.n} correct` : `${s.n} checkpoints`; });
+    const box = document.querySelector(`.cps[data-sec="${sec}"] .secscore`);
+    if (box) box.textContent = s.done === s.n ? `Section score: ${s.ok} of ${s.n} correct on first try.${s.ok === s.n ? ' Well done.' : ' Re-read the ideas behind the ones you missed.'}` : `Answered ${s.done} of ${s.n}.`;
+  });
+}
+function renderCP() {
+  Object.keys(CP).forEach(sec => {
+    const host = document.querySelector(`.cps[data-sec="${sec}"]`);
+    host.querySelectorAll('.cp,.secscore').forEach(e => e.remove());
+    CP[sec].forEach((c, i) => {
+      const key = sec + i, id = 'cp_' + key;
+      const div = document.createElement('div'); div.className = 'cp';
+      div.innerHTML = `<fieldset><legend id="${id}_q"><span class="tag">Checkpoint ${i + 1}</span>${c.q}</legend>` +
+        c.o.map((t, j) => `<label class="opt"><input type="radio" name="${id}" value="${j}"> <span>${t}</span></label>`).join('') +
+        `</fieldset><div class="act"><button class="btn small" type="button">Check</button><button class="btn quiet small" type="button">Try again</button></div><div class="fb" role="status" aria-live="polite"></div>`;
+      host.appendChild(div);
+      const [chk, again] = div.querySelectorAll('button'), fb = div.querySelector('.fb');
+      const show = (pick, first) => {
+        const ok = pick === c.a;
+        div.classList.toggle('ok', ok); div.classList.toggle('no', !ok);
+        fb.className = 'fb ' + (ok ? 'ok' : 'no');
+        fb.innerHTML = `<span class="verdict">${ok ? 'Correct.' : 'Not quite.'}</span> ${ok ? '' : 'The answer is: ' + c.o[c.a] + '.'}<div class="ex">${c.x}</div>`;
+        typeset(fb);
+        if (first && !saved[key]) { saved[key] = { ok, pick }; store.set(SAVE, saved); refreshScores(); }
+      };
+      chk.onclick = () => {
+        const sel = div.querySelector('input:checked');
+        if (!sel) { fb.className = 'fb'; fb.innerHTML = '<span class="verdict">Choose an answer first.</span>'; return; }
+        show(+sel.value, true);
+      };
+      again.onclick = () => { div.querySelectorAll('input').forEach(x => x.checked = false); fb.innerHTML = ''; div.classList.remove('ok', 'no'); div.querySelector('input').focus(); };
+      if (saved[key]) { const r = div.querySelector(`input[value="${saved[key].pick}"]`); if (r) r.checked = true; show(saved[key].pick, false); }
+    });
+    const sc = document.createElement('p'); sc.className = 'secscore'; sc.setAttribute('aria-live', 'polite'); host.appendChild(sc);
+  });
+  refreshScores();
+  typeset(document.body);
+}
+$('resetBtn').onclick = () => { saved = {}; store.set(SAVE, saved); renderCP(); say('All checkpoints cleared.'); };
+window.addEventListener('beforeprint', () => document.querySelectorAll('details').forEach(d => d.open = true));
+renderCP();
+})();
+</script>
+</body>
+</html>
